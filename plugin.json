@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "name": "Calibre Local",
+    "author": "MeoU",
+    "version": 1,
+    "source": "http://localhost:8080",
+    "regexp": "localhost:\\d+/book/\\d+",
+    "description": "Đọc truyện từ kho sách Calibre trên máy tính (Content Server). Hỗ trợ duyệt thư viện, tìm kiếm, đọc EPUB/TXT, xác thực tài khoản.",
+    "locale": "vi_VN",
+    "type": "novel",
+    "language": "javascript"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "suggest": "suggest.js",
+    "comment": "comment.js",
+    "page": "page.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}

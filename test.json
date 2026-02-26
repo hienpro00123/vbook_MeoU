@@ -1,0 +1,13 @@
+{
+  "appIP": "http://192.168.1.40:8080",
+  "home.js": "",
+  "homecontent.js": "timestamp:desc",
+  "search.js": "võ đạo",
+  "detail.js": "http://192.168.1.100:8080/book/5",
+  "page.js": "http://192.168.1.100:8080/book/5",
+  "toc.js": "http://192.168.1.100:8080/book-manifest/5/EPUB?library_id=kho_truy%E1%BB%87n",
+  "chap.js": "/book-file/5/EPUB/3318673/17720854840/OEBPS/Text/C1.xhtml?library_id=kho_truy%E1%BB%87n",
+  "genre.js": "",
+  "suggest.js": "/ajax/search/kho_truy%E1%BB%87n?q=authors%3A%22H%E1%BA%AFc%20Nguy%C3%AAn%20B%E1%BA%A1ch%22&sort=title&sort_order=asc",
+  "genrecontent.js": "/ajax/books_in/74616773/31/kho_truy%E1%BB%87n"
+}

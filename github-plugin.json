@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "author": "MeoU",
+    "description": "vBook Extensions by MeoU"
+  },
+  "data": [
+    {
+      "name": "Calibre Local",
+      "author": "MeoU",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.zip",
+      "version": 1,
+      "source": "http://localhost:8080",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/icon.png",
+      "description": "Đọc truyện từ kho sách Calibre trên máy tính (Content Server). Hỗ trợ duyệt thư viện, tìm kiếm, đọc EPUB/TXT.",
+      "type": "novel",
+      "locale": "vi_VN"
+    }
+  ]
+}
