@@ -9,7 +9,7 @@
       "author": "MeoU",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.zip",
       "version": 1,
-      "source": "http://localhost:8080",
+      "source": "http://192.168.1.100:8080",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/icon.png",
       "description": "Đọc truyện từ kho sách Calibre trên máy tính (Content Server). Hỗ trợ duyệt thư viện, tìm kiếm, đọc EPUB/TXT.",
       "type": "novel",
@@ -17,3 +17,4 @@
     }
   ]
 }
+
