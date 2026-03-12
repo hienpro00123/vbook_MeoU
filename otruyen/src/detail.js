@@ -1,13 +1,19 @@
 load("config.js");
 
 function execute(url) {
-  var slug = url.replace(/.*\/truyen-tranh\//, "").replace(/\/$/, "");
+  var slug = url;
+  var idx = url.indexOf("/truyen-tranh/");
+  if (idx >= 0) {
+    slug = url.substring(idx + 14);
+  }
+  slug = slug.replace(/\/$/, "").replace(/^\//,"");
 
   var response = fetch(BASE_URL + "/truyen-tranh/" + slug);
   if (response.ok) {
     var json = response.json();
-    var item = json.data.item;
-    var cdnImage = json.data.APP_DOMAIN_CDN_IMAGE;
+    var data = json.data;
+    var item = data.item;
+    var cdnImage = data.APP_DOMAIN_CDN_IMAGE;
 
     var thumb = item.thumb_url;
     if (thumb && thumb.indexOf("http") !== 0) {
