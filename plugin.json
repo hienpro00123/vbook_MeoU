@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "author": "Meo",
+    "description": "VBook Extensions Repository"
+  },
+  "data": [
+    {
+      "name": "OTruyen",
+      "author": "Meo",
+      "path": "otruyen/plugin.zip",
+      "version": 1,
+      "source": "https://otruyen.cc",
+      "icon": "otruyen/icon.png",
+      "description": "Đọc truyện tranh từ OTruyen.CC",
+      "type": "comic",
+      "locale": "vi_VN"
+    }
+  ]
+}
