@@ -1,4 +1,4 @@
-load("config.js");
+var BASE_URL = "https://api.mangadex.org";
 
 function execute() {
   var response = fetch(BASE_URL + "/manga/tag");

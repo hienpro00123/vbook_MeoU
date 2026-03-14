@@ -1,4 +1,4 @@
-load("config.js");
+var BASE_URL = "https://otruyenapi.com/v1/api";
 
 function execute(url) {
   var slug = url;

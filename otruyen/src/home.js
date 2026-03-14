@@ -1,4 +1,5 @@
-load("config.js");
+var BASE_URL = "https://otruyenapi.com/v1/api";
+var CDN_IMAGE = "https://img.otruyenapi.com";
 
 function execute() {
   return Response.success([

@@ -1,4 +1,4 @@
-load("config.js");
+var BASE_URL = "https://api.mangadex.org";
 
 function execute(chapterId) {
   chapterId = chapterId.replace(/\/$/, "").replace(/^\//,"");

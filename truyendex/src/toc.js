@@ -1,4 +1,6 @@
-load("config.js");
+var BASE_URL = "https://api.mangadex.org";
+var VI_LANG = "vi";
+var CONTENT_RATINGS = "contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica";
 
 function execute(url) {
   var mangaId = url;

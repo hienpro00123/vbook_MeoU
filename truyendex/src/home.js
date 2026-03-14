@@ -1,4 +1,4 @@
-load("config.js");
+var SITE_URL = "https://truyendex.cc/nettrom";
 
 function execute() {
   return Response.success([

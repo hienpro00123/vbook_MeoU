@@ -2,7 +2,7 @@
   "metadata": {
     "name": "TruyenDex",
     "author": "Meo",
-    "version":3,
+    "version":4,
     "source": "https://truyendex.cc",
     "regexp": "(www.)?truyendex\\.(cc|com)/nettrom/truyen-tranh/[^/]+/?$",
     "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
