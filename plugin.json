@@ -14,6 +14,17 @@
       "description": "Đọc truyện tranh từ OTruyen.CC",
       "type": "comic",
       "locale": "vi_VN"
+    },
+    {
+      "name": "TruyenDex",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/truyendex/plugin.zip",
+      "version": 1,
+      "source": "https://truyendex.cc",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/truyendex/icon.png",
+      "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
+      "type": "comic",
+      "locale": "vi_VN"
     }
   ]
 }
