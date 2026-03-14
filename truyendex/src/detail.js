@@ -1,5 +1,5 @@
 var BASE_URL = "https://api.mangadex.org";
-var COVER_URL = "https://uploads.mangadex.org/covers";
+var COVER_URL = "https://mangadex.org/covers";
 var SITE_URL = "https://truyendex.cc/nettrom";
 
 function getCoverUrl(mangaId, relationships) {

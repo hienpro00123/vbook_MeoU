@@ -21,6 +21,7 @@ function execute(chapterId) {
     for (var i = 0; i < pages.length; i++) {
       data.push({
         link: baseUrl + "/data-saver/" + hash + "/" + pages[i],
+        script: "image.js",
       });
     }
     return Response.success(data);
