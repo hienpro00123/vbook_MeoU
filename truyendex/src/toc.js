@@ -28,7 +28,9 @@ function execute(url) {
       + "&order[chapter]=asc"
       + "&limit=" + limit
       + "&offset=" + offset
-      + "&includes[]=scanlation_group";
+      + "&includes[]=scanlation_group"
+      + "&" + CONTENT_RATINGS
+      + "&includeEmptyPages=0";
 
     var response = fetch(feedUrl);
     if (!response.ok) break;
@@ -39,6 +41,7 @@ function execute(url) {
 
     for (var i = 0; i < chapters.length; i++) {
       var chap = chapters[i];
+      if (chap.attributes.externalUrl || chap.attributes.pages === 0) continue;
       var chapNum = chap.attributes.chapter || "0";
       var chapTitle = chap.attributes.title || "";
       var chapName = "Chương " + chapNum;

@@ -13,6 +13,9 @@ function execute(chapterId) {
     var baseUrl = json.baseUrl;
     var hash = json.chapter.hash;
     var pages = json.chapter.dataSaver;
+    if (!pages || pages.length === 0) {
+      return Response.error("Chương này không có ảnh (có thể là link ngoài)");
+    }
 
     var data = [];
     for (var i = 0; i < pages.length; i++) {
