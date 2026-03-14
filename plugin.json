@@ -10,7 +10,7 @@
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/otruyen/plugin.zip",
       "version": 1,
       "source": "https://otruyen.cc",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/otruyen/icon.png",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/otruyen/otruyen.png",
       "description": "Đọc truyện tranh từ OTruyen.CC",
       "type": "comic",
       "locale": "vi_VN"
@@ -21,7 +21,7 @@
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/truyendex/plugin.zip",
       "version": 1,
       "source": "https://truyendex.cc",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/truyendex/icon.png",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/master/truyendex/truyendex.png",
       "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
       "type": "comic",
       "locale": "vi_VN"
