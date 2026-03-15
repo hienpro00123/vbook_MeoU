@@ -108,11 +108,11 @@ function execute(url) {
     if (attributes.year) details.push("Năm: " + attributes.year);
 
     return Response.success({
-      name: getTitle(attributes.title),
+      name: getLocalized(attributes.title),
       cover: cover,
       host: BASE_URL,
       author: author,
-      description: stripBBCode(getDescription(attributes.description)),
+      description: stripBBCode(getLocalized(attributes.description)),
       detail: details.join("\n"),
       ongoing: attributes.status === "ongoing",
       genres: genres,
