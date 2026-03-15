@@ -1,76 +1,58 @@
-var BASE_URL = "https://api.mangadex.org";
-var VI_LANG = "vi";
-var CONTENT_RATINGS = "contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica";
+load("config.js");
 
 function execute(url) {
-  var mangaId = url;
-  if (url.indexOf("api.mangadex.org") >= 0) {
-    var idx = url.indexOf("/manga/");
-    if (idx >= 0) mangaId = url.substring(idx + 7);
-  } else {
-    var idx2 = url.indexOf("/truyen-tranh/");
-    if (idx2 >= 0) mangaId = url.substring(idx2 + 14);
-  }
-  mangaId = mangaId.replace(/\/$/, "").replace(/^\//,"");
-  if (mangaId.indexOf("/") >= 0) {
-    mangaId = mangaId.split("/")[0];
-  }
-  if (mangaId.indexOf("?") >= 0) {
-    mangaId = mangaId.split("?")[0];
-  }
+  var response = fetch(url);
+  if (!response.ok) return Response.error("Không thể tải mục lục");
 
-  var allChapters = [];
-  var offset = 0;
-  var limit = 500;
-  var hasMore = true;
+  var data = response.json();
+  var chapters = [];
+  if (!data || !data.data || data.data.length === 0) return Response.success(chapters);
 
-  while (hasMore) {
-    var feedUrl = BASE_URL + "/manga/" + mangaId + "/feed"
-      + "?translatedLanguage[]=" + VI_LANG
-      + "&order[chapter]=asc"
-      + "&limit=" + limit
-      + "&offset=" + offset
-      + "&includes[]=scanlation_group"
-      + "&" + CONTENT_RATINGS
-      + "&includeEmptyPages=0";
-
-    var response = fetch(feedUrl);
-    if (!response.ok) break;
-
-    var json = JSON.parse(response.text());
-    var chapters = json.data;
-    var total = json.total;
-
-    for (var i = 0; i < chapters.length; i++) {
-      var chap = chapters[i];
-      if (chap.attributes.externalUrl || chap.attributes.pages === 0) continue;
-      var chapNum = chap.attributes.chapter || "0";
-      var chapTitle = chap.attributes.title || "";
-      var chapName = "Chương " + chapNum;
-      if (chapTitle) {
-        chapName += ": " + chapTitle;
-      }
-
-      var group = "";
-      for (var j = 0; j < chap.relationships.length; j++) {
-        if (chap.relationships[j].type === "scanlation_group" && chap.relationships[j].attributes) {
-          group = chap.relationships[j].attributes.name;
-          break;
-        }
-      }
-      if (group) {
-        chapName += " [" + group + "]";
-      }
-
-      allChapters.push({
-        name: chapName,
-        url: chap.id,
-      });
+  // Fetch additional pages if manga has >500 chapters
+  var allData = data.data;
+  var fetched = data.offset + data.data.length;
+  var baseUrl = url.replace(/&offset=\d+$/, "");
+  while (fetched < data.total) {
+    var nextResp = fetch(baseUrl + "&offset=" + fetched);
+    if (!nextResp.ok) break;
+    var nextData = nextResp.json();
+    if (!nextData || !nextData.data || nextData.data.length === 0) break;
+    for (var n = 0; n < nextData.data.length; n++) {
+      allData.push(nextData.data[n]);
     }
-
-    offset += chapters.length;
-    hasMore = offset < total;
+    fetched += nextData.data.length;
   }
 
-  return Response.success(allChapters);
+  // Deduplicate: keep chapter with most pages per volume+chapter key
+  var seen = {};
+  var items = [];
+  for (var i = 0; i < allData.length; i++) {
+    var item = allData[i];
+    if (item.type !== "chapter") continue;
+    var attr = item.attributes;
+    // Skip external chapters (MangaPlus etc.) — no images on MangaDex
+    if (attr.externalUrl && attr.pages === 0) continue;
+    // Use chapter id for oneshots to avoid merging unrelated chapters
+    var key = (!attr.volume && !attr.chapter) ? item.id : (attr.volume || "") + "-" + (attr.chapter || "");
+    if (seen[key] !== undefined) {
+      var prev = items[seen[key]];
+      if (attr.pages > prev.attributes.pages) {
+        items[seen[key]] = item;
+      }
+      continue;
+    }
+    seen[key] = items.length;
+    items.push(item);
+  }
+
+  for (var k = 0; k < items.length; k++) {
+    var ch = items[k];
+    var groupName = getGroupName(ch.relationships);
+    chapters.push({
+      name: buildChapterTitle(ch.attributes, groupName),
+      url: ch.id,
+    });
+  }
+
+  return Response.success(chapters);
 }

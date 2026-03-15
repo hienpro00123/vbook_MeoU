@@ -1,34 +1,24 @@
-var BASE_URL = "https://otruyenapi.com/v1/api";
+load("config.js");
 
 function execute(url) {
-  var apiUrl = url;
-  if (url.indexOf("otruyenapi.com") < 0) {
-    var slug = url;
-    var idx = url.indexOf("/truyen-tranh/");
-    if (idx >= 0) {
-      slug = url.substring(idx + 14);
-    }
-    slug = slug.replace(/\/$/, "").replace(/^\//,"");
-    if (slug.indexOf("http") === 0) {
-      var parts = slug.split("/");
-      slug = parts[parts.length - 1];
-    }
-    apiUrl = BASE_URL + "/truyen-tranh/" + slug;
-  }
-
-  var response = fetch(apiUrl);
+  var response = fetch(url);
   if (response.ok) {
-    var json = JSON.parse(response.text());
+    var json = response.json();
     var responseData = json.data;
     if (!responseData || !responseData.item) return Response.success([]);
-    var item = responseData.item;
 
-    var chapters = item.chapters;
+    var chapters = responseData.item.chapters;
     if (!chapters || chapters.length === 0) return Response.success([]);
 
-    var server = chapters[0];
-    var serverData = server.server_data;
-    if (!serverData || serverData.length === 0) return Response.success([]);
+    // Tìm server đầu tiên có dữ liệu
+    var serverData = null;
+    for (var s = 0; s < chapters.length; s++) {
+      if (chapters[s].server_data && chapters[s].server_data.length > 0) {
+        serverData = chapters[s].server_data;
+        break;
+      }
+    }
+    if (!serverData) return Response.success([]);
 
     var result = [];
     for (var i = 0; i < serverData.length; i++) {

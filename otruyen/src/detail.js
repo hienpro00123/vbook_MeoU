@@ -1,67 +1,35 @@
-var BASE_URL = "https://otruyenapi.com/v1/api";
-var CDN_IMAGE = "https://img.otruyenapi.com";
+load("config.js");
 
 function execute(url) {
-  var slug = url;
-  var idx = url.indexOf("/truyen-tranh/");
-  if (idx >= 0) {
-    slug = url.substring(idx + 14);
-  }
-  slug = slug.replace(/\/$/, "").replace(/^\//,"");
-
-  var response = fetch(BASE_URL + "/truyen-tranh/" + slug);
+  var response = fetch(BASE_URL + "/truyen-tranh/" + extractSlug(url));
   if (response.ok) {
     var json = response.json();
     var data = json.data;
     var item = data.item;
     var cdnImage = data.APP_DOMAIN_CDN_IMAGE;
 
-    var thumb = item.thumb_url;
-    if (thumb && thumb.indexOf("http") !== 0) {
-      thumb = cdnImage + "/uploads/comics/" + thumb;
-    }
+    var thumb = resolveThumb(item.thumb_url, cdnImage);
+    var authorName = joinArray(item.author);
+    var originName = joinArray(item.origin_name);
 
-    var authorName = "";
-    if (item.author && item.author.length > 0) {
-      authorName = Array.isArray(item.author) ? item.author.join(", ") : item.author;
-    }
+    var genres = parseGenres(item.category);
 
-    var genres = [];
-    if (item.category) {
-      for (var i = 0; i < item.category.length; i++) {
-        var cat = item.category[i];
-        genres.push({
-          title: cat.name,
-          input: cat.slug,
-          script: "genrecontent.js",
-        });
-      }
-    }
+    var description = stripHtml(item.content);
 
-    var isOngoing = item.status === "ongoing";
-
-    var description = item.content || "";
-    description = description.replace(/<[^>]*>/g, "");
-
-    var originName = "";
-    if (item.origin_name && item.origin_name.length > 0) {
-      originName = Array.isArray(item.origin_name) ? item.origin_name.join(", ") : item.origin_name;
-    }
-
-    var detail = "";
-    if (originName) {
-      detail = "Tên khác: " + originName;
-    }
+    var details = [];
+    if (originName) details.push("Tên khác: " + originName);
+    if (item.status && STATUS_MAP[item.status]) details.push("Trạng thái: " + STATUS_MAP[item.status]);
 
     return Response.success({
       name: item.name,
       cover: thumb,
-      host: "https://otruyen.cc",
+      host: HOST,
       author: authorName,
       description: description,
-      detail: detail,
-      ongoing: isOngoing,
+      detail: details.join("\n"),
+      ongoing: item.status === "ongoing",
       genres: genres,
+      suggests: genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [],
     });
   }
   return Response.error("Không thể tải thông tin truyện");

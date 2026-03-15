@@ -2,9 +2,9 @@
   "metadata": {
     "name": "TruyenDex",
     "author": "Meo",
-    "version":5,
-    "source": "https://truyendex.cc",
-    "regexp": "(www.)?truyendex\\.(cc|com)/nettrom/truyen-tranh/[^/]+/?$",
+    "version": 3,
+    "source": "https://truyendex.cc/nettrom",
+    "regexp": "truyendex\\.(cc|com)/nettrom/truyen-tranh/[a-f0-9\\-]+/?$",
     "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
     "locale": "vi_VN",
     "language": "javascript",
@@ -17,6 +17,8 @@
     "search": "search.js",
     "page": "page.js",
     "toc": "toc.js",
-    "chap": "chap.js"
+    "chap": "chap.js",
+    "suggest": "suggest.js",
+    "comment": "comment.js"
   }
 }

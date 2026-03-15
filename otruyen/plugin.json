@@ -2,7 +2,7 @@
   "metadata": {
     "name": "OTruyen",
     "author": "Meo",
-    "version": 2,
+    "version": 3,
     "source": "https://otruyen.cc",
     "regexp": "(www.)?otruyen\\.(cc|net)/truyen-tranh/[^/]+/?$",
     "description": "Đọc truyện tranh từ OTruyen.CC",
@@ -17,6 +17,8 @@
     "search": "search.js",
     "page": "page.js",
     "toc": "toc.js",
-    "chap": "chap.js"
+    "chap": "chap.js",
+    "suggest": "suggest.js",
+    "comment": "comment.js"
   }
 }

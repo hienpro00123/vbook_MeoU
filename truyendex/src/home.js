@@ -1,10 +1,10 @@
-var SITE_URL = "https://truyendex.cc/nettrom";
+load("config.js");
 
 function execute() {
+  var base = API_URL + "/manga?" + MANGA_PARAMS;
   return Response.success([
-    { title: "Mới cập nhật", input: "latestUploadedChapter", script: "homecontent.js" },
-    { title: "Mới thêm gần đây", input: "createdAt", script: "homecontent.js" },
-    { title: "Đánh giá cao", input: "rating", script: "homecontent.js" },
-    { title: "Theo dõi nhiều", input: "followedCount", script: "homecontent.js" },
+    { title: "Mới cập nhật", input: base + "&order[latestUploadedChapter]=desc", script: "homecontent.js" },
+    { title: "Đánh giá cao",    input: base + "&order[rating]=desc",                script: "homecontent.js" },
+    { title: "Theo dõi nhiều",  input: base + "&order[followedCount]=desc",         script: "homecontent.js" },
   ]);
 }

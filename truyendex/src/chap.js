@@ -1,30 +1,26 @@
-var BASE_URL = "https://api.mangadex.org";
+load("config.js");
 
-function execute(chapterId) {
-  chapterId = chapterId.replace(/\/$/, "").replace(/^\//,"");
-  if (chapterId.indexOf("/") >= 0) {
-    var parts = chapterId.split("/");
-    chapterId = parts[parts.length - 1];
-  }
-
-  var response = fetch(BASE_URL + "/at-home/server/" + chapterId);
+function execute(url) {
+  var chapterId = extractUUID(url);
+  var response = fetch(API_URL + "/at-home/server/" + chapterId + "?forcePort443=true");
   if (response.ok) {
-    var json = JSON.parse(response.text());
-    var baseUrl = json.baseUrl;
-    var hash = json.chapter.hash;
-    var pages = json.chapter.dataSaver;
-    if (!pages || pages.length === 0) {
-      return Response.error("Chương này không có ảnh (có thể là link ngoài)");
-    }
+    var data = response.json();
+    if (!data || !data.chapter) return Response.error("Dữ liệu chương không hợp lệ");
+    var hash = data.chapter.hash;
+    if (!hash) return Response.error("Chương này không có ảnh trên MangaDex");
 
-    var data = [];
+    // Prefer dataSaver (80-200KB) over full data (2-12MB) for mobile stability
+    var pages = data.chapter.dataSaver;
+    var quality = "data-saver";
+    if (!pages || pages.length === 0) { pages = data.chapter.data; quality = "data"; }
+    if (!pages || pages.length === 0) return Response.error("Không có ảnh");
+
+    var prefix = (data.baseUrl || IMAGE_CDN) + "/" + quality + "/" + hash + "/";
+    var images = [];
     for (var i = 0; i < pages.length; i++) {
-      data.push({
-        link: baseUrl + "/data-saver/" + hash + "/" + pages[i],
-        script: "image.js",
-      });
+      images.push({ link: proxyImage(prefix + pages[i]) });
     }
-    return Response.success(data);
+    return Response.success(images);
   }
   return Response.error("Không thể tải nội dung chương");
 }
