@@ -7,7 +7,6 @@
     "regexp": "(www.)?otruyen\\.(cc|net)/truyen-tranh/[^/]+/?$",
     "description": "Đọc truyện tranh từ OTruyen.CC",
     "locale": "vi_VN",
-    "language": "javascript",
     "type": "comic"
   },
   "script": {
