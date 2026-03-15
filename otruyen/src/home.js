@@ -1,5 +1,4 @@
-var BASE_URL = "https://otruyenapi.com/v1/api";
-var HOST = "https://otruyen.cc";
+load("config.js");
 
 function execute() {
   return Response.success([

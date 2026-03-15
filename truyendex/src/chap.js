@@ -1,28 +1,4 @@
-var API_URL = "https://api.mangadex.org";
-var IMAGE_CDN = "https://uploads.mangadex.org";
-var PROXY_URL = "https://services.f-ck.me/v1/image/";
-
-function toBase64(str) {
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var result = "";
-  for (var i = 0; i < str.length; i += 3) {
-    var a = str.charCodeAt(i);
-    var b = (i + 1 < str.length) ? str.charCodeAt(i + 1) : 0;
-    var c = (i + 2 < str.length) ? str.charCodeAt(i + 2) : 0;
-    result += chars.charAt((a >> 2) & 63);
-    result += chars.charAt(((a & 3) << 4) | ((b >> 4) & 15));
-    result += (i + 1 < str.length) ? chars.charAt(((b & 15) << 2) | ((c >> 6) & 3)) : "=";
-    result += (i + 2 < str.length) ? chars.charAt(c & 63) : "=";
-  }
-  return result;
-}
-
-function proxyImage(url) { return PROXY_URL + toBase64(url); }
-
-function extractUUID(url) {
-  var match = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i.exec(url);
-  return match ? match[1] : url;
-}
+load("config.js");
 
 function execute(url) {
   var chapterId = extractUUID(url);

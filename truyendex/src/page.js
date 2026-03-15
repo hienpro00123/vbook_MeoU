@@ -1,10 +1,4 @@
-var API_URL = "https://api.mangadex.org";
-var CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive";
-
-function extractUUID(url) {
-  var match = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i.exec(url);
-  return match ? match[1] : url;
-}
+load("config.js");
 
 function execute(url) {
   var mangaId = extractUUID(url);
