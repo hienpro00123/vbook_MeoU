@@ -8,6 +8,11 @@ function execute() {
       input: API_V3 + "/stories?filter=hot&language=" + LANG_VI,
     },
     {
+      title: "Mới cập nhật",
+      script: "homecontent.js",
+      input: API_V3 + "/stories?filter=new&language=" + LANG_VI,
+    },
+    {
       title: "Mới nhất",
       script: "homecontent.js",
       input: API_V3 + "/stories?filter=fresh&language=" + LANG_VI,
