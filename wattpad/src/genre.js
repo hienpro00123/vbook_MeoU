@@ -60,8 +60,3 @@ function execute() {
   return Response.success(list);
 }
 
-  var list = genres.map(function (g) {
-    return { title: g.title, input: g.query, script: "genrecontent.js" };
-  });
-  return Response.success(list);
-}
