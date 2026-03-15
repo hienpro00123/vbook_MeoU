@@ -1,56 +1,76 @@
 # VBook Extensions
 
-Extension VBook đọc truyện tranh từ OTruyen.CC
+Bộ extension VBook đọc truyện tranh tiếng Việt.
 
 ## Cài đặt
 
 ### Cách 1: Thêm qua GitHub Repository
 1. Mở VBook app
 2. Vào phần **Extensions** / **Kho tiện ích**
-3. Thêm repository bằng URL: `https://raw.githubusercontent.com/<username>/vbook-otruyen-extension/master/plugin.json`
-4. Extension **OTruyen** sẽ xuất hiện trong danh sách, nhấn cài đặt
+3. Thêm repository bằng URL: `https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json`
+4. Extension sẽ xuất hiện trong danh sách, nhấn cài đặt
 
 ### Cách 2: Cài thủ công
-1. Tải file `otruyen/plugin.zip`
+1. Tải file `plugin.zip` trong thư mục tương ứng
 2. Import vào VBook app
 
 ## Extensions
 
-| Tên | Nguồn | Loại | Ngôn ngữ |
-|-----|-------|------|----------|
-| OTruyen | [otruyen.cc](https://otruyen.cc) | Comic | vi_VN |
+| Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
+|-----|-------|-----------|------|----------|
+| OTruyen | [otruyen.cc](https://otruyen.cc) | v3 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v3 | Comic | vi_VN |
 
 ## Tính năng
 
-- **Trang chủ**: Truyện mới cập nhật, Sắp ra mắt, Đang phát hành, Hoàn thành
-- **Thể loại**: 54 thể loại truyện
-- **Tìm kiếm**: Tìm kiếm theo từ khóa
-- **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại
-- **Mục lục**: Danh sách chương
+### OTruyen
+- **Trang chủ**: Đang phát hành, Hoàn thành, Truyện cập nhật, Sắp ra mắt
+- **Thể loại**: Danh sách thể loại đầy đủ
+- **Tìm kiếm**: Tìm kiếm theo từ khóa có phân trang
+- **Chi tiết**: Thông tin truyện, tác giả, mô tả (strip HTML), thể loại
+- **Truyện cùng thể loại**: Gợi ý truyện liên quan
+- **Mục lục**: Danh sách chương, hỗ trợ đa server
 - **Đọc truyện**: Hiển thị ảnh chương truyện
 
-## API
-
-Extension sử dụng [OTruyen API](https://docs.otruyenapi.com/) - API miễn phí cung cấp dữ liệu truyện tranh.
+### TruyenDex (MangaDex Tiếng Việt)
+- **Trang chủ**: Mới cập nhật, Đánh giá cao, Theo dõi nhiều
+- **Thể loại**: Tag MangaDex đầy đủ, có sắp xếp
+- **Tìm kiếm**: Tìm kiếm có phân trang offset
+- **Chi tiết**: Thông tin truyện, mô tả (strip BBCode), tên khác, năm
+- **Truyện cùng thể loại**: Gợi ý theo tag đầu tiên
+- **Mục lục**: Hỗ trợ truyện 500+ chương, dedup tự động
+- **Đọc truyện**: Ảnh qua proxy, ưu tiên Data Saver
 
 ## Cấu trúc
 
 ```
 otruyen/
-├── icon.png          # Icon extension
-├── plugin.json       # Thông tin extension
-├── plugin.zip        # File cài đặt
+├── icon.png, plugin.json, plugin.zip
 └── src/
-    ├── config.js     # Cấu hình API URL
-    ├── home.js       # Trang chủ
-    ├── homecontent.js # Nội dung trang chủ
-    ├── genre.js      # Danh sách thể loại
+    ├── config.js       # Hằng số + helpers (extractSlug, parseItems, stripHtml...)
+    ├── home.js         # Trang chủ
+    ├── homecontent.js  # Nội dung trang chủ
+    ├── genre.js        # Danh sách thể loại
     ├── genrecontent.js # Truyện theo thể loại
-    ├── detail.js     # Chi tiết truyện
-    ├── search.js     # Tìm kiếm
-    ├── toc.js        # Mục lục
-    ├── chap.js       # Nội dung chương
-    ├── page.js       # Phân trang mục lục
-    ├── suggest.js    # Truyện liên quan
-    └── comment.js    # Bình luận
+    ├── detail.js       # Chi tiết truyện
+    ├── search.js       # Tìm kiếm
+    ├── suggest.js      # Truyện cùng thể loại
+    ├── toc.js          # Mục lục
+    ├── chap.js         # Nội dung chương
+    └── page.js         # Chuyển URL → API URL
+
+truyendex/
+├── icon.png, plugin.json, plugin.zip
+└── src/
+    ├── config.js       # Hằng số + helpers (parseMangaList, proxyImage, stripBBCode...)
+    ├── home.js         # Trang chủ
+    ├── homecontent.js  # Nội dung trang chủ
+    ├── genre.js        # Danh sách thể loại (tag MangaDex)
+    ├── genrecontent.js # Truyện theo thể loại
+    ├── detail.js       # Chi tiết truyện
+    ├── search.js       # Tìm kiếm
+    ├── suggest.js      # Truyện cùng thể loại
+    ├── toc.js          # Mục lục
+    ├── chap.js         # Nội dung chương (Data Saver)
+    └── page.js         # Chuyển URL → API URL
 ```
