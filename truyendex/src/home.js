@@ -1,4 +1,6 @@
-load("config.js");
+var API_URL = "https://api.mangadex.org";
+var CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive";
+var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&" + CONTENT_RATING;
 
 function execute() {
   var base = API_URL + "/manga?" + MANGA_PARAMS;

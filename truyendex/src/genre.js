@@ -1,4 +1,22 @@
-load("config.js");
+var API_URL = "https://api.mangadex.org";
+var LANGUAGE = "vi";
+
+function getLocalized(obj) {
+  if (!obj) return "";
+  if (obj[LANGUAGE]) return obj[LANGUAGE];
+  if (obj["en"]) return obj["en"];
+  var keys = Object.keys(obj);
+  return keys.length > 0 ? obj[keys[0]] : "";
+}
+
+function parseTags(tags) {
+  var genres = [];
+  if (!tags) return genres;
+  for (var i = 0; i < tags.length; i++) {
+    genres.push({ title: getLocalized(tags[i].attributes.name), input: tags[i].id, script: "genrecontent.js" });
+  }
+  return genres;
+}
 
 function execute() {
   var response = fetch(API_URL + "/manga/tag");

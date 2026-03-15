@@ -1,4 +1,24 @@
-load("config.js");
+function getRelName(relationships, type) {
+  if (!relationships) return "";
+  for (var i = 0; i < relationships.length; i++) {
+    if (relationships[i].type === type && relationships[i].attributes) {
+      return relationships[i].attributes.name;
+    }
+  }
+  return "";
+}
+
+function getGroupName(relationships) { return getRelName(relationships, "scanlation_group"); }
+
+function buildChapterTitle(attr, groupName) {
+  var title = "";
+  if (attr.volume) title += "T" + attr.volume + " ";
+  if (attr.chapter) title += "Ch. " + attr.chapter;
+  if (attr.title) title += (title ? " - " : "") + attr.title;
+  if (!title) title = "Oneshot";
+  if (groupName) title += " [" + groupName + "]";
+  return title;
+}
 
 function execute(url) {
   var response = fetch(url);
