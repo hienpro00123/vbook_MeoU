@@ -118,6 +118,14 @@ function getAuthorFull(relationships) {
 
 function getGroupName(relationships) { return getRelName(relationships, "scanlation_group"); }
 
+function getAuthorId(relationships) {
+  if (!relationships) return "";
+  for (var i = 0; i < relationships.length; i++) {
+    if (relationships[i].type === "author") return relationships[i].id;
+  }
+  return "";
+}
+
 function buildChapterTitle(attr, groupName) {
   var title = "";
   if (attr.volume) title += "T" + attr.volume + " ";

@@ -20,6 +20,10 @@ function execute(url) {
     if (originName) details.push("Tên khác: " + originName);
     if (item.status && STATUS_MAP[item.status]) details.push("Trạng thái: " + STATUS_MAP[item.status]);
 
+    var suggests = genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [];
+    var authorSlug = (item.author && item.author.length > 0) ? slugifyVN(item.author[0]) : "";
+    if (authorSlug) suggests.push({ title: "Truyện cùng tác giả", input: "author:" + authorSlug, script: "suggest.js" });
+
     return Response.success({
       name: item.name,
       cover: thumb,
@@ -29,7 +33,7 @@ function execute(url) {
       detail: details.join("\n"),
       ongoing: item.status === "ongoing",
       genres: genres,
-      suggests: genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [],
+      suggests: suggests,
     });
   }
   return Response.error("Không thể tải thông tin truyện");

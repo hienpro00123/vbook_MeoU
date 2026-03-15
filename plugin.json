@@ -8,7 +8,7 @@
       "name": "OTruyen",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/otruyen/plugin.zip",
-      "version": 6,
+      "version": 7,
       "source": "https://otruyen.cc",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/otruyen/icon.png",
       "description": "Đọc truyện tranh từ OTruyen.CC",
@@ -19,12 +19,23 @@
       "name": "TruyenDex",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyendex/plugin.zip",
-      "version": 6,
+      "version": 7,
       "source": "https://truyendex.cc/nettrom",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyendex/icon.png",
       "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
       "type": "comic",
       "locale": "vi_VN"
+    },
+    {
+      "name": "Wattpad - Tiếng Việt",
+      "author": "vBook",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wattpad/plugin.zip",
+      "version": 2,
+      "source": "https://www.wattpad.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wattpad/icon.png",
+      "description": "Đọc truyện tiếng Việt trên Wattpad",
+      "type": "novel",
+      "locale": "vi"
     }
   ]
 }

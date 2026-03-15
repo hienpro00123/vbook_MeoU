@@ -12,6 +12,7 @@ function execute(url) {
 
     var cover = getCoverUrl(mangaId, relationships, "512");
     var author = getAuthorFull(relationships);
+    var authorId = getAuthorId(relationships);
 
     var genres = parseTags(attributes.tags);
 
@@ -20,6 +21,9 @@ function execute(url) {
     if (altNames) details.push("Tên khác: " + altNames);
     if (attributes.status && STATUS_MAP[attributes.status]) details.push("Trạng thái: " + STATUS_MAP[attributes.status]);
     if (attributes.year) details.push("Năm: " + attributes.year);
+
+    var suggests = genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [];
+    if (authorId) suggests.push({ title: "Truyện cùng tác giả", input: "author:" + authorId, script: "suggest.js" });
 
     return Response.success({
       name: getLocalized(attributes.title),
@@ -30,7 +34,7 @@ function execute(url) {
       detail: details.join("\n"),
       ongoing: attributes.status === "ongoing",
       genres: genres,
-      suggests: genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [],
+      suggests: suggests,
     });
   }
   return Response.error("Không thể tải thông tin truyện");
