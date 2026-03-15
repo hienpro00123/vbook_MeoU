@@ -1,7 +1,7 @@
 {
   "metadata": {
     "name": "Wattpad - Tiếng Việt",
-    "author": "vBook",
+    "author": "Meo",
     "version": 2,
     "source": "https://www.wattpad.com",
     "regexp": "(www\\.)?wattpad\\.com/(story/)?\\d+",
