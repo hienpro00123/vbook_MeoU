@@ -42,7 +42,7 @@ Bộ extension VBook đọc truyện tranh tiếng Việt.
 - **Truyện cùng thể loại**: Gợi ý theo tag đầu tiên
 - **Truyện cùng tác giả**: Gợi ý truyện cùng tác giả
 - **Mục lục**: Hỗ trợ truyện 500+ chương, dedup tự động
-- **Đọc truyện**: Ảnh qua proxy, ưu tiên Data Saver
+- **Đọc truyện**: Ảnh trực tiếp từ MangaDex at-home CDN (không qua proxy, tải nhanh trên 5G)
 
 ### Wattpad (Tiếng Việt)
 - **Trang chủ**: Nổi bật, Mới cập nhật, Mới nhất, Hoàn thành
@@ -75,7 +75,7 @@ otruyen/
 truyendex/
 ├── icon.png, plugin.json, plugin.zip
 └── src/
-    ├── config.js       # Hằng số + helpers (parseMangaList, proxyImage, stripBBCode...)
+    ├── config.js       # Hằng số + helpers (parseMangaList, proxyImage cho bìa, stripBBCode...)
     ├── home.js         # Trang chủ
     ├── homecontent.js  # Nội dung trang chủ
     ├── genre.js        # Danh sách thể loại (tag MangaDex)
