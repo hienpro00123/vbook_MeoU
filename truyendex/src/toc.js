@@ -17,7 +17,11 @@ function execute(url) {
   while (fetched < data.total && pageCount < maxPages) {
     pageCount++;
     var nextResp = fetch(baseUrl + "&offset=" + fetched);
-    if (!nextResp.ok) break;
+    if (!nextResp.ok) {
+      // Retry 1 lần trước khi bỏ qua — xử lý packet drop tạm thời trên 5G
+      nextResp = fetch(baseUrl + "&offset=" + fetched);
+      if (!nextResp.ok) break;
+    }
     var nextData = nextResp.json();
     if (!nextData || !nextData.data || nextData.data.length === 0) break;
     for (var n = 0; n < nextData.data.length; n++) {
