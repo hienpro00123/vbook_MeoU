@@ -12,7 +12,10 @@ function execute(url) {
   var allData = data.data;
   var fetched = data.offset + data.data.length;
   var baseUrl = url.replace(/&offset=\d+$/, "");
-  while (fetched < data.total) {
+  var maxPages = 20; // guard: tối đa 20 request (10000 chương), tránh loop vô hạn khi mạng kém
+  var pageCount = 0;
+  while (fetched < data.total && pageCount < maxPages) {
+    pageCount++;
     var nextResp = fetch(baseUrl + "&offset=" + fetched);
     if (!nextResp.ok) break;
     var nextData = nextResp.json();

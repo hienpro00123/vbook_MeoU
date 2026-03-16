@@ -15,10 +15,12 @@ function execute(url) {
     if (!pages || pages.length === 0) { pages = data.chapter.data; quality = "data"; }
     if (!pages || pages.length === 0) return Response.error("Không có ảnh");
 
-    var prefix = (data.baseUrl || IMAGE_CDN) + "/" + quality + "/" + hash + "/";
+    // Dùng trực tiếp MangaDex at-home CDN, không qua proxy để tăng tốc trên mọạng di động
+    var baseUrl = data.baseUrl || IMAGE_CDN;
+    var prefix = baseUrl + "/" + quality + "/" + hash + "/";
     var images = [];
     for (var i = 0; i < pages.length; i++) {
-      images.push({ link: proxyImage(prefix + pages[i]) });
+      images.push({ link: prefix + pages[i] });
     }
     return Response.success(images);
   }
