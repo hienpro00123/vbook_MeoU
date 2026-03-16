@@ -41,7 +41,7 @@ Bộ extension VBook đọc truyện tranh tiếng Việt.
 - **Chi tiết**: Thông tin truyện, mô tả (strip BBCode), tên khác, năm
 - **Truyện cùng thể loại**: Gợi ý theo tag đầu tiên
 - **Truyện cùng tác giả**: Gợi ý truyện cùng tác giả
-- **Mục lục**: Hỗ trợ truyện 500+ chương, dedup tự động
+- **Mục lục**: Hỗ trợ truyện 1000+ chương, dedup tự động, retry khi mạng yếu
 - **Đọc truyện**: Ảnh trực tiếp từ MangaDex at-home CDN (không qua proxy, tải nhanh trên 5G)
 
 ### Wattpad (Tiếng Việt)
