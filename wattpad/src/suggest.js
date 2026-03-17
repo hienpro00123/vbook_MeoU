@@ -18,7 +18,9 @@ function execute(input, page) {
         limit: "10",
       })
       .string();
-    if (data) return parseStories(JSON.parse(data));
+    if (data) {
+      try { return parseStories(JSON.parse(data)); } catch (e) {}
+    }
     return Response.success([]);
   }
   var data = Http.get(API_V4 + "/search/stories")
@@ -39,6 +41,8 @@ function execute(input, page) {
       limit: "10",
     })
     .string();
-  if (data) return parseStories(JSON.parse(data));
+  if (data) {
+    try { return parseStories(JSON.parse(data)); } catch (e) {}
+  }
   return Response.success([]);
 }

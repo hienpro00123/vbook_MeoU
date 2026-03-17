@@ -22,6 +22,8 @@ function execute(key, page) {
     })
     .string();
 
-  if (data) return parseStories(JSON.parse(data));
+  if (data) {
+    try { return parseStories(JSON.parse(data)); } catch (e) {}
+  }
   return Response.error("Không thể tìm kiếm");
 }

@@ -17,7 +17,8 @@ function execute(url) {
     .string();
 
   if (data) {
-    data = JSON.parse(data);
+    try { data = JSON.parse(data); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
+    if (!data.parts) return Response.error("Không thể tải mục lục");
     var list = [];
     data.parts.forEach(function (v) {
       list.push({

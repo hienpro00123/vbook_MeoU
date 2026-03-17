@@ -17,7 +17,7 @@ function execute(url) {
     .string();
 
   if (data) {
-    data = JSON.parse(data);
+    try { data = JSON.parse(data); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
 
     var genres = [];
     var tags = [];
@@ -60,7 +60,7 @@ function execute(url) {
       name: data.title,
       cover: data.cover,
       host: BASE_URL,
-      author: data.user.name,
+      author: data.user ? data.user.name : "",
       description: data.description,
       detail: genres.concat(tags).join(", "),
       ongoing: !data.completed,
