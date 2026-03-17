@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute() {
-  var response = fetch(API_URL + "/manga/tag");
+  var response = fetchRetry(API_URL + "/manga/tag");
   if (response.ok) {
     var data = response.json();
     if (!data || !data.data) return Response.success([]);

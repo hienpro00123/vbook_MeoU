@@ -118,6 +118,12 @@ function getAuthorFull(relationships) {
 
 function getGroupName(relationships) { return getRelName(relationships, "scanlation_group"); }
 
+function fetchRetry(url, options) {
+  var r = options ? fetch(url, options) : fetch(url);
+  if (r.ok) return r;
+  return options ? fetch(url, options) : fetch(url);
+}
+
 function getAuthorId(relationships) {
   if (!relationships) return "";
   for (var i = 0; i < relationships.length; i++) {

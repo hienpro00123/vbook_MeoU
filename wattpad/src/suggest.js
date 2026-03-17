@@ -11,10 +11,26 @@ function execute(input, page) {
         limit: "10",
       })
       .string();
+    if (!data) data = Http.get(API_V3 + "/users/" + username + "/stories")
+      .params({
+        fields: "stories(id,title,url,cover,user(name)),nextUrl",
+        offset: page,
+        limit: "10",
+      })
+      .string();
     if (data) return parseStories(JSON.parse(data));
     return Response.success([]);
   }
   var data = Http.get(API_V4 + "/search/stories")
+    .params({
+      query: input,
+      language: LANG_VI,
+      fields: "stories(id,title,url,cover,user(name)),nextUrl",
+      offset: page,
+      limit: "10",
+    })
+    .string();
+  if (!data) data = Http.get(API_V4 + "/search/stories")
     .params({
       query: input,
       language: LANG_VI,
