@@ -3,7 +3,7 @@ load("config.js");
 function execute(url) {
   var mangaId = extractUUID(url);
 
-  var response = fetch(API_URL + "/manga/" + mangaId + "?includes[]=artist&includes[]=author&includes[]=cover_art");
+  var response = fetchRetry(API_URL + "/manga/" + mangaId + "?includes[]=artist&includes[]=author&includes[]=cover_art");
   if (response.ok) {
     var data = response.json();
     if (!data || !data.data) return Response.error("Dữ liệu truyện không hợp lệ");

@@ -5,6 +5,7 @@ function execute(url) {
   if (!match) return Response.error("URL chương không hợp lệ");
   var chapId = match[1];
   var html = Http.get(APIV2 + "/storytext?id=" + chapId).string();
+  if (!html) html = Http.get(APIV2 + "/storytext?id=" + chapId).string();
   if (html) {
     return Response.success(html);
   }

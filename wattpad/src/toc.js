@@ -10,6 +10,11 @@ function execute(url) {
       fields: "id,parts(id,title,url)",
     })
     .string();
+  if (!data) data = Http.get(API_V3 + "/stories/" + storyId)
+    .params({
+      fields: "id,parts(id,title,url)",
+    })
+    .string();
 
   if (data) {
     data = JSON.parse(data);

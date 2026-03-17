@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
   var chapterId = extractUUID(url);
-  var response = fetch(API_URL + "/at-home/server/" + chapterId + "?forcePort443=true");
+  var response = fetchRetry(API_URL + "/at-home/server/" + chapterId + "?forcePort443=true");
   if (response.ok) {
     var data = response.json();
     if (!data || !data.chapter) return Response.error("Dữ liệu chương không hợp lệ");

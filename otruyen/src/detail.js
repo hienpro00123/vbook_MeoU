@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute(url) {
-  var response = fetch(BASE_URL + "/truyen-tranh/" + extractSlug(url));
+  var response = fetchRetry(BASE_URL + "/truyen-tranh/" + extractSlug(url));
   if (response.ok) {
     var json = response.json();
     var data = json.data;

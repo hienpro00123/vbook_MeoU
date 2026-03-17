@@ -1,5 +1,7 @@
+load("config.js");
+
 function execute(url) {
-  var response = fetch(url);
+  var response = fetchRetry(url);
   if (response.ok) {
     var json = response.json();
     var responseData = json.data;
