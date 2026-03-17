@@ -3,23 +3,14 @@ load("config.js");
 function execute(url, page) {
   if (!page) page = "0";
 
-  var data = Http.get(url)
-    .params({
-      fields: "stories(id,title,url,cover,user(name))",
-      offset: page,
-      limit: "20",
-    })
-    .string();
-  if (!data) data = Http.get(url)
-    .params({
-      fields: "stories(id,title,url,cover,user(name))",
-      offset: page,
-      limit: "20",
-    })
-    .string();
+  var raw = fetchWattpad(url, {
+    fields: "stories(id,title,url,cover,user(name)),nextUrl",
+    offset: page,
+    limit: "30",
+  });
 
-  if (data) {
-    try { return parseStories(JSON.parse(data)); } catch (e) {}
+  if (raw) {
+    try { return parseStories(JSON.parse(raw)); } catch (e) {}
   }
   return Response.error("Không thể tải dữ liệu");
 }

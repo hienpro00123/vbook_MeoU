@@ -2,9 +2,9 @@ load("config.js");
 
 function execute(url) {
   var mangaId = extractUUID(url);
-  // limit=96 thay vì 500: payload nhỏ hơn, ít timeout hơn trên 5G yếu
-  // toc.js sẽ tự loop thêm request cho các chương còn lại
+  // limit=500: giảm số request tuần tự cho manga nhiều chương (toc.js làm pagination)
+  // MangaDex API hỗ trợ tối đa 500 mục/request cho /manga/{id}/feed
   return Response.success([
-    API_URL + "/manga/" + mangaId + "/feed?translatedLanguage[]=vi&order[volume]=asc&order[chapter]=asc&includes[]=scanlation_group&" + CONTENT_RATING + "&limit=96&offset=0"
+    API_URL + "/manga/" + mangaId + "/feed?translatedLanguage[]=vi&order[volume]=asc&order[chapter]=asc&includes[]=scanlation_group&" + CONTENT_RATING + "&limit=500&offset=0"
   ]);
 }

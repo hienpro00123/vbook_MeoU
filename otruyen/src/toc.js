@@ -11,13 +11,12 @@ function execute(url) {
     var chapters = responseData.item.chapters;
     if (!chapters || chapters.length === 0) return Response.success([]);
 
-    // Tìm server đầu tiên có dữ liệu
+    // Chọn server có nhiều chương nhất — tránh mất chương khi server đầu có ít dữ liệu hơn
     var serverData = null;
+    var bestLen = 0;
     for (var s = 0; s < chapters.length; s++) {
-      if (chapters[s].server_data && chapters[s].server_data.length > 0) {
-        serverData = chapters[s].server_data;
-        break;
-      }
+      var sd = chapters[s].server_data;
+      if (sd && sd.length > bestLen) { serverData = sd; bestLen = sd.length; }
     }
     if (!serverData) return Response.success([]);
 

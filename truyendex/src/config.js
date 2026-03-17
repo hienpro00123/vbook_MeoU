@@ -76,12 +76,14 @@ function parseMangaList(data) {
     var item = data.data[i];
     if (!item.attributes) continue;
     var cover = getCoverUrl(item.id, item.relationships, "256");
+    var desc = getDescription(item.attributes.description);
+    if (desc && desc.length > 150) desc = desc.substring(0, 150) + "…";
     books.push({
       name: getTitle(item.attributes.title),
       link: "/nettrom/truyen-tranh/" + item.id,
       host: BASE_URL,
       cover: cover,
-      description: getDescription(item.attributes.description),
+      description: desc,
     });
   }
   return books;
