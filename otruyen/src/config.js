@@ -86,3 +86,9 @@ function slugifyVN(str) {
     .replace(/^-|-$/g, "");
   return result;
 }
+
+function fetchRetry(url, options) {
+  var r = options ? fetch(url, options) : fetch(url);
+  if (r.ok) return r;
+  return options ? fetch(url, options) : fetch(url);
+}

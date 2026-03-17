@@ -1,7 +1,9 @@
 load("config.js");
 
 function execute(url) {
-  var storyId = url.match(/\/(\d+)-/)[1];
+  var match = url.match(/\/(\d+)-/);
+  if (!match) return Response.error("URL không hợp lệ");
+  var storyId = match[1];
 
   var data = Http.get(API_V3 + "/stories/" + storyId)
     .params({
@@ -21,5 +23,5 @@ function execute(url) {
     return Response.success(list);
   }
 
-  return null;
+  return Response.error("Không thể tải mục lục");
 }

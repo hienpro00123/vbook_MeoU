@@ -2,8 +2,10 @@ function execute(url) {
   var response = fetch(url);
   if (response.ok) {
     var json = response.json();
-    var chapterData = json.data;
+    var chapterData = json && json.data;
+    if (!chapterData) return Response.error("Dữ liệu chương không hợp lệ");
     var chapterItem = chapterData.item;
+    if (!chapterItem || !chapterItem.chapter_image) return Response.error("Không có ảnh chương");
     var images = chapterItem.chapter_image;
     var prefix = chapterData.domain_cdn + "/" + chapterItem.chapter_path + "/";
 

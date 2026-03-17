@@ -14,5 +14,5 @@ function execute(key, page) {
     .string();
 
   if (data) return parseStories(JSON.parse(data));
-  return null;
+  return Response.error("Không thể tìm kiếm");
 }

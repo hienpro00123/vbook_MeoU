@@ -12,5 +12,5 @@ function execute(url, page) {
     .string();
 
   if (data) return parseStories(JSON.parse(data));
-  return null;
+  return Response.error("Không thể tải dữ liệu");
 }

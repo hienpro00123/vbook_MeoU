@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute() {
-  var response = fetch(BASE_URL + "/the-loai");
+  var response = fetchRetry(BASE_URL + "/the-loai");
   if (response.ok) {
     return Response.success(parseGenres(response.json().data.items));
   }

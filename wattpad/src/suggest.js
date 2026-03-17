@@ -12,7 +12,7 @@ function execute(input, page) {
       })
       .string();
     if (data) return parseStories(JSON.parse(data));
-    return null;
+    return Response.success([]);
   }
   var data = Http.get(API_V4 + "/search/stories")
     .params({
@@ -24,5 +24,5 @@ function execute(input, page) {
     })
     .string();
   if (data) return parseStories(JSON.parse(data));
-  return null;
+  return Response.success([]);
 }
