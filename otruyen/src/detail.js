@@ -3,7 +3,8 @@ load("config.js");
 function execute(url) {
   var response = fetchRetry(BASE_URL + "/truyen-tranh/" + extractSlug(url));
   if (response.ok) {
-    var json = response.json();
+    var json;
+    try { json = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     var data = json && json.data;
     if (!data || !data.item) return Response.error("Dữ liệu không hợp lệ");
     var item = data.item;

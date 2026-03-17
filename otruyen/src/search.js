@@ -9,7 +9,8 @@ function execute(key, page) {
   });
 
   if (response.ok) {
-    var json = response.json();
+    var json;
+    try { json = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     var jd = json && json.data;
     if (!jd) return Response.error("Dữ liệu không hợp lệ");
     var data = parseItems(jd.items, jd.APP_DOMAIN_CDN_IMAGE);

@@ -6,7 +6,8 @@ function execute(url, page) {
     var authorSlug = url.substring(7);
     var res = fetchRetry(BASE_URL + "/tac-gia/" + authorSlug + "?page=" + page);
     if (res.ok) {
-      var json = res.json();
+      var json;
+      try { json = res.json(); } catch (e) { return Response.success([]); }
       var jd = json && json.data;
       if (!jd) return Response.success([]);
       return Response.success(
@@ -18,7 +19,8 @@ function execute(url, page) {
   }
   var response = fetchRetry(BASE_URL + "/the-loai/" + url + "?page=" + page);
   if (response.ok) {
-    var json = response.json();
+    var json;
+    try { json = response.json(); } catch (e) { return Response.success([]); }
     var jd = json && json.data;
     if (!jd) return Response.success([]);
     return Response.success(parseItems(jd.items, jd.APP_DOMAIN_CDN_IMAGE));

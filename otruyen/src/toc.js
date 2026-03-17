@@ -3,7 +3,8 @@ load("config.js");
 function execute(url) {
   var response = fetchRetry(url);
   if (response.ok) {
-    var json = response.json();
+    var json;
+    try { json = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     var responseData = json.data;
     if (!responseData || !responseData.item) return Response.success([]);
 
