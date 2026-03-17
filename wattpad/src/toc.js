@@ -14,7 +14,7 @@ function execute(url) {
     var raw3 = fetchWattpad(API_V3 + "/stories/" + storyId, FIELDS);
     if (raw3) { try { data = JSON.parse(raw3); } catch (e) {} }
   }
-  if (!data || !data.parts || !data.parts.length) return Response.error("Không có chương nào");
+  if (!data || !data.parts || !data.parts.length) return Response.success([]); // truyện chưa có chương
 
   var list = [];
   data.parts.forEach(function (v) {

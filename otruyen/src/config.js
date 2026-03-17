@@ -29,8 +29,9 @@ function parseItems(items, cdnImage) {
   if (!items) return data;
   for (var i = 0; i < items.length; i++) {
     var item = items[i];
+    if (!item || !item.slug) continue; // bỏ qua item thiếu slug
     data.push({
-      name: item.name,
+      name: item.name || "(Không tên)",
       link: "/truyen-tranh/" + item.slug,
       host: HOST,
       cover: resolveThumb(item.thumb_url, cdnImage),

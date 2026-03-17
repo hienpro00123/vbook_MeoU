@@ -40,7 +40,7 @@ function execute(url) {
 
   return Response.success({
     name: data.title,
-    cover: data.cover,
+    cover: data.cover || "",
     host: BASE_URL,
     author: data.user ? data.user.name : "",
     description: data.description || "",
