@@ -1,11 +1,8 @@
 load("config.js");
 
 function execute(url) {
-  // Strip trailing offset and append excludedFields to reduce payload on mobile
+  // Fetch first page — pagination loop below handles manga >500 chapters
   var baseUrl = url.replace(/[&?]offset=\d+$/, "");
-  if (baseUrl.indexOf("excludedFields") === -1) {
-    baseUrl += "&excludedFields[]=attributes.createdAt&excludedFields[]=attributes.updatedAt&excludedFields[]=attributes.publishAt&excludedFields[]=attributes.readableAt&excludedFields[]=attributes.translatedLanguage&excludedFields[]=attributes.uploader";
-  }
   var response = fetchRetry(baseUrl);
   if (!response.ok) return Response.error("Không thể tải mục lục");
 

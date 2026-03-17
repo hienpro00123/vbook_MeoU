@@ -19,7 +19,7 @@ Bộ extension VBook đọc truyện tranh tiếng Việt.
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v19 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v20 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v21 | Comic | vi_VN |
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v12 | Novel | vi |
 
 ## Tính năng
