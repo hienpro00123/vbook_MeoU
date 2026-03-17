@@ -6,8 +6,8 @@ var PROXY_URL = "https://services.f-ck.me/v1/image/";
 var LANGUAGE = "vi";
 var CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive";
 var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&" + CONTENT_RATING;
-// List views không dùng tags/altTitles/links/description — loại bỏ để giảm payload ~40-60%
-var MANGA_LIST_PARAMS = MANGA_PARAMS + "&excludedFields[]=attributes.tags&excludedFields[]=attributes.altTitles&excludedFields[]=attributes.links&excludedFields[]=attributes.description";
+// List views không dùng tags/altTitles/links — loại bỏ để giảm payload ~30-40%
+var MANGA_LIST_PARAMS = MANGA_PARAMS + "&excludedFields[]=attributes.tags&excludedFields[]=attributes.altTitles&excludedFields[]=attributes.links";
 
 function toBase64(str) {
   var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

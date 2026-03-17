@@ -3,7 +3,7 @@ load("config.js");
 function execute(url, page) {
   var offset = parseInt(page) || 0;
 
-  var response = fetchRetry(url + "&limit=20&offset=" + offset);
+  var response = fetchRetry(url + "&limit=32&offset=" + offset);
   if (response.ok) {
     var data;
     try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
