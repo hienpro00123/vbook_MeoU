@@ -1,10 +1,11 @@
 load("config.js");
 
 function execute(url) {
-  var response = fetch(url);
+  var response = fetchRetry(url);
   if (!response.ok) return Response.error("Không thể tải mục lục");
 
-  var data = response.json();
+  var data;
+  try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
   var chapters = [];
   if (!data || !data.data || data.data.length === 0) return Response.success(chapters);
 
@@ -22,7 +23,8 @@ function execute(url) {
       nextResp = fetch(baseUrl + "&offset=" + fetched);
       if (!nextResp.ok) break;
     }
-    var nextData = nextResp.json();
+    var nextData;
+    try { nextData = nextResp.json(); } catch (e) { break; }
     if (!nextData || !nextData.data || nextData.data.length === 0) break;
     for (var n = 0; n < nextData.data.length; n++) {
       allData.push(nextData.data[n]);

@@ -5,7 +5,8 @@ function execute(url, page) {
 
   var response = fetchRetry(url + "&limit=20&offset=" + offset);
   if (response.ok) {
-    var data = response.json();
+    var data;
+    try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     return Response.success(parseMangaList(data), calcNextOffset(data));
   }
   return Response.error("Không thể tải dữ liệu");

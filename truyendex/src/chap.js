@@ -4,7 +4,8 @@ function execute(url) {
   var chapterId = extractUUID(url);
   var response = fetchRetry(API_URL + "/at-home/server/" + chapterId + "?forcePort443=true");
   if (response.ok) {
-    var data = response.json();
+    var data;
+    try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     if (!data || !data.chapter) return Response.error("Dữ liệu chương không hợp lệ");
     var hash = data.chapter.hash;
     if (!hash) return Response.error("Chương này không có ảnh trên MangaDex");

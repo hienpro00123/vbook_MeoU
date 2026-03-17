@@ -5,9 +5,11 @@ function execute(url) {
 
   var response = fetchRetry(API_URL + "/manga/" + mangaId + "?includes[]=artist&includes[]=author&includes[]=cover_art");
   if (response.ok) {
-    var data = response.json();
+    var data;
+    try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
     if (!data || !data.data) return Response.error("Dữ liệu truyện không hợp lệ");
     var attributes = data.data.attributes;
+    if (!attributes) return Response.error("Dữ liệu truyện không hợp lệ");
     var relationships = data.data.relationships;
 
     var cover = getCoverUrl(mangaId, relationships, "512");
