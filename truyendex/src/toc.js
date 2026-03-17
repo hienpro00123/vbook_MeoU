@@ -17,12 +17,8 @@ function execute(url) {
   var pageCount = 0;
   while (fetched < data.total && pageCount < maxPages) {
     pageCount++;
-    var nextResp = fetch(baseUrl + "&offset=" + fetched);
-    if (!nextResp.ok) {
-      // Retry 1 lần trước khi bỏ qua — xử lý packet drop tạm thời trên 5G
-      nextResp = fetch(baseUrl + "&offset=" + fetched);
-      if (!nextResp.ok) break;
-    }
+    var nextResp = fetchRetry(baseUrl + "&offset=" + fetched);
+    if (!nextResp.ok) break;
     var nextData;
     try { nextData = nextResp.json(); } catch (e) { break; }
     if (!nextData || !nextData.data || nextData.data.length === 0) break;
