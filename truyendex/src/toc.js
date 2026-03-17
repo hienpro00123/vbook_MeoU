@@ -1,6 +1,10 @@
 load("config.js");
 
 function execute(url) {
+  // Trim unused chapter fields to reduce payload size on mobile
+  if (url.indexOf("excludedFields") === -1) {
+    url += "&excludedFields[]=attributes.createdAt&excludedFields[]=attributes.updatedAt&excludedFields[]=attributes.publishAt&excludedFields[]=attributes.readableAt&excludedFields[]=attributes.translatedLanguage&excludedFields[]=attributes.uploader";
+  }
   var response = fetchRetry(url);
   if (!response.ok) return Response.error("Không thể tải mục lục");
 

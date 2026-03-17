@@ -5,12 +5,12 @@ function execute(url) {
   if (!match) return Response.error("URL không hợp lệ");
   var storyId = match[1];
 
-  var data = Http.get(API_V3 + "/stories/" + storyId)
+  var data = Http.get(API_V4 + "/stories/" + storyId)
     .params({
       fields: "id,parts(id,title,url)",
     })
     .string();
-  if (!data) data = Http.get(API_V3 + "/stories/" + storyId)
+  if (!data) data = Http.get(API_V4 + "/stories/" + storyId)
     .params({
       fields: "id,parts(id,title,url)",
     })
