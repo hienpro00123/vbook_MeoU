@@ -23,6 +23,7 @@ function execute(url) {
     var result = [];
     for (var i = 0; i < serverData.length; i++) {
       var chap = serverData[i];
+      if (!chap.chapter_api_data) continue; // bỏ qua chương thiếu URL
       var chapName = "Chương " + chap.chapter_name;
       if (chap.chapter_title && chap.chapter_title !== "") {
         chapName += ": " + chap.chapter_title;

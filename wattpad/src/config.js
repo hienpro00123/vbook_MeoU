@@ -18,15 +18,16 @@ function fetchWattpad(url, params) {
 }
 
 function parseStories(data) {
-  if (!data || !data.stories) return Response.error("Dữ liệu không hợp lệ");
+  if (!data || !data.stories || !data.stories.length) return Response.success([], null);
   var next = data.nextUrl ? data.nextUrl.match(/offset=(\d+)/) : null;
   next = next ? next[1] : null;
   var list = [];
   data.stories.forEach(function (v) {
+    if (!v.url) return; // bỏ qua truyện không có link
     list.push({
-      name: v.title,
+      name: v.title || "(Không có tên)",
       link: v.url,
-      cover: v.cover,
+      cover: v.cover || "",
       description: v.user ? v.user.name : "",
     });
   });
