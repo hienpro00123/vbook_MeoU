@@ -9,8 +9,10 @@ function execute(url) {
     if (!chapterData) return Response.error("Dữ liệu chương không hợp lệ");
     var chapterItem = chapterData.item;
     if (!chapterItem || !chapterItem.chapter_image) return Response.error("Không có ảnh chương");
+    if (!chapterItem.chapter_path) return Response.error("Không có đường dẫn ảnh chương");
     var images = chapterItem.chapter_image;
-    var prefix = chapterData.domain_cdn + "/" + chapterItem.chapter_path + "/";
+    var cdn = chapterData.domain_cdn || chapterData.domain_cdn_backup || "https://sv1.otruyencdn.com";
+    var prefix = cdn + "/" + chapterItem.chapter_path + "/";
 
     var data = [];
     for (var i = 0; i < images.length; i++) {
