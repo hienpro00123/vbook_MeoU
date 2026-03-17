@@ -4,7 +4,8 @@ function execute(url) {
   var response = fetchRetry(BASE_URL + "/truyen-tranh/" + extractSlug(url));
   if (response.ok) {
     var json = response.json();
-    var data = json.data;
+    var data = json && json.data;
+    if (!data || !data.item) return Response.error("Dữ liệu không hợp lệ");
     var item = data.item;
     var cdnImage = data.APP_DOMAIN_CDN_IMAGE;
 
