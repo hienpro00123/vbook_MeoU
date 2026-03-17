@@ -40,7 +40,7 @@ function execute(url) {
     if (item.type !== "chapter") continue;
     var attr = item.attributes;
     // Skip external chapters (MangaPlus etc.) — no images on MangaDex
-    if (attr.externalUrl && attr.pages === 0) continue;
+    if (attr.externalUrl && (attr.pages === 0 || !attr.pages)) continue;
     // Use chapter id for oneshots to avoid merging unrelated chapters
     var key = (!attr.volume && !attr.chapter) ? item.id : (attr.volume || "") + "-" + (attr.chapter || "");
     if (seen[key] !== undefined) {
