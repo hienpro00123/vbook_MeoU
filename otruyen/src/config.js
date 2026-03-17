@@ -90,5 +90,7 @@ function slugifyVN(str) {
 function fetchRetry(url, options) {
   var r = options ? fetch(url, options) : fetch(url);
   if (r.ok) return r;
+  // Không retry lỗi client (4xx) — chỉ retry lỗi mạng / server
+  if (r.status >= 400 && r.status < 500) return r;
   return options ? fetch(url, options) : fetch(url);
 }

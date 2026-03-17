@@ -9,7 +9,7 @@ function execute(input, page) {
       language: LANG_VI,
       fields: "stories(id,title,url,cover,user(name))",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
   if (!data) data = Http.get(API_V4 + "/search/stories")
@@ -18,7 +18,7 @@ function execute(input, page) {
       language: LANG_VI,
       fields: "stories(id,title,url,cover,user(name))",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
 

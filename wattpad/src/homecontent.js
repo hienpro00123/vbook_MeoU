@@ -7,14 +7,14 @@ function execute(url, page) {
     .params({
       fields: "stories(id,title,url,cover,user(name))",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
   if (!data) data = Http.get(url)
     .params({
       fields: "stories(id,title,url,cover,user(name))",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
 

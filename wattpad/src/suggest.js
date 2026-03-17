@@ -8,14 +8,14 @@ function execute(input, page) {
       .params({
         fields: "stories(id,title,url,cover,user(name)),nextUrl",
         offset: page,
-        limit: "10",
+        limit: "20",
       })
       .string();
     if (!data) data = Http.get(API_V3 + "/users/" + username + "/stories")
       .params({
         fields: "stories(id,title,url,cover,user(name)),nextUrl",
         offset: page,
-        limit: "10",
+        limit: "20",
       })
       .string();
     if (data) {
@@ -29,7 +29,7 @@ function execute(input, page) {
       language: LANG_VI,
       fields: "stories(id,title,url,cover,user(name)),nextUrl",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
   if (!data) data = Http.get(API_V4 + "/search/stories")
@@ -38,7 +38,7 @@ function execute(input, page) {
       language: LANG_VI,
       fields: "stories(id,title,url,cover,user(name)),nextUrl",
       offset: page,
-      limit: "10",
+      limit: "20",
     })
     .string();
   if (data) {
