@@ -7,14 +7,14 @@ var LANG_VI = "19"; // Tiếng Việt (xác nhận từ Wattpad language select)
 function parseStories(data) {
   if (!data || !data.stories) return Response.error("Dữ liệu không hợp lệ");
   var next = data.nextUrl ? data.nextUrl.match(/offset=(\d+)/) : null;
-  next = next ? next[1] : "";
+  next = next ? next[1] : null;
   var list = [];
   data.stories.forEach(function (v) {
     list.push({
       name: v.title,
       link: v.url,
       cover: v.cover,
-      description: v.user.name,
+      description: v.user ? v.user.name : "",
     });
   });
   return Response.success(list, next);
