@@ -1,11 +1,12 @@
 load("config.js");
 
 function execute(url) {
-  // Trim unused chapter fields to reduce payload size on mobile
-  if (url.indexOf("excludedFields") === -1) {
-    url += "&excludedFields[]=attributes.createdAt&excludedFields[]=attributes.updatedAt&excludedFields[]=attributes.publishAt&excludedFields[]=attributes.readableAt&excludedFields[]=attributes.translatedLanguage&excludedFields[]=attributes.uploader";
+  // Strip trailing offset and append excludedFields to reduce payload on mobile
+  var baseUrl = url.replace(/[&?]offset=\d+$/, "");
+  if (baseUrl.indexOf("excludedFields") === -1) {
+    baseUrl += "&excludedFields[]=attributes.createdAt&excludedFields[]=attributes.updatedAt&excludedFields[]=attributes.publishAt&excludedFields[]=attributes.readableAt&excludedFields[]=attributes.translatedLanguage&excludedFields[]=attributes.uploader";
   }
-  var response = fetchRetry(url);
+  var response = fetchRetry(baseUrl);
   if (!response.ok) return Response.error("Không thể tải mục lục");
 
   var data;
@@ -16,7 +17,6 @@ function execute(url) {
   // Fetch additional pages if manga has >500 chapters
   var allData = data.data;
   var fetched = data.offset + data.data.length;
-  var baseUrl = url.replace(/&offset=\d+$/, "");
   var maxPages = 20; // guard: tối đa 20 request (10000 chương), tránh loop vô hạn khi mạng kém
   var pageCount = 0;
   while (fetched < data.total && pageCount < maxPages) {
