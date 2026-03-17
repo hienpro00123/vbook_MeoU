@@ -23,7 +23,8 @@ function execute(url, page) {
     try { json = response.json(); } catch (e) { return Response.success([]); }
     var jd = json && json.data;
     if (!jd) return Response.success([]);
-    return Response.success(parseItems(jd.items, jd.APP_DOMAIN_CDN_IMAGE));
+    return Response.success(parseItems(jd.items, jd.APP_DOMAIN_CDN_IMAGE),
+      calcNextPage(jd.params && jd.params.pagination));
   }
   return Response.success([]);
 }

@@ -97,6 +97,7 @@ function parseTags(tags) {
   var genres = [];
   if (!tags) return genres;
   for (var i = 0; i < tags.length; i++) {
+    if (!tags[i].attributes) continue;
     genres.push({ title: getTitle(tags[i].attributes.name), input: tags[i].id, script: "genrecontent.js" });
   }
   return genres;
