@@ -1,18 +1,18 @@
 const BASE_URL = "https://metruyenchu.com.vn";
 const HOST = "https://metruyenchu.com.vn";
 
+// Cache headers — khởi tạo 1 lần, tái dùng mãi
+var FETCH_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
+    "Referer": BASE_URL + "/"
+};
+
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
-    var headers = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
-        "Referer": BASE_URL + "/"
-    };
-    var res = fetch(url, { headers: headers });
-    if (!res.ok) {
-        res = fetch(url, { headers: headers });
-    }
+    var res = fetch(url, { headers: FETCH_HEADERS });
+    if (!res.ok) res = fetch(url, { headers: FETCH_HEADERS });
     return res;
 }
 
@@ -66,12 +66,13 @@ function parseList(doc) {
                 cover = imgEl.attr("data-src") || imgEl.attr("data-original") || imgEl.attr("src") || "";
             }
         }
-        // Thể loại làm description
+        // Thể loại làm description — giới hạn tối đa 3 để tránh vong lặp thừa
         var desc = "";
         if (container) {
             var genreAs = container.select("a[href*='/the-loai/']");
             var gs = [];
-            for (var j = 0; j < genreAs.size(); j++) {
+            var gLimit = Math.min(genreAs.size(), 3);
+            for (var j = 0; j < gLimit; j++) {
                 var gt = genreAs.get(j).text().trim();
                 if (gt) gs.push(gt);
             }

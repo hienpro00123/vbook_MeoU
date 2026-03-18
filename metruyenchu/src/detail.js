@@ -19,15 +19,9 @@ function execute(url) {
         cover = coverEl.attr("src") || coverEl.attr("data-src") || coverEl.attr("data-original") || "";
     }
     if (!cover) {
-        // Fallback: tìm img có alt giống tên truyện
-        var imgs = doc.select("img[alt]");
-        for (var i = 0; i < imgs.size(); i++) {
-            var imgSrc = imgs.get(i).attr("src") || "";
-            if (imgSrc && imgSrc.indexOf("logo") < 0 && imgSrc.indexOf("icon") < 0 && imgSrc.indexOf("banner") < 0) {
-                cover = imgSrc;
-                break;
-            }
-        }
+        // Fallback: CSS selector 1 bước, không cần loop JS
+        var fallbackImg = doc.selectFirst("img[src]:not([src*='logo']):not([src*='icon']):not([src*='banner']):not([src*='ads'])");
+        if (fallbackImg) cover = fallbackImg.attr("src") || "";
     }
 
     // Tác giả
@@ -51,7 +45,7 @@ function execute(url) {
     for (var j = 0; j < genreAs.size(); j++) {
         var gTitle = genreAs.get(j).text().trim();
         var gHref = genreAs.get(j).attr("href");
-        var gSlug = gHref.replace(BASE_URL, "").replace(/^\/the-loai\//, "").replace(/\/$/, "");
+        var gSlug = gHref.replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
         if (gTitle && gSlug) {
             genres.push(gTitle);
             genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
