@@ -13,15 +13,18 @@ function execute(input, page) {
     var relSection = doc.selectFirst(".truyen-tuong-tu, .related-story, .story-related, .same-author");
     var container = relSection || doc;
 
+    // Slug của trang hiện tại — dùng để loại link trỹ cỡ
+    var storySlug = storyUrl.replace(BASE_URL, "");
+
     var links = container.select("h3 a[href], .story-name a[href], .book-title a[href]");
-    if (!links || links.size() === 0) {
+    if (links.size() === 0) {
         links = container.select("a[href*='/'][href$='-truyen'], a[href*='/'][href$='-story']");
     }
 
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href");
-        if (!href || href === "/" || /\/the-loai|\/danh-sach/.test(href) || href.indexOf(storyUrl) >= 0) continue;
+        if (!href || href === "/" || /\/the-loai|\/danh-sach/.test(href) || href === storySlug) continue;
         if (seen[href]) continue;
         seen[href] = true;
         var name = a.text().trim();

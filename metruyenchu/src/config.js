@@ -18,6 +18,8 @@ function resolveUrl(url) {
 // Cache regex
 var AUTHOR_RE = /Tác giả\s*[:\uff1a]?\s*/i;
 var STATUS_RE = /Hoàn|Full|DROP/i;
+var STATUS_CLS_RE = /status-full|badge-full|label-full|label-hoan/;
+var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|javascript/;
 
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
@@ -57,7 +59,7 @@ function parseList(doc) {
     for (var i = 0; i < titleLinks.size(); i++) {
         var a = titleLinks.get(i);
         var href = a.attr("href");
-        if (!href || href === "/" || /\/the-loai|\/danh-sach|\/tac-gia|javascript/.test(href)) continue;
+        if (!href || href === "/" || HREF_SKIP_RE.test(href)) continue;
         var name = a.text().trim();
         if (!name) continue;
         var container = a.parent(); // h3

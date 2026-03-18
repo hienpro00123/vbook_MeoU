@@ -56,7 +56,7 @@ function execute(url) {
     if (statusEl) {
         // Badge tên ngữ nghĩa (status-full …) → luôn completed; còn lại kiểm tra text
         var cls = statusEl.attr("class") || "";
-        if (/status-full|badge-full|label-full|label-hoan/.test(cls) || STATUS_RE.test(statusEl.text())) ongoing = false;
+        if (STATUS_CLS_RE.test(cls) || STATUS_RE.test(statusEl.text())) ongoing = false;
     }
 
     // detail info — build string trực tiếp, không cần mảng
