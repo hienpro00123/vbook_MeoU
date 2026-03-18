@@ -26,15 +26,12 @@ function execute(url) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
         if (!href || href === "#" || href.indexOf("javascript") >= 0) continue;
-        // Chuẩn hóa URL
+        // Dedup trên raw href trước — tránh build fullHref cho link trùng
+        if (seen[href]) continue;
+        seen[href] = true;
         var fullHref = href.indexOf("http") === 0 ? href : BASE_URL + href;
-        if (seen[fullHref]) continue;
-        seen[fullHref] = true;
         var chapName = a.text().trim();
-        if (!chapName) {
-            // Lấy tên từ title attribute hoặc aria-label
-            chapName = a.attr("title") || a.attr("aria-label") || "";
-        }
+        if (!chapName) chapName = a.attr("title") || a.attr("aria-label") || "";
         if (!chapName) continue;
         chapters.push({ name: chapName, url: fullHref, host: HOST });
     }

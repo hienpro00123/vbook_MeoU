@@ -8,11 +8,12 @@ var FETCH_HEADERS = {
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
     "Referer": BASE_URL + "/"
 };
+var FETCH_OPTIONS = { headers: FETCH_HEADERS }; // cache cả object options
 
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
-    var res = fetch(url, { headers: FETCH_HEADERS });
-    if (!res.ok) res = fetch(url, { headers: FETCH_HEADERS });
+    var res = fetch(url, FETCH_OPTIONS);
+    if (!res.ok) res = fetch(url, FETCH_OPTIONS);
     return res;
 }
 

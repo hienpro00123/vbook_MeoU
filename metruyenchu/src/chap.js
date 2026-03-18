@@ -15,16 +15,17 @@ function execute(url) {
     );
 
     if (!contentEl) {
-        // Fallback: tìm div có text content dài nhất (text() nhanh hơn html(), phản ánh đúng nội dung)
+        // Fallback: tìm div có text content dài nhất, dừng sớm khi đã đủ dài
         var divs = doc.select("div[class], div[id]");
         var best = null;
-        var bestLen = 200; // ngưỡng tối thiểu để tránh nhặt div rác
+        var bestLen = 200;
         for (var i = 0; i < divs.size(); i++) {
             var d = divs.get(i);
             var len = d.text().length;
             if (len > bestLen) {
                 bestLen = len;
                 best = d;
+                if (len > 5000) break; // đủ lớn → dừng ngay
             }
         }
         contentEl = best;
