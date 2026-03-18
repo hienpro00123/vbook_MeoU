@@ -15,14 +15,14 @@ function execute(url) {
     );
 
     if (!contentEl) {
-        // Fallback: tìm div có class/id chứa nhiều HTML nhất (bỏ qua wrapper toàn trang)
+        // Fallback: tìm div có text content dài nhất (text() nhanh hơn html(), phản ánh đúng nội dung)
         var divs = doc.select("div[class], div[id]");
         var best = null;
-        var bestLen = 0;
+        var bestLen = 200; // ngưỡng tối thiểu để tránh nhặt div rác
         for (var i = 0; i < divs.size(); i++) {
             var d = divs.get(i);
-            var len = d.html().length;
-            if (len > bestLen && len < 300000) {
+            var len = d.text().length;
+            if (len > bestLen) {
                 bestLen = len;
                 best = d;
             }

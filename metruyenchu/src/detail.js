@@ -58,12 +58,16 @@ function execute(url) {
         }
     }
 
-    // Trạng thái (ongoing / completed)
-    var fullText = doc.text();
-    var ongoing = fullText.indexOf("Hoàn thành") < 0 && fullText.indexOf("Hoàn Thành") < 0 && fullText.indexOf("Full") < 0;
-    // Kiểm tra thêm tag FULL trên trang
-    var fullBadge = doc.selectFirst(".status-full, .badge-full, span:contains(Hoàn thành), span:contains(Full)");
-    if (fullBadge) ongoing = false;
+    // Trạng thái — chỉ kiểm tra phần tử trạng thái, không scan toàn trang
+    var ongoing = true;
+    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status, [class*='trang-thai'], [class*='book-status']");
+    if (statusEl) {
+        var st = statusEl.text();
+        if (st.indexOf("Hoàn") >= 0 || st.indexOf("Full") >= 0 || st.indexOf("FULL") >= 0 || st.indexOf("DROP") >= 0) ongoing = false;
+    } else {
+        var fullBadge = doc.selectFirst(".status-full, .badge-full, .label-full, .label-hoan");
+        if (fullBadge) ongoing = false;
+    }
 
     // detail info (số chương, lượt xem)
     var detailParts = [];

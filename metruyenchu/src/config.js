@@ -33,8 +33,8 @@ function fetchSmart(url) {
         var doc = res.html();
         if (doc) {
             var body = doc.selectFirst("body");
-            // Nội dung đủ lớn → trang thật, không cần browser
-            if (body && body.text().length > 500) return doc;
+            // Dùng html().length (raw string, không traverse text tree)
+            if (body && body.html().length > 1500) return doc;
         }
     }
     return fetchBrowser(url);
