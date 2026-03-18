@@ -54,8 +54,7 @@ function execute(url) {
     var ongoing = true;
     var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status");
     if (statusEl) {
-        var st = statusEl.text();
-        if (st.indexOf("Hoàn") >= 0 || st.indexOf("Full") >= 0 || st.indexOf("FULL") >= 0 || st.indexOf("DROP") >= 0) ongoing = false;
+        if (STATUS_RE.test(statusEl.text())) ongoing = false;
     } else {
         var fullBadge = doc.selectFirst(".status-full, .badge-full, .label-full, .label-hoan");
         if (fullBadge) ongoing = false;

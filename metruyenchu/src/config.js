@@ -15,8 +15,9 @@ function resolveUrl(url) {
     return (url.indexOf("http") === 0 ? url : BASE_URL + url).replace(/\/$/, "");
 }
 
-// Cache regex author
-var AUTHOR_RE = /Tác giả\s*[::\u003a]?\s*/i;
+// Cache regex
+var AUTHOR_RE = /Tác giả\s*[:\uff1a]?\s*/i;
+var STATUS_RE = /Hoàn|Full|DROP/i;
 
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
@@ -71,13 +72,13 @@ function parseList(doc) {
         }
         // Thể loại làm description — giới hạn tối đa 3
         var genreAs = container.select("a[href*='/the-loai/']");
-        var gs = [];
+        var desc = "";
         var gLimit = Math.min(genreAs.size(), 3);
         for (var j = 0; j < gLimit; j++) {
             var gt = genreAs.get(j).text().trim();
-            if (gt) gs.push(gt);
+            if (gt) desc += (desc ? ", " : "") + gt;
         }
-        result.push({ name: name, link: href, host: HOST, cover: cover, description: gs.join(", ") });
+        result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
     }
     return result;
 }
