@@ -36,23 +36,19 @@ function execute(url) {
     var descEl = doc.selectFirst(".desc-text, .book-desc, .summary-content, .description, #story-detail-description, .truyen-tomtat");
     var description = descEl ? stripHtml(descEl.html()) : "";
 
-    // Thể loại
+    // Thể loại — chỉ build genreDetail, không cần mảng genres[] riêng
     var genreAs = doc.select("a[href*='/the-loai/']");
-    var genres = [];
     var genreDetail = [];
     for (var j = 0; j < genreAs.size(); j++) {
         var gEl = genreAs.get(j);
         var gTitle = gEl.text().trim();
         var gSlug = gEl.attr("href").replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
-        if (gTitle && gSlug) {
-            genres.push(gTitle);
-            genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
-        }
+        if (gTitle && gSlug) genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
     }
 
     // Trạng thái — chỉ kiểm tra phần tử trạng thái, không scan toàn trang
     var ongoing = true;
-    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status, [class*='trang-thai'], [class*='book-status']");
+    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status");
     if (statusEl) {
         var st = statusEl.text();
         if (st.indexOf("Hoàn") >= 0 || st.indexOf("Full") >= 0 || st.indexOf("FULL") >= 0 || st.indexOf("DROP") >= 0) ongoing = false;
@@ -61,12 +57,11 @@ function execute(url) {
         if (fullBadge) ongoing = false;
     }
 
-    // detail info (số chương, lượt xem)
-    var detailParts = [];
-    if (genres.length > 0) detailParts.push("Thể loại: " + genres.join(", "));
+    // detail info — build string trực tiếp, không cần mảng
+    var genreTitles = genreDetail.map(function(g) { return g.title; });
+    var detail = genreTitles.length > 0 ? "Thể loại: " + genreTitles.join(", ") : "";
     var chapCountEl = doc.selectFirst(".chapter-count, .so-chuong");
-    if (chapCountEl) detailParts.push("Số chương: " + chapCountEl.text().trim());
-    var detail = detailParts.join(" | ");
+    if (chapCountEl) detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
 
     // Suggests
     var suggests = [];

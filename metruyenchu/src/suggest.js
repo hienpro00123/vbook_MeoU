@@ -27,7 +27,8 @@ function execute(input, page) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name) continue;
-        var imgEl = a.parent() ? a.parent().selectFirst("img") : null;
+        var parent = a.parent();
+        var imgEl = parent ? parent.selectFirst("img") : null;
         var cover = imgEl ? (imgEl.attr("src") || imgEl.attr("data-src") || "") : "";
         result.push({ name: name, link: href, host: HOST, cover: cover });
     }
