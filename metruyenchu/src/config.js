@@ -5,6 +5,8 @@ const HOST = "https://metruyenchu.com.vn";
 function fetchRetry(url) {
     var headers = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
         "Referer": BASE_URL + "/"
     };
     var res = fetch(url, { headers: headers });
@@ -18,10 +20,24 @@ function fetchRetry(url) {
 function fetchBrowser(url) {
     var browser = Engine.newBrowser();
     try {
-        return browser.launch(url, 15000);
+        return browser.launch(url, 10000);
     } finally {
         browser.close();
     }
+}
+
+// Thử HTTP fetch nhanh trước, fallback sang browser nếu trang cần JS
+function fetchSmart(url) {
+    var res = fetchRetry(url);
+    if (res && res.ok) {
+        var doc = res.html();
+        if (doc) {
+            var body = doc.selectFirst("body");
+            // Nội dung đủ lớn → trang thật, không cần browser
+            if (body && body.text().length > 500) return doc;
+        }
+    }
+    return fetchBrowser(url);
 }
 
 // Parse danh sách truyện từ doc (list/genre/search pages)

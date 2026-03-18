@@ -3,7 +3,7 @@ load("config.js");
 function execute(url) {
     var chapUrl = url.indexOf("http") === 0 ? url : BASE_URL + url;
 
-    var doc = fetchBrowser(chapUrl);
+    var doc = fetchSmart(chapUrl);
     if (!doc) return Response.error("Không tải được nội dung chương");
 
     // Thử nhiều selector phổ biến cho nội dung chương truyện chữ
@@ -15,15 +15,15 @@ function execute(url) {
     );
 
     if (!contentEl) {
-        // Fallback: tìm div lớn nhất chứa nhiều text
-        var divs = doc.select("div");
+        // Fallback: tìm div có class/id chứa nhiều HTML nhất (bỏ qua wrapper toàn trang)
+        var divs = doc.select("div[class], div[id]");
         var best = null;
         var bestLen = 0;
         for (var i = 0; i < divs.size(); i++) {
             var d = divs.get(i);
-            var txt = d.ownText();
-            if (txt && txt.length > bestLen) {
-                bestLen = txt.length;
+            var len = d.html().length;
+            if (len > bestLen && len < 300000) {
+                bestLen = len;
                 best = d;
             }
         }

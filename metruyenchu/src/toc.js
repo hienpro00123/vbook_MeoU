@@ -4,7 +4,7 @@ function execute(url) {
     var storyUrl = url.indexOf("http") === 0 ? url : BASE_URL + url;
     storyUrl = storyUrl.replace(/\/$/, "");
 
-    var doc = fetchBrowser(storyUrl);
+    var doc = fetchSmart(storyUrl);
     if (!doc) return Response.error("Không tải được mục lục");
 
     var chapters = [];
