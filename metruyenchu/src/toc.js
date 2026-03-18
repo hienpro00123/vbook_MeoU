@@ -1,8 +1,7 @@
 load("config.js");
 
 function execute(url) {
-    var storyUrl = url.indexOf("http") === 0 ? url : BASE_URL + url;
-    storyUrl = storyUrl.replace(/\/$/, "");
+    var storyUrl = resolveUrl(url);
 
     var doc = fetchSmart(storyUrl);
     if (!doc) return Response.error("Không tải được mục lục");

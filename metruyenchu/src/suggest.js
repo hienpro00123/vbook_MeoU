@@ -1,8 +1,7 @@
 load("config.js");
 
 function execute(input, page) {
-    // input = storyUrl, page = null on first call
-    var storyUrl = input.indexOf("http") === 0 ? input : BASE_URL + input;
+    var storyUrl = resolveUrl(input);
 
     var doc = fetchSmart(storyUrl);
     if (!doc) return Response.success([], null);

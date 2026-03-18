@@ -10,6 +10,14 @@ var FETCH_HEADERS = {
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS }; // cache cả object options
 
+// Chuẩn hóa URL: thêm BASE_URL nếu cần, bỏ trailing slash
+function resolveUrl(url) {
+    return (url.indexOf("http") === 0 ? url : BASE_URL + url).replace(/\/$/, "");
+}
+
+// Cache regex author
+var AUTHOR_RE = /Tác giả\s*[::\u003a]?\s*/i;
+
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
@@ -32,8 +40,10 @@ function fetchSmart(url) {
     var res = fetchRetry(url);
     if (res && res.ok) {
         var doc = res.html();
-        // doc.html() bao gồm cả <head>+<body>, dùng ngưỡng cao hơn để loại trang rỗng/redirect
-        if (doc && doc.html().length > 3000) return doc;
+        if (doc) {
+            var raw = doc.html();
+            if (raw && raw.length > 3000) return doc;
+        }
     }
     return fetchBrowser(url);
 }

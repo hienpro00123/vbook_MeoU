@@ -1,9 +1,7 @@
 load("config.js");
 
 function execute(url) {
-    // Đảm bảo URL đầy đủ
-    var storyUrl = url.indexOf("http") === 0 ? url : BASE_URL + url;
-    storyUrl = storyUrl.replace(/\/$/, "");
+    var storyUrl = resolveUrl(url);
 
     var doc = fetchSmart(storyUrl);
     if (!doc) return Response.error("Không tải được trang truyện");
@@ -30,7 +28,7 @@ function execute(url) {
     if (!author) {
         var authorText = doc.selectFirst(".author, .tac-gia");
         if (authorText) {
-            author = authorText.text().replace(/Tác giả\s*[:：]?\s*/i, "").trim();
+            author = authorText.text().replace(AUTHOR_RE, "").trim();
         }
     }
 
@@ -43,9 +41,9 @@ function execute(url) {
     var genres = [];
     var genreDetail = [];
     for (var j = 0; j < genreAs.size(); j++) {
-        var gTitle = genreAs.get(j).text().trim();
-        var gHref = genreAs.get(j).attr("href");
-        var gSlug = gHref.replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
+        var gEl = genreAs.get(j);
+        var gTitle = gEl.text().trim();
+        var gSlug = gEl.attr("href").replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
         if (gTitle && gSlug) {
             genres.push(gTitle);
             genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });

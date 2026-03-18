@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute(url) {
-    var chapUrl = url.indexOf("http") === 0 ? url : BASE_URL + url;
+    var chapUrl = resolveUrl(url);
 
     var doc = fetchSmart(chapUrl);
     if (!doc) return Response.error("Không tải được nội dung chương");
