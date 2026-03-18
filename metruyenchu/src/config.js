@@ -31,11 +31,8 @@ function fetchSmart(url) {
     var res = fetchRetry(url);
     if (res && res.ok) {
         var doc = res.html();
-        if (doc) {
-            var body = doc.selectFirst("body");
-            // Dùng html().length (raw string, không traverse text tree)
-            if (body && body.html().length > 1500) return doc;
-        }
+        // doc.html() bao gồm cả <head>+<body>, dùng ngưỡng cao hơn để loại trang rỗng/redirect
+        if (doc && doc.html().length > 3000) return doc;
     }
     return fetchBrowser(url);
 }
@@ -48,11 +45,7 @@ function parseList(doc) {
     for (var i = 0; i < titleLinks.size(); i++) {
         var a = titleLinks.get(i);
         var href = a.attr("href");
-        if (!href || href === "/" ||
-            href.indexOf("/the-loai") >= 0 ||
-            href.indexOf("/danh-sach") >= 0 ||
-            href.indexOf("/tac-gia") >= 0 ||
-            href.indexOf("javascript") >= 0) continue;
+        if (!href || href === "/" || /\/the-loai|\/danh-sach|\/tac-gia|javascript/.test(href)) continue;
         var name = a.text().trim();
         if (!name) continue;
         // Container cha (thường là li hoặc div)
@@ -89,19 +82,14 @@ function getNextPage(doc, current) {
     return next ? String(current + 1) : null;
 }
 
-// Dọn HTML thành plain text
+// Dọn HTML thành plain text — 4 pass thay vì 11 để giảm copy string
+var ENTITY_MAP = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#039;": "'", "&nbsp;": " " };
 function stripHtml(html) {
     if (!html) return "";
-    return html.replace(/<br\s*\/?>/gi, "\n")
-               .replace(/<p[^>]*>/gi, "\n")
-               .replace(/<\/p>/gi, "")
-               .replace(/<[^>]*>/g, "")
-               .replace(/&amp;/g, "&")
-               .replace(/&lt;/g, "<")
-               .replace(/&gt;/g, ">")
-               .replace(/&quot;/g, '"')
-               .replace(/&#039;/g, "'")
-               .replace(/&nbsp;/g, " ")
-               .replace(/\n{3,}/g, "\n\n")
-               .trim();
+    return html
+        .replace(/<br\s*\/?>|<p[^>]*>|<\/p>/gi, "\n")  // block tags → newline (1 pass)
+        .replace(/<[^>]*>/g, "")                          // strip remaining tags (1 pass)
+        .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; }) // entities (1 pass)
+        .replace(/\n{3,}/g, "\n\n")                       // collapse blank lines (1 pass)
+        .trim();
 }
