@@ -20,6 +20,7 @@ var AUTHOR_RE = /Tác giả\s*[:\uff1a]?\s*/i;
 var STATUS_RE = /Hoàn|Full|DROP/i;
 var STATUS_CLS_RE = /status-full|badge-full|label-full|label-hoan/;
 var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|javascript/;
+var HASH_RE = /^#|javascript/; // dùng trong toc lọc href rác
 
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {

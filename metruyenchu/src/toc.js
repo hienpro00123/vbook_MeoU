@@ -24,11 +24,11 @@ function execute(url) {
     for (var i = 0; i < chapLinks.size(); i++) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
-        if (!href || /^#|javascript/.test(href)) continue;
-        // Dedup trên raw href trước — tránh build fullHref cho link trùng
+        if (!href || HASH_RE.test(href)) continue;
         if (seen[href]) continue;
         seen[href] = true;
-        var fullHref = href.indexOf("http") === 0 ? href : BASE_URL + href;
+        // charCodeAt(0) !== 47 ('/') → URL tuyệt đối (O(1) thay indexOf)
+        var fullHref = href.charCodeAt(0) !== 47 ? href : BASE_URL + href;
         var chapName = a.text().trim();
         if (!chapName) chapName = a.attr("title") || a.attr("aria-label") || "";
         if (!chapName) continue;

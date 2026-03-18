@@ -24,7 +24,7 @@ function execute(input, page) {
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href");
-        if (!href || href === "/" || /\/the-loai|\/danh-sach/.test(href) || href === storySlug) continue;
+        if (!href || href === "/" || HREF_SKIP_RE.test(href) || href === storySlug) continue;
         if (seen[href]) continue;
         seen[href] = true;
         var name = a.text().trim();
