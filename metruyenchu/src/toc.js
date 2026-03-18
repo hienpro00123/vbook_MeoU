@@ -14,7 +14,7 @@ function execute(url) {
         ".chapters a[href], #list-chapter a[href]"
     );
 
-    if (!chapLinks || chapLinks.size() === 0) {
+    if (chapLinks.size() === 0) {
         // Fallback: tìm tất cả link có pattern /{story}/chuong-
         var allLinks = doc.select("a[href*='chuong-'], a[href*='/chap-'], a[href*='/chapter-']");
         chapLinks = allLinks;
@@ -24,7 +24,7 @@ function execute(url) {
     for (var i = 0; i < chapLinks.size(); i++) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
-        if (!href || href === "#" || href.indexOf("javascript") >= 0) continue;
+        if (!href || /^#|javascript/.test(href)) continue;
         // Dedup trên raw href trước — tránh build fullHref cho link trùng
         if (seen[href]) continue;
         seen[href] = true;

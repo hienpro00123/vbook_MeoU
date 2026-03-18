@@ -50,14 +50,13 @@ function execute(url) {
         }
     }
 
-    // Trạng thái — chỉ kiểm tra phần tử trạng thái, không scan toàn trang
+    // Trạng thái — gom cả hai nhóm selector vào 1 query
     var ongoing = true;
-    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status");
+    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status, .status-full, .badge-full, .label-full, .label-hoan");
     if (statusEl) {
-        if (STATUS_RE.test(statusEl.text())) ongoing = false;
-    } else {
-        var fullBadge = doc.selectFirst(".status-full, .badge-full, .label-full, .label-hoan");
-        if (fullBadge) ongoing = false;
+        // Badge tên ngữ nghĩa (status-full …) → luôn completed; còn lại kiểm tra text
+        var cls = statusEl.attr("class") || "";
+        if (/status-full|badge-full|label-full|label-hoan/.test(cls) || STATUS_RE.test(statusEl.text())) ongoing = false;
     }
 
     // detail info — build string trực tiếp, không cần mảng
@@ -73,12 +72,12 @@ function execute(url) {
     }
 
     return Response.success({
-        name: name || "Không rõ tên",
-        cover: cover || "",
+        name: name || "Đang cập nhật",
+        cover: cover,
         host: HOST,
-        author: author || "",
-        description: description || "",
-        detail: detail || "",
+        author: author,
+        description: description,
+        detail: detail,
         ongoing: ongoing,
         genres: genreDetail,
         suggests: suggests,
