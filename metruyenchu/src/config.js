@@ -59,30 +59,25 @@ function parseList(doc) {
         if (!href || href === "/" || /\/the-loai|\/danh-sach|\/tac-gia|javascript/.test(href)) continue;
         var name = a.text().trim();
         if (!name) continue;
-        // Container cha (thường là li hoặc div)
         var container = a.parent(); // h3
-        if (container) container = container.parent(); // li or div
+        if (!container) { result.push({ name: name, link: href, host: HOST, cover: "", description: "" }); continue; }
+        container = container.parent(); // li or div
+        if (!container) { result.push({ name: name, link: href, host: HOST, cover: "", description: "" }); continue; }
         // Ảnh bìa
         var cover = "";
-        if (container) {
-            var imgEl = container.selectFirst("img[src], img[data-src], img[data-original]");
-            if (imgEl) {
-                cover = imgEl.attr("data-src") || imgEl.attr("data-original") || imgEl.attr("src") || "";
-            }
+        var imgEl = container.selectFirst("img[src], img[data-src], img[data-original]");
+        if (imgEl) {
+            cover = imgEl.attr("data-src") || imgEl.attr("data-original") || imgEl.attr("src") || "";
         }
-        // Thể loại làm description — giới hạn tối đa 3 để tránh vong lặp thừa
-        var desc = "";
-        if (container) {
-            var genreAs = container.select("a[href*='/the-loai/']");
-            var gs = [];
-            var gLimit = Math.min(genreAs.size(), 3);
-            for (var j = 0; j < gLimit; j++) {
-                var gt = genreAs.get(j).text().trim();
-                if (gt) gs.push(gt);
-            }
-            desc = gs.join(", ");
+        // Thể loại làm description — giới hạn tối đa 3
+        var genreAs = container.select("a[href*='/the-loai/']");
+        var gs = [];
+        var gLimit = Math.min(genreAs.size(), 3);
+        for (var j = 0; j < gLimit; j++) {
+            var gt = genreAs.get(j).text().trim();
+            if (gt) gs.push(gt);
         }
-        result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
+        result.push({ name: name, link: href, host: HOST, cover: cover, description: gs.join(", ") });
     }
     return result;
 }

@@ -39,11 +39,15 @@ function execute(url) {
     // Thể loại — chỉ build genreDetail, không cần mảng genres[] riêng
     var genreAs = doc.select("a[href*='/the-loai/']");
     var genreDetail = [];
+    var genreTitles = "";
     for (var j = 0; j < genreAs.size(); j++) {
         var gEl = genreAs.get(j);
         var gTitle = gEl.text().trim();
         var gSlug = gEl.attr("href").replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
-        if (gTitle && gSlug) genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
+        if (gTitle && gSlug) {
+            genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
+            genreTitles += (genreTitles ? ", " : "") + gTitle;
+        }
     }
 
     // Trạng thái — chỉ kiểm tra phần tử trạng thái, không scan toàn trang
@@ -58,8 +62,7 @@ function execute(url) {
     }
 
     // detail info — build string trực tiếp, không cần mảng
-    var genreTitles = genreDetail.map(function(g) { return g.title; });
-    var detail = genreTitles.length > 0 ? "Thể loại: " + genreTitles.join(", ") : "";
+    var detail = genreTitles ? "Thể loại: " + genreTitles : "";
     var chapCountEl = doc.selectFirst(".chapter-count, .so-chuong");
     if (chapCountEl) detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
 
@@ -78,7 +81,7 @@ function execute(url) {
         description: description || "",
         detail: detail || "",
         ongoing: ongoing,
-        genres: genreDetail.length > 0 ? genreDetail : [],
+        genres: genreDetail,
         suggests: suggests,
     });
 }
