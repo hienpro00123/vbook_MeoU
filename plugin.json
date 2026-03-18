@@ -39,6 +39,18 @@
       "description": "Đọc truyện tiếng Việt trên Wattpad",
       "type": "novel",
       "locale": "vi"
+    },
+    {
+      "name": "MeTruyenChu",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyenchu/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyenchu/plugin.json",
+      "version": 1,
+      "source": "https://metruyenchu.com.vn",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyenchu/icon.png",
+      "description": "MeTruyenChu - Đọc truyện chữ online miễn phí, không quảng cáo",
+      "type": "novel",
+      "locale": "vi_VN"
     }
   ]
 }

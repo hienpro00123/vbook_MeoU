@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "MeTruyenChu",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://metruyenchu.com.vn",
+    "regexp": "metruyenchu\\.com\\.vn",
+    "description": "MeTruyenChu - Đọc truyện chữ online miễn phí, không quảng cáo",
+    "locale": "vi_VN",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home.js",
+    "genre": "genre.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}

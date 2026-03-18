@@ -1,0 +1,90 @@
+const BASE_URL = "https://metruyenchu.com.vn";
+const HOST = "https://metruyenchu.com.vn";
+
+// Fetch với retry và User-Agent cho list page (không cần JS)
+function fetchRetry(url) {
+    var headers = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+        "Referer": BASE_URL + "/"
+    };
+    var res = fetch(url, { headers: headers });
+    if (!res.ok) {
+        res = fetch(url, { headers: headers });
+    }
+    return res;
+}
+
+// Fetch bằng browser (cho trang cần JS render như detail/chap)
+function fetchBrowser(url) {
+    var browser = Engine.newBrowser();
+    try {
+        return browser.launch(url, 15000);
+    } finally {
+        browser.close();
+    }
+}
+
+// Parse danh sách truyện từ doc (list/genre/search pages)
+function parseList(doc) {
+    var result = [];
+    // Chọn tất cả link trong H3 (tên truyện)
+    var titleLinks = doc.select("h3 a[href]");
+    for (var i = 0; i < titleLinks.size(); i++) {
+        var a = titleLinks.get(i);
+        var href = a.attr("href");
+        if (!href || href === "/" ||
+            href.indexOf("/the-loai") >= 0 ||
+            href.indexOf("/danh-sach") >= 0 ||
+            href.indexOf("/tac-gia") >= 0 ||
+            href.indexOf("javascript") >= 0) continue;
+        var name = a.text().trim();
+        if (!name) continue;
+        // Container cha (thường là li hoặc div)
+        var container = a.parent(); // h3
+        if (container) container = container.parent(); // li or div
+        // Ảnh bìa
+        var cover = "";
+        if (container) {
+            var imgEl = container.selectFirst("img[src], img[data-src], img[data-original]");
+            if (imgEl) {
+                cover = imgEl.attr("data-src") || imgEl.attr("data-original") || imgEl.attr("src") || "";
+            }
+        }
+        // Thể loại làm description
+        var desc = "";
+        if (container) {
+            var genreAs = container.select("a[href*='/the-loai/']");
+            var gs = [];
+            for (var j = 0; j < genreAs.size(); j++) {
+                var gt = genreAs.get(j).text().trim();
+                if (gt) gs.push(gt);
+            }
+            desc = gs.join(", ");
+        }
+        result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
+    }
+    return result;
+}
+
+// Kiểm tra trang tiếp theo theo pattern ?page=N
+function getNextPage(doc, current) {
+    var next = doc.selectFirst("a[href*='page=" + (current + 1) + "']");
+    return next ? String(current + 1) : null;
+}
+
+// Dọn HTML thành plain text
+function stripHtml(html) {
+    if (!html) return "";
+    return html.replace(/<br\s*\/?>/gi, "\n")
+               .replace(/<p[^>]*>/gi, "\n")
+               .replace(/<\/p>/gi, "")
+               .replace(/<[^>]*>/g, "")
+               .replace(/&amp;/g, "&")
+               .replace(/&lt;/g, "<")
+               .replace(/&gt;/g, ">")
+               .replace(/&quot;/g, '"')
+               .replace(/&#039;/g, "'")
+               .replace(/&nbsp;/g, " ")
+               .replace(/\n{3,}/g, "\n\n")
+               .trim();
+}
