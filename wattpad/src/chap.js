@@ -1,9 +1,8 @@
 load("config.js");
 
 function execute(url) {
-  var match = url.match(/wattpad\.com\/(\d+)-/) || url.match(/wattpad\.com\/(\d+)(?:[?#]|$)/);
-  if (!match) return Response.error("URL chương không hợp lệ");
-  var chapId = match[1];
+  var chapId = extractChapId(url);
+  if (!chapId) return Response.error("URL chương không hợp lệ");
   // apiv2/storytext là endpoint duy nhất trả về HTML nội dung chương (v4 yêu cầu auth)
   var html = fetchWattpad(APIV2 + "/storytext?id=" + chapId);
   if (html) return Response.success(html);

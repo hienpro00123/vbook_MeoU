@@ -1,9 +1,9 @@
 load("config.js");
 
 function execute(url) {
-  var match = url.match(/\/(\d+)-/) || url.match(/\/(\d+)(?:[?#]|$)/);
+  var match = extractStoryId(url);
   if (!match) return Response.error("URL không hợp lệ");
-  var storyId = match[1];
+  var storyId = match;
 
   var FIELDS = { fields: "id,parts(id,title,url)" };
   var raw = fetchWattpad(API_V4 + "/stories/" + storyId, FIELDS);
