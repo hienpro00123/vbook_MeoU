@@ -2,7 +2,7 @@
   "metadata": {
     "name": "TruyenDex",
     "author": "Meo",
-    "version": 21,
+    "version": 22,
     "source": "https://truyendex.cc/nettrom",
     "regexp": "truyendex\\.(cc|com)/nettrom/truyen-tranh/[a-f0-9\\-]+/?$",
     "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
@@ -17,7 +17,6 @@
     "page": "page.js",
     "toc": "toc.js",
     "chap": "chap.js",
-    "suggest": "suggest.js",
-    "comment": "comment.js"
+    "suggest": "suggest.js"
   }
 }
