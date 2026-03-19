@@ -56,8 +56,6 @@ function parseGenres(items) {
   return genres;
 }
 
-var _ENTITY = { amp: "&", lt: "<", gt: ">", quot: '"', "#039": "'", nbsp: " " };
-
 function stripHtml(html) {
   if (!html) return "";
   return html.replace(/<[^>]*>/g, "")
