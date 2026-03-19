@@ -18,11 +18,17 @@ function execute(url) {
 
     var genres = parseTags(attributes.tags);
 
-    var details = [];
+    var details = "";
     var altNames = getAltTitles(attributes.altTitles);
-    if (altNames) details.push("Tên khác: " + altNames);
-    if (attributes.status && STATUS_MAP[attributes.status]) details.push("Trạng thái: " + STATUS_MAP[attributes.status]);
-    if (attributes.year) details.push("Năm: " + attributes.year);
+    if (altNames) details = "Tên khác: " + altNames;
+    if (attributes.status && STATUS_MAP[attributes.status]) {
+      if (details) details += "\n";
+      details += "Trạng thái: " + STATUS_MAP[attributes.status];
+    }
+    if (attributes.year) {
+      if (details) details += "\n";
+      details += "Năm: " + attributes.year;
+    }
 
     var suggests = genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [];
     if (authorId) suggests.push({ title: "Truyện cùng tác giả", input: "author:" + authorId, script: "suggest.js" });
@@ -33,7 +39,7 @@ function execute(url) {
       host: BASE_URL,
       author: author,
       description: stripBBCode(getLocalized(attributes.description)),
-      detail: details.join("\n"),
+      detail: details,
       ongoing: attributes.status === "ongoing",
       genres: genres,
       suggests: suggests,

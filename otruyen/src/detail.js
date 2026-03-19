@@ -18,9 +18,12 @@ function execute(url) {
 
     var description = stripHtml(item.content);
 
-    var details = [];
-    if (originName) details.push("Tên khác: " + originName);
-    if (item.status && STATUS_MAP[item.status]) details.push("Trạng thái: " + STATUS_MAP[item.status]);
+    var details = "";
+    if (originName) details = "Tên khác: " + originName;
+    if (item.status && STATUS_MAP[item.status]) {
+      if (details) details += "\n";
+      details += "Trạng thái: " + STATUS_MAP[item.status];
+    }
 
     var suggests = genres.length > 0 ? [{ title: "Truyện cùng thể loại", input: genres[0].input, script: "suggest.js" }] : [];
     var authorSlug = (item.author && item.author.length > 0) ? slugifyVN(item.author[0]) : "";
@@ -32,7 +35,7 @@ function execute(url) {
       host: HOST,
       author: authorName,
       description: description,
-      detail: details.join("\n"),
+      detail: details,
       ongoing: item.status === "ongoing",
       genres: genres,
       suggests: suggests,

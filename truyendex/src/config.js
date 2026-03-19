@@ -64,8 +64,10 @@ function getRelName(relationships, type) {
 function getAuthor(relationships) { return getRelName(relationships, "author"); }
 function getArtist(relationships) { return getRelName(relationships, "artist"); }
 
+var UUID_RE = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i;
+
 function extractUUID(url) {
-  var match = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i.exec(url);
+  var match = UUID_RE.exec(url);
   return match ? match[1] : url;
 }
 
@@ -107,12 +109,15 @@ function parseTags(tags) {
 
 function getAltTitles(altTitles) {
   if (!altTitles || !altTitles.length) return "";
-  var names = [];
+  var result = "";
   for (var i = 0; i < altTitles.length; i++) {
     var keys = Object.keys(altTitles[i]);
-    if (keys.length > 0) names.push(altTitles[i][keys[0]]);
+    if (keys.length > 0) {
+      if (result) result += ", ";
+      result += altTitles[i][keys[0]];
+    }
   }
-  return names.join(", ");
+  return result;
 }
 
 function getAuthorFull(relationships) {
