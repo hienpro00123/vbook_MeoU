@@ -38,13 +38,7 @@ function execute(input, page) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name || name.length < 3) continue;
-        // Tìm ảnh bìa: lên 2 cấp (a→h3→container div) như parseList
-        var parent = a.parent();
-        var gp = parent ? parent.parent() : null;
-        var imgEl = gp ? gp.selectFirst("img[data-original], img[data-src], img[src]") : null;
-        if (!imgEl && parent) imgEl = parent.selectFirst("img");
-        var cover = imgEl ? (imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "") : "";
-        result.push({ name: name, link: href, host: HOST, cover: cover });
+        result.push({ name: name, link: href, host: HOST, cover: "" });
         if (result.length >= 20) break;
     }
 

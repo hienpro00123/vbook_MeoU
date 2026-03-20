@@ -66,25 +66,7 @@ function parseList(doc) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name) continue;
-        var container = a.parent(); // h3
-        if (!container) { result.push({ name: name, link: href, host: HOST, cover: "", description: "" }); continue; }
-        container = container.parent(); // li or div
-        if (!container) { result.push({ name: name, link: href, host: HOST, cover: "", description: "" }); continue; }
-        // Ảnh bìa
-        var cover = "";
-        var imgEl = container.selectFirst("img[src], img[data-src], img[data-original]");
-        if (imgEl) {
-            cover = imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "";
-        }
-        // Thể loại làm description — giới hạn tối đa 3
-        var genreAs = container.select("a[href*='/the-loai/']");
-        var desc = "";
-        var gLimit = Math.min(genreAs.size(), 3);
-        for (var j = 0; j < gLimit; j++) {
-            var gt = genreAs.get(j).text().trim();
-            if (gt) desc += (desc ? ", " : "") + gt;
-        }
-        result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
+        result.push({ name: name, link: href, host: HOST, cover: "", description: "" });
     }
     return result;
 }
