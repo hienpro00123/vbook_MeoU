@@ -66,7 +66,15 @@ function parseList(doc) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name) continue;
-        result.push({ name: name, link: href, host: HOST, cover: "", description: "" });
+        // Tìm ảnh bìa: tìm img trong <a> cùng href (link bọc ảnh cùng URL với link tên)
+        var coverImg = doc.selectFirst("a[href='" + href + "'] img");
+        if (!coverImg) {
+            var altHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : BASE_URL + href;
+            coverImg = doc.selectFirst("a[href='" + altHref + "'] img");
+        }
+        var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
+        result.push({ name: name, link: href, host: HOST, cover: cover, description: "" });
+        if (result.length >= 30) break;
     }
     return result;
 }

@@ -38,7 +38,14 @@ function execute(input, page) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name || name.length < 3) continue;
-        result.push({ name: name, link: href, host: HOST, cover: "" });
+        // Tìm ảnh bìa qua CSS href match
+        var coverImg = container.selectFirst("a[href='" + href + "'] img");
+        if (!coverImg) {
+            var altHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : BASE_URL + href;
+            coverImg = container.selectFirst("a[href='" + altHref + "'] img");
+        }
+        var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
+        result.push({ name: name, link: href, host: HOST, cover: cover });
         if (result.length >= 20) break;
     }
 
