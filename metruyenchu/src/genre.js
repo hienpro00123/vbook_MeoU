@@ -37,6 +37,8 @@ function execute() {
         { title: "Hiện đại",     input: "hien-dai",     script: "genrecontent.js" },
         { title: "Đồng Nhân",    input: "dong-nhan",    script: "genrecontent.js" },
         { title: "Cổ Đại",       input: "co-dai",       script: "genrecontent.js" },
+        { title: "Góc Nhìn Nam", input: "goc-nhin-nam", script: "genrecontent.js" },
+        { title: "Dã Sử",        input: "da-su",        script: "genrecontent.js" },
         { title: "Sắc",          input: "sac",          script: "genrecontent.js" },
         { title: "Khác",         input: "khac",         script: "genrecontent.js" },
     ]);

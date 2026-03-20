@@ -7,69 +7,91 @@ function execute(url) {
     if (!doc) return Response.error("Không tải được trang truyện");
 
     // Tên truyện
-    var nameEl = doc.selectFirst("h1.title-truyen, h1.book-title, h1.story-name, h1, .book-detail h1, .title h1");
+    var nameEl = doc.selectFirst(
+        "h1.title-truyen, h1.book-title, h1.story-name, h1.truyen-title, h1.story-title, " +
+        ".book-detail h1, .title h1, .info-book h1, .truyen-info h1, h1"
+    );
     var name = nameEl ? nameEl.text().trim() : "";
 
     // Ảnh bìa
-    var coverEl = doc.selectFirst(".book-img img, .cover-truyen img, .book-cover img, .img-truyen img, img.img-responsive[src*='truyenchu'], img.lazyload");
+    var coverEl = doc.selectFirst(
+        ".book-img img, .cover-truyen img, .book-cover img, .img-truyen img, " +
+        ".thumb img, .bia-truyen img, .poster img, .info-img img, " +
+        "img.img-responsive, img.lazyload[data-original], img.lazyload[data-src]"
+    );
     var cover = "";
     if (coverEl) {
-        cover = coverEl.attr("src") || coverEl.attr("data-src") || coverEl.attr("data-original") || "";
+        cover = coverEl.attr("data-original") || coverEl.attr("data-src") || coverEl.attr("src") || "";
     }
     if (!cover) {
-        // Fallback: CSS selector 1 bước, không cần loop JS
         var fallbackImg = doc.selectFirst("img[src]:not([src*='logo']):not([src*='icon']):not([src*='banner']):not([src*='ads'])");
         if (fallbackImg) cover = fallbackImg.attr("src") || "";
     }
 
     // Tác giả
-    var authorEl = doc.selectFirst("a[href*='/tac-gia/'], .author a, .book-author a");
+    var authorEl = doc.selectFirst("a[href*='/tac-gia/'], .author a, .book-author a, .tac-gia a, .info-author a, .writer a");
     var author = authorEl ? authorEl.text().trim() : "";
     if (!author) {
-        var authorText = doc.selectFirst(".author, .tac-gia");
-        if (authorText) {
-            author = authorText.text().replace(AUTHOR_RE, "").trim();
-        }
+        var authorText = doc.selectFirst(".author, .tac-gia, .book-author, .info-author");
+        if (authorText) author = authorText.text().replace(AUTHOR_RE, "").trim();
     }
 
     // Mô tả
-    var descEl = doc.selectFirst(".desc-text, .book-desc, .summary-content, .description, #story-detail-description, .truyen-tomtat");
+    var descEl = doc.selectFirst(
+        ".desc-text, .book-desc, .summary-content, .description, " +
+        "#story-detail-description, .truyen-tomtat, .tom-tat, .mo-ta, " +
+        ".story-synopsis, .synopsis, .info-desc, .box-desc, .detail-desc"
+    );
     var description = descEl ? stripHtml(descEl.html()) : "";
 
-    // Thể loại — chỉ build genreDetail, không cần mảng genres[] riêng
-    var genreAs = doc.select("a[href*='/the-loai/']");
+    // Thể loại — ưu tiên tìm trong info section, nếu không có thì lấy toàn trang (giới hạn 8)
+    var infoSection = doc.selectFirst(
+        ".book-detail, .info-book, .book-info, .story-info, .truyen-info, " +
+        ".detail-info, .info-story, .book-container, .truyen-detail"
+    );
+    var genreAs = infoSection
+        ? infoSection.select("a[href*='/the-loai/']")
+        : doc.select("a[href*='/the-loai/']");
     var genreDetail = [];
     var genreTitles = "";
-    for (var j = 0; j < genreAs.size(); j++) {
+    var seenGenre = {};
+    var gMax = Math.min(genreAs.size(), infoSection ? 20 : 8); // giới hạn nếu không có container
+    for (var j = 0; j < gMax; j++) {
         var gEl = genreAs.get(j);
         var gTitle = gEl.text().trim();
-        var gSlug = gEl.attr("href").replace(/^.*\/the-loai\/|\/$|\?.*$/g, "");
-        if (gTitle && gSlug) {
+        var gHref = gEl.attr("href") || "";
+        var gSlug = gHref.replace(/^.*\/the-loai\//, "").replace(/[\/\?].*$/, "");
+        if (gTitle && gSlug && !seenGenre[gSlug]) {
+            seenGenre[gSlug] = true;
             genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
             genreTitles += (genreTitles ? ", " : "") + gTitle;
         }
     }
 
-    // Trạng thái — gom cả hai nhóm selector vào 1 query
+    // Trạng thái
     var ongoing = true;
-    var statusEl = doc.selectFirst(".trang-thai, .book-status, .status-label, .badge-status, .status-full, .badge-full, .label-full, .label-hoan");
+    var statusEl = doc.selectFirst(
+        ".trang-thai, .book-status, .status-label, .badge-status, " +
+        ".status-full, .badge-full, .label-full, .label-hoan, " +
+        ".complete, .finished, .truyen-full"
+    );
     if (statusEl) {
-        // Badge tên ngữ nghĩa (status-full …) → luôn completed; còn lại kiểm tra text
         var cls = statusEl.attr("class") || "";
         if (STATUS_CLS_RE.test(cls) || STATUS_RE.test(statusEl.text())) ongoing = false;
     }
+    // Kiểm tra tên truyện có "(Trọn Bộ)" / "FULL" không
+    if (ongoing && STATUS_RE.test(name)) ongoing = false;
 
     // detail info — build string trực tiếp, không cần mảng
     var detail = genreTitles ? "Thể loại: " + genreTitles : "";
-    var chapCountEl = doc.selectFirst(".chapter-count, .so-chuong");
+    var chapCountEl = doc.selectFirst(
+        ".chapter-count, .so-chuong, .total-chapter, .num-chapter, " +
+        "[class*='chapter-count'], [class*='so-chuong']"
+    );
     if (chapCountEl) detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
 
-    // Suggests
-    var suggests = [];
-    var suggestEl = doc.selectFirst(".truyen-tuong-tu, .related-story, .story-related");
-    if (suggestEl) {
-        suggests.push({ title: "Truyện tương tự", input: storyUrl, script: "suggest.js" });
-    }
+    // Suggests — luôn thêm suggest (trang truyện có truyện tương tự dưới dạng sidebar)
+    var suggests = [{ title: "Truyện tương tự", input: storyUrl, script: "suggest.js" }];
 
     return Response.success({
         name: name || "Đang cập nhật",

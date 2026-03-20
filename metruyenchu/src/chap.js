@@ -11,7 +11,8 @@ function execute(url) {
         "#chapter-content, .chapter-content, .content-chapter, " +
         "#truyen-content, .truyen-content, .reading-content, " +
         ".content-text, .text-content, #noi-dung, .noi-dung, " +
-        "div.content"
+        ".box-reading, .box-chapter, .container-reading, " +
+        ".story-content, .text-story, div.content"
     );
 
     if (!contentEl) {

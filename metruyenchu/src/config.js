@@ -17,9 +17,9 @@ function resolveUrl(url) {
 
 // Cache regex
 var AUTHOR_RE = /Tác giả\s*[:\uff1a]?\s*/i;
-var STATUS_RE = /Hoàn|Full|DROP/i;
+var STATUS_RE = /Hoàn|Full|DROP|Trọn Bộ/i;
 var STATUS_CLS_RE = /status-full|badge-full|label-full|label-hoan/;
-var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|javascript/;
+var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|\/chuong-|javascript/;
 var HASH_RE = /^#|javascript/; // dùng trong toc lọc href rác
 
 // Fetch với retry và User-Agent cho list page (không cần JS)
@@ -55,12 +55,15 @@ function fetchSmart(url) {
 // Parse danh sách truyện từ doc (list/genre/search pages)
 function parseList(doc) {
     var result = [];
+    var seen = {};
     // Chọn tất cả link trong H3 (tên truyện)
     var titleLinks = doc.select("h3 a[href]");
     for (var i = 0; i < titleLinks.size(); i++) {
         var a = titleLinks.get(i);
         var href = a.attr("href");
         if (!href || href === "/" || HREF_SKIP_RE.test(href)) continue;
+        if (seen[href]) continue;
+        seen[href] = true;
         var name = a.text().trim();
         if (!name) continue;
         var container = a.parent(); // h3
@@ -71,7 +74,7 @@ function parseList(doc) {
         var cover = "";
         var imgEl = container.selectFirst("img[src], img[data-src], img[data-original]");
         if (imgEl) {
-            cover = imgEl.attr("data-src") || imgEl.attr("data-original") || imgEl.attr("src") || "";
+            cover = imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "";
         }
         // Thể loại làm description — giới hạn tối đa 3
         var genreAs = container.select("a[href*='/the-loai/']");
@@ -86,14 +89,43 @@ function parseList(doc) {
     return result;
 }
 
-// Kiểm tra trang tiếp theo theo pattern ?page=N
+// Kiểm tra trang tiếp theo — hỗ trợ cả href=?page=N và JS-pagination
+var NEXT_PAGE_RE = /[❭›>]|sau|next/i;
 function getNextPage(doc, current) {
+    // Cách 1: link href trực tiếp
     var next = doc.selectFirst("a[href*='page=" + (current + 1) + "']");
-    return next ? String(current + 1) : null;
+    if (next) return String(current + 1);
+
+    var pager = doc.selectFirst(
+        ".pagination, .pager, .page-nav, .phan-trang, " +
+        "[class*='pagination'], [class*='pager'], ul.pager, nav.pagination"
+    );
+    if (!pager) return null;
+
+    // Quét số trang trong pager
+    var pageEls = pager.select("a, span, li, button");
+    var maxNum = 0;
+    var hasCurrentNum = false;
+    for (var pi = 0; pi < pageEls.size(); pi++) {
+        var t = parseInt(pageEls.get(pi).text().trim(), 10);
+        if (t > 0) {
+            if (t > maxNum) maxNum = t;
+            if (t === current) hasCurrentNum = true;
+        }
+    }
+
+    // current không có trong pager (server redirect về trang 1) → dừng
+    if (!hasCurrentNum && current > 1) return null;
+    // Có số trang lớn hơn current → còn trang tiếp
+    if (maxNum > current) return String(current + 1);
+    // Có nút ❭ và current trong pager → còn trang tiếp
+    if (hasCurrentNum && NEXT_PAGE_RE.test(pager.text())) return String(current + 1);
+
+    return null;
 }
 
 // Dọn HTML thành plain text — 4 pass thay vì 11 để giảm copy string
-var ENTITY_MAP = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#039;": "'", "&nbsp;": " " };
+var ENTITY_MAP = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#039;": "'", "&nbsp;": " ", "&#160;": " " };
 function stripHtml(html) {
     if (!html) return "";
     return html
