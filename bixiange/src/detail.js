@@ -18,7 +18,7 @@ var GENRE_MAP = {
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
-    var doc = fetchBrowser(storyUrl);
+    var doc = fetchBrowser(storyUrl, 7000);
     if (!doc) return Response.error("Lỗi tải trang truyện");
 
     // --- Tên truyện ---

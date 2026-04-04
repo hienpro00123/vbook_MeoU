@@ -6,7 +6,7 @@ function execute(url) {
     if (!m) return Response.success([]);
     var category = m[1];
     var fetchUrl = paginateUrl(category, 1);
-    var doc = fetchBrowser(fetchUrl);
+    var doc = fetchBrowserFast(fetchUrl);
     if (!doc) return Response.success([]);
     var items = parseList(doc);
     return Response.success(items || []);

@@ -52,11 +52,23 @@ function fetchRetry(url) {
     return res;
 }
 
-// Fetch bằng browser (cho trang cần JS render)
-function fetchBrowser(url) {
+// Fetch bằng browser (cho trang cần JS render) — GBK encoding
+// timeout: ms, mặc định 10000
+function fetchBrowser(url, timeout) {
+    var t = timeout || 10000;
     var browser = Engine.newBrowser();
     try {
-        return browser.launch(url, 10000);
+        return browser.launch(url, t);
+    } finally {
+        browser.close();
+    }
+}
+
+// Fetch browser nhanh — dùng cho trang list (ít JS, timeout ngắn hơn)
+function fetchBrowserFast(url) {
+    var browser = Engine.newBrowser();
+    try {
+        return browser.launch(url, 5000);
     } finally {
         browser.close();
     }

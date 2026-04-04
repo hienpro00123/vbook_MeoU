@@ -3,7 +3,7 @@ load("config.js");
 function execute(url, page) {
     var p = page ? parseInt(page) : 1;
     var fetchUrl = paginateUrl(url, p);
-    var doc = fetchBrowser(fetchUrl);
+    var doc = fetchBrowserFast(fetchUrl);
     if (!doc) return Response.error("Lỗi tải thể loại: " + url);
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);

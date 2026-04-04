@@ -5,8 +5,8 @@ function execute(key, page) {
     // fetchBrowser tu xu ly GBK encoding (fetch POST bi mojibake)
     var searchUrl = BASE_URL + "/search/?keyword=" + encodeURIComponent(key);
     if (p > 1) searchUrl += "&page=" + p;
-    var doc = fetchBrowser(searchUrl);
-    if (!doc) return Response.error("Loi tim kiem");
+    var doc = fetchBrowserFast(searchUrl);
+    if (!doc) return Response.error("Lỗi tìm kiếm");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
     var next = getNextPage(doc, p);

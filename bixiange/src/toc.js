@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
-    var doc = fetchBrowser(storyUrl);
+    var doc = fetchBrowser(storyUrl, 7000);
     if (!doc) return Response.error("Lỗi tải mục lục");
 
     // Trích path từ URL để filter chapter links chính xác
