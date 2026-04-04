@@ -2,10 +2,14 @@ load("config.js");
 
 function execute(key, page) {
     var p = page ? parseInt(page) : 1;
-    var fetchUrl = BASE_URL + "/search/?keyword=" + encodeURIComponent(key);
-    if (p > 1) fetchUrl += "&page=" + p;
-    var res = fetchRetry(fetchUrl);
-    if (!res.ok) return Response.error("Lỗi tìm kiếm");
+    var body = "keyword=" + encodeURIComponent(key) + "&kwtype=0&fromtime=0000-00-00&totime=0000-00-00&minprice=0&maxprice=0";
+    if (p > 1) body += "&page=" + p;
+    var res = fetch(BASE_URL + "/search/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body
+    });
+    if (!res || !res.ok) return Response.error("Lỗi tìm kiếm");
     var doc = res.html();
     if (!doc) return Response.error("Lỗi tìm kiếm");
     var items = parseList(doc);
