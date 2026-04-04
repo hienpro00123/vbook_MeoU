@@ -14,13 +14,25 @@ Bộ extension VBook đọc truyện tranh tiếng Việt.
 1. Tải file `plugin.zip` trong thư mục tương ứng
 2. Import vào VBook app
 
+## Cập nhật Extension
+
+Sau khi có phiên bản mới được push lên GitHub:
+1. Mở VBook app → vào phần **Extensions**
+2. Tìm extension muốn cập nhật → nhấn **Kiểm tra cập nhật** (hoặc pull-to-refresh)
+3. Nếu có bản mới → nút **Cập nhật** sẽ xuất hiện → nhấn để tải về
+
+> ⚠️ App **không tự động push thông báo** — user cần vào trang Extensions để kiểm tra.
+
+> ⚠️ GitHub CDN có thể cache file cũ đến **5 phút** sau khi push. Nếu không thấy bản mới, chờ 5 phút rồi thử lại.
+
 ## Extensions
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| OTruyen | [otruyen.cc](https://otruyen.cc) | v19 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v21 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v12 | Novel | vi |
+| OTruyen | [otruyen.cc](https://otruyen.cc) | v21 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v23 | Comic | vi_VN |
+| Wattpad | [wattpad.com](https://www.wattpad.com) | v15 | Novel | vi |
+| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v6 | Novel | vi_VN |
 
 ## Tính năng
 
@@ -52,6 +64,15 @@ Bộ extension VBook đọc truyện tranh tiếng Việt.
 - **Truyện cùng thể loại**: Gợi ý theo tag đầu tiên
 - **Truyện cùng tác giả**: Gợi ý toàn bộ truyện của tác giả
 - **Mục lục**: Danh sách chương
+- **Đọc truyện**: Nội dung chương dạng văn bản
+
+### MeTruyenChu
+- **Trang chủ**: Truyện Hot, Mới cập nhật (có ảnh bìa), Hoàn thành
+- **Thể loại**: Danh sách thể loại đầy đủ
+- **Tìm kiếm**: Tìm kiếm theo từ khóa
+- **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, số chương, trạng thái
+- **Truyện tương tự**: Gợi ý truyện liên quan
+- **Mục lục**: Danh sách chương, hỗ trợ phân trang AJAX
 - **Đọc truyện**: Nội dung chương dạng văn bản
 
 ## Cấu trúc
@@ -99,5 +120,19 @@ wattpad/
     ├── search.js       # Tìm kiếm tiếng Việt
     ├── suggest.js      # Truyện cùng thể loại / cùng tác giả
     ├── toc.js          # Mục lục
+    └── chap.js         # Nội dung chương
+
+metruyenchu/
+├── icon.png, plugin.json, plugin.zip
+└── src/
+    ├── config.js       # Hằng số + helpers (selFirst, fetchRetry, parseList...)
+    ├── home.js         # Trang chủ (3 tab: Truyện Hot, Mới cập nhật, Hoàn thành)
+    ├── homecontent.js  # Nội dung trang chủ (fetch ảnh bìa từ detail page)
+    ├── genre.js        # Danh sách thể loại
+    ├── genrecontent.js # Truyện theo thể loại
+    ├── detail.js       # Chi tiết truyện
+    ├── search.js       # Tìm kiếm
+    ├── suggest.js      # Truyện tương tự
+    ├── toc.js          # Mục lục (hỗ trợ pagination AJAX)
     └── chap.js         # Nội dung chương
 ```
