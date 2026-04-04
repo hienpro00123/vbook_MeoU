@@ -37,11 +37,11 @@ function buildUrl(base, params) {
   return qs.length > 0 ? base + "?" + qs.join("&") : base;
 }
 
-// Fetch JSON từ Wattpad API với retry 1 lần
+// Fetch JSON từ Wattpad API với retry 1 lần (bỏ qua 4xx — không retry lỗi client)
 function fetchWattpadJson(url, params) {
   var fullUrl = buildUrl(url, params);
   var res = fetch(fullUrl, FETCH_OPTIONS);
-  if (!res || !res.ok) res = fetch(fullUrl, FETCH_OPTIONS);
+  if (res && !res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(fullUrl, FETCH_OPTIONS);
   if (!res || !res.ok) return null;
   try { return res.json(); } catch (e) { return null; }
 }
@@ -49,7 +49,7 @@ function fetchWattpadJson(url, params) {
 // Fetch nội dung chương HTML từ Wattpad (apiv2/storytext)
 function fetchWattpadHtml(url) {
   var res = fetch(url, FETCH_OPTIONS);
-  if (!res || !res.ok) res = fetch(url, FETCH_OPTIONS);
+  if (res && !res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
   if (!res || !res.ok) return null;
   try {
     var doc = res.html();

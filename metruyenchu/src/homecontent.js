@@ -14,7 +14,8 @@ function execute(url, page) {
         // Homepage dùng div.itemupdate (khác cấu trúc div.item ở genre/danh-sach)
         var cards = doc.select("div.itemupdate");
         var result = [];
-        for (var i = 0; i < cards.size(); i++) {
+        var maxItems = Math.min(cards.size(), 10); // giới hạn 10 — tránh 25 request tuần tự
+        for (var i = 0; i < maxItems; i++) {
             var card = cards.get(i);
             var titleA = selFirst(card, ".iname h3 a[href]");
             if (!titleA) continue;

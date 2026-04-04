@@ -28,10 +28,10 @@ function selFirst(el, css) {
     return r.size() > 0 ? r.get(0) : null;
 }
 
-// Fetch với retry và User-Agent cho list page (không cần JS)
+// Fetch với retry — bỏ qua 4xx (không retry lỗi client)
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
-    if (!res.ok) res = fetch(url, FETCH_OPTIONS);
+    if (!res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
     return res;
 }
 
@@ -88,6 +88,21 @@ function parseList(doc) {
     }
     // Fallback: duyệt h3 a[href] (trang không có div.item)
     if (result.length === 0) {
+        // Build cover map O(n) một lần — tránh O(n²) selFirst per link
+        var coverMap = {};
+        var aImgs = doc.select("a[href]:has(img)");
+        for (var ci = 0; ci < aImgs.size(); ci++) {
+            var ael = aImgs.get(ci);
+            var ah = ael.attr("href") || "";
+            if (!ah) continue;
+            var normH = ah.indexOf("http") === 0 ? ah.replace(BASE_URL, "") : ah;
+            if (coverMap[normH]) continue;
+            var aimg = selFirst(ael, "img");
+            if (!aimg) continue;
+            var asrc = aimg.attr("data-original") || aimg.attr("data-src") || aimg.attr("src") || "";
+            if (asrc && asrc.charAt(0) === 47) asrc = BASE_URL + asrc;
+            if (asrc) coverMap[normH] = asrc;
+        }
         var titleLinks = doc.select("h3 a[href]");
         for (var j = 0; j < titleLinks.size(); j++) {
             var a = titleLinks.get(j);
@@ -97,13 +112,8 @@ function parseList(doc) {
             seen[href2] = true;
             var name2 = a.text().trim();
             if (!name2) continue;
-            var coverImg2 = selFirst(doc, "a[href='" + href2 + "'] img");
-            if (!coverImg2) {
-                var altHref = href2.indexOf("http") === 0 ? href2.replace(BASE_URL, "") : BASE_URL + href2;
-                coverImg2 = selFirst(doc, "a[href='" + altHref + "'] img");
-            }
-            var cover2 = coverImg2 ? (coverImg2.attr("data-original") || coverImg2.attr("data-src") || coverImg2.attr("src") || "") : "";
-            if (cover2 && cover2.charAt(0) === 47) cover2 = BASE_URL + cover2;
+            var normHref2 = href2.indexOf("http") === 0 ? href2.replace(BASE_URL, "") : href2;
+            var cover2 = coverMap[normHref2] || "";
             result.push({ name: name2, link: href2, host: HOST, cover: cover2, description: "" });
             if (result.length >= 30) break;
         }

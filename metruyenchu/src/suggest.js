@@ -29,6 +29,22 @@ function execute(input, page) {
         links = container.select("a[href]");
     }
 
+    // Build cover map O(n) một lần — tránh O(n²) selFirst per link
+    var coverMap = {};
+    var aImgs = container.select("a[href]:has(img)");
+    for (var ci = 0; ci < aImgs.size(); ci++) {
+        var ael = aImgs.get(ci);
+        var ah = ael.attr("href") || "";
+        if (!ah) continue;
+        var normH = ah.indexOf("http") === 0 ? ah.replace(BASE_URL, "") : ah;
+        if (coverMap[normH]) continue;
+        var aimg = selFirst(ael, "img");
+        if (!aimg) continue;
+        var asrc = aimg.attr("data-original") || aimg.attr("data-src") || aimg.attr("src") || "";
+        if (asrc && asrc.charAt(0) === 47) asrc = BASE_URL + asrc;
+        if (asrc) coverMap[normH] = asrc;
+    }
+
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href");
@@ -41,13 +57,8 @@ function execute(input, page) {
         seen[href] = true;
         var name = a.text().trim();
         if (!name || name.length < 3) continue;
-        // Tìm ảnh bìa qua CSS href match
-        var coverImg = selFirst(container, "a[href='" + href + "'] img");
-        if (!coverImg) {
-            var altHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : BASE_URL + href;
-            coverImg = selFirst(container, "a[href='" + altHref + "'] img");
-        }
-        var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
+        var normHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : href;
+        var cover = coverMap[normHref] || "";
         if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
         result.push({ name: name, link: href, host: HOST, cover: cover });
         if (result.length >= 20) break;
