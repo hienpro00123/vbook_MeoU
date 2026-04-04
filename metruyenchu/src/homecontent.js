@@ -23,9 +23,18 @@ function execute(url, page) {
             if (href.charAt(0) !== "/") href = "/" + href;
             var name = titleA.text().trim();
             if (!name) continue;
-            var coverImg = selFirst(card, "img");
-            var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
-            if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
+            var cover = "";
+            var detailRes = fetchRetry(BASE_URL + href);
+            if (detailRes && detailRes.ok) {
+                var detailDoc = detailRes.html();
+                if (detailDoc) {
+                    var imgEl = selFirst(detailDoc, ".book-info-pic img");
+                    if (imgEl) {
+                        cover = imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "";
+                        if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
+                    }
+                }
+            }
             result.push({ name: name, link: href, host: HOST, cover: cover, description: "" });
         }
         if (!result || result.length === 0) return Response.success([], null);
