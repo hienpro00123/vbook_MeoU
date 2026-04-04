@@ -30,9 +30,9 @@ Sau khi có phiên bản mới được push lên GitHub:
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v21 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v23 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v15 | Novel | vi |
-| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v6 | Novel | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v24 | Comic | vi_VN |
+| Wattpad | [wattpad.com](https://www.wattpad.com) | v16 | Novel | vi |
+| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v7 | Novel | vi_VN |
 
 ## Tính năng
 

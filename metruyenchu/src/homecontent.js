@@ -25,13 +25,29 @@ function execute(url, page) {
             var name = titleA.text().trim();
             if (!name) continue;
             var cover = "";
-            var detailRes = fetchRetry(BASE_URL + href);
-            if (detailRes && detailRes.ok) {
-                var detailDoc = detailRes.html();
-                if (detailDoc) {
-                    var imgEl = selFirst(detailDoc, ".book-info-pic img");
-                    if (imgEl) {
-                        cover = imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "";
+            // Phase 1: Tìm cover trong card — tránh HTTP thêm (background-image / data-*)
+            var bgEl = selFirst(card, "[style*='background-image'], [data-thumb], [data-cover], [data-img], .book-thumb, .img-truyen");
+            if (bgEl) {
+                var bg = bgEl.attr("data-thumb") || bgEl.attr("data-cover") || bgEl.attr("data-img") || bgEl.attr("data-src") || "";
+                if (!bg) {
+                    var bgM = BG_IMAGE_RE.exec(bgEl.attr("style") || "");
+                    if (bgM) bg = bgM[1];
+                }
+                if (bg) cover = bg.charAt(0) === 47 ? BASE_URL + bg : bg;
+            }
+            // Phase 2: Fetch trang detail chỉ khi card không có cover
+            if (!cover) {
+                var detailRes = fetchRetry(BASE_URL + href);
+                if (detailRes && detailRes.ok) {
+                    var detailDoc = detailRes.html();
+                    if (detailDoc) {
+                        // og:image ở <head> thường có URL đầy đủ — fallback .book-info-pic img
+                        var metaOg = selFirst(detailDoc, "meta[property='og:image']");
+                        cover = metaOg ? (metaOg.attr("content") || "") : "";
+                        if (!cover) {
+                            var imgEl = selFirst(detailDoc, ".book-info-pic img");
+                            if (imgEl) cover = imgEl.attr("data-original") || imgEl.attr("data-src") || imgEl.attr("src") || "";
+                        }
                         if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
                     }
                 }

@@ -21,6 +21,7 @@ var STATUS_RE = /Hoàn|Full|DROP|Trọn Bộ/i;
 var STATUS_CLS_RE = /status-full|badge-full|label-full|label-hoan/;
 var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|\/chuong-|javascript/;
 var HASH_RE = /^#|javascript/; // dùng trong toc lọc href rác
+var BG_IMAGE_RE = /url\(['"']?([^'"')\s]+)['"']?\)/; // trích URL từ background-image style
 
 // selectFirst trên Element — vBook chỉ hỗ trợ selectFirst trên Document
 function selFirst(el, css) {
@@ -50,10 +51,9 @@ function fetchSmart(url) {
     var res = fetchRetry(url);
     if (res && res.ok) {
         var doc = res.html();
-        if (doc) {
-            var raw = doc.html();
-            if (raw && raw.length > 3000) return doc;
-        }
+        // Kiểm tra có story card hoặc story title — chỉnh xác hơn đếm a[href]
+        // tránh false positive khi trang JS-render nhưng nav/footer đã có 6+ links
+        if (doc && doc.select("div.item, h3 a[href]").size() > 0) return doc;
     }
     return fetchBrowser(url);
 }
@@ -128,10 +128,10 @@ function getNextPage(doc, current) {
     var next = selFirst(doc, "a[href*='page=" + (current + 1) + "']");
     if (next) return String(current + 1);
 
-    var pager = selFirst(doc,
-        ".pagination, .pager, .page-nav, .phan-trang, " +
-        "[class*='pagination'], [class*='pager'], ul.pager, nav.pagination"
-    );
+    // Phase 1: specific class selectors (fast) — tránh [class*=] scan toàn DOM
+    var pager = selFirst(doc, ".pagination, .pager, .page-nav, .phan-trang, ul.pager, nav.pagination");
+    // Phase 2: attribute-contains chỉ khi không tìm được bằng class cụ thể
+    if (!pager) pager = selFirst(doc, "[class*='pagination'], [class*='pager']");
     if (!pager) return null;
 
     // Quét số trang trong pager

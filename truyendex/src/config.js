@@ -9,23 +9,26 @@ var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&" + CO
 // List views dùng cùng MANGA_PARAMS — không dùng excludedFields (MangaDex có thể trả 400)
 var MANGA_LIST_PARAMS = MANGA_PARAMS;
 
+// BASE64_CHARS cache — không tạo lại mỗi lần toÀn Base64 được gọi (32+/lần trang)
+var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
 function toBase64(str) {
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var result = "";
   for (var i = 0; i < str.length; i += 3) {
     var a = str.charCodeAt(i);
     var b = (i + 1 < str.length) ? str.charCodeAt(i + 1) : 0;
     var c = (i + 2 < str.length) ? str.charCodeAt(i + 2) : 0;
-    result += chars.charAt((a >> 2) & 63);
-    result += chars.charAt(((a & 3) << 4) | ((b >> 4) & 15));
-    result += (i + 1 < str.length) ? chars.charAt(((b & 15) << 2) | ((c >> 6) & 3)) : "=";
-    result += (i + 2 < str.length) ? chars.charAt(c & 63) : "=";
+    result += BASE64_CHARS.charAt((a >> 2) & 63);
+    result += BASE64_CHARS.charAt(((a & 3) << 4) | ((b >> 4) & 15));
+    result += (i + 1 < str.length) ? BASE64_CHARS.charAt(((b & 15) << 2) | ((c >> 6) & 3)) : "=";
+    result += (i + 2 < str.length) ? BASE64_CHARS.charAt(c & 63) : "=";
   }
   return result;
 }
 
 function proxyImage(url) {
-  return PROXY_URL + toBase64(url);
+  // Dùng native btoa nếu engine hỗ trợ (nhanh hơn đáng kể) — fallback sang toBase64
+  try { return PROXY_URL + btoa(url); } catch(e) { return PROXY_URL + toBase64(url); }
 }
 
 function getLocalized(obj) {

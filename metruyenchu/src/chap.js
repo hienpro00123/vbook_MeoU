@@ -36,8 +36,9 @@ function execute(url) {
         if (doc) content = findContent(doc);
     }
 
-    // Slow path: browser (no-hash URLs hoặc trang cần JS render)
-    if (content.length < 100) {
+    // Slow path: browser — chỉ khi HTTP trả về rỗng hoàn toàn
+    // Không trigger cho chương ngắn hợp lệ (< 100 chars) → tránh 5-10s browser launch
+    if (!content) {
         var doc2 = fetchBrowser(chapUrl);
         if (doc2) content = findContent(doc2);
     }

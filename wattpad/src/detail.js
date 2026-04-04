@@ -1,15 +1,16 @@
 load("config.js");
 
+var DETAIL_FIELDS = { fields: "id,title,cover,url,description,user(name),completed,categories,tags" }; // cache
+
 function execute(url) {
   var match = extractStoryId(url);
   if (!match) return Response.error("URL không hợp lệ");
   var storyId = match;
 
-  var FIELDS = { fields: "id,title,cover,url,description,user(name),completed,categories,tags" };
-  var data = fetchWattpadJson(API_V4 + "/stories/" + storyId, FIELDS);
+  var data = fetchWattpadJson(API_V4 + "/stories/" + storyId, DETAIL_FIELDS);
   // Fallback sang v3 nếu v4 thất bại hoặc không trả về title
   if (!data || !data.title) {
-    data = fetchWattpadJson(API_V3 + "/stories/" + storyId, FIELDS);
+    data = fetchWattpadJson(API_V3 + "/stories/" + storyId, DETAIL_FIELDS);
   }
   if (!data || !data.title) return Response.error("Không thể tải thông tin truyện");
 

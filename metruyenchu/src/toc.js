@@ -34,7 +34,12 @@ function execute(url) {
     var seen = {};
 
     // Parse chương từ HTML trang đầu
-    var chapLinks = doc.select("#chapter-list a[href], .list-chapter a[href], a[href*='/chuong-']");
+    // Phase 1: Specific selectors (fast — không scan toàn bộ anchors)
+    var chapLinks = doc.select("#chapter-list a[href], .list-chapter a[href]");
+    // Phase 2: Broad fallback chỉ khi specific không tìm thấy gì
+    if (chapLinks.size() === 0) {
+        chapLinks = doc.select("a[href*='/chuong-']");
+    }
     for (var i = 0; i < chapLinks.size(); i++) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
