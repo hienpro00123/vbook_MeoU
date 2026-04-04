@@ -130,7 +130,7 @@ function getNextPage(doc, current) {
     return null;
 }
 
-// Strip HTML → plain text (4 pass)
+// Strip HTML → plain text
 var ENTITY_MAP = {
     "&amp;": "&", "&lt;": "<", "&gt;": ">",
     "&quot;": '"', "&#039;": "'", "&nbsp;": " ", "&#160;": " "
@@ -138,9 +138,15 @@ var ENTITY_MAP = {
 function stripHtml(html) {
     if (!html) return "";
     return html
-        .replace(/<br\s*\/?>|<p[^>]*>|<\/p>/gi, "\n")
+        .replace(/(<br\s*\/?>){2,}/gi, "\n\n")          // 2+ <br> liên tiếp → đoạn mới
+        .replace(/<br\s*\/?>/gi, "\n")                   // <br> đơn → xuống dòng
+        .replace(/<\/(div|section|article|blockquote)>/gi, "\n")  // đóng block → xuống dòng
+        .replace(/<p[^>]*>/gi, "\n").replace(/<\/p>/gi, "\n")
         .replace(/<[^>]*>/g, "")
         .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; })
-        .replace(/\n{3,}/g, "\n\n")
+        .replace(/[ \t\r]+/g, " ")      // chuẩn hóa khoảng trắng ngang
+        .replace(/\n[ \t]+/g, "\n")     // bỏ space đầu dòng (giữ 　 full-width)
+        .replace(/[ \t]+\n/g, "\n")     // bỏ space cuối dòng
+        .replace(/\n{3,}/g, "\n\n")     // tối đa 2 dòng trắng liên tiếp
         .trim();
 }
