@@ -1,59 +1,78 @@
 load("config.js");
 
+// Regex trích link chương từ HTML fragment (AJAX response)
+var CHAP_A_RE = /<a\s+href='([^']+)'[^>]*>([^<]+)<\/a>/g;
+
+function parseChapHtml(html, slug, seen, chapters) {
+    var m;
+    CHAP_A_RE.lastIndex = 0;
+    while ((m = CHAP_A_RE.exec(html)) !== null) {
+        var href = m[1];
+        if (slug && href.indexOf("/" + slug + "/") === -1) continue;
+        if (seen[href]) continue;
+        seen[href] = true;
+        var name = m[2].trim();
+        if (!name) continue;
+        chapters.push({
+            name: name,
+            url: href.charCodeAt(0) !== 47 ? href : BASE_URL + href,
+            host: HOST
+        });
+    }
+}
+
 function execute(url) {
     var storyUrl = resolveUrl(url);
-
-    // Trang detail truyện render bằng JS — dùng fetchSmart (HTTP → browser fallback)
-    var doc = fetchSmart(storyUrl);
+    // TOC có chapter links + paging trong static HTML → HTTP trực tiếp
+    var res = fetchRetry(storyUrl);
+    if (!res.ok) return Response.error("Không tải được mục lục");
+    var doc = res.html();
     if (!doc) return Response.error("Không tải được mục lục");
 
-    var chapters = [];
-    // Selector danh sách chương — thử nhiều pattern phổ biến
-    var chapLinks = doc.select(
-        ".list-chapter a[href], .muc-luc a[href], .chapter-list a[href], " +
-        "ul.list-chapter li a[href], .box-list-chapter a[href], " +
-        ".chapters a[href], #list-chapter a[href], " +
-        ".danh-sach-chuong a[href], .ds-chuong a[href], " +
-        ".list-chap a[href], .chap-list a[href], " +
-        ".box-tab-content a[href], .tab-content a[href*='chuong-']"
-    );
-
-    if (chapLinks.size() === 0) {
-        // Fallback: tìm tất cả link có pattern /chuong- (mã định danh chương metruyenchu)
-        chapLinks = doc.select("a[href*='/chuong-']");
-    }
-
-    // Lọc chỉ lấy link chương của truyện này
     var slug = storyUrl.replace(BASE_URL, "").replace(/^\//, "").replace(/\/$/, "");
+    var chapters = [];
     var seen = {};
+
+    // Parse chương từ HTML trang đầu
+    var chapLinks = doc.select("#chapter-list a[href], .list-chapter a[href], a[href*='/chuong-']");
     for (var i = 0; i < chapLinks.size(); i++) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
         if (!href || HASH_RE.test(href)) continue;
-        // Chỉ lấy link chứa slug của truyện (match chính xác path segment)
         if (slug && href.indexOf("/" + slug + "/") === -1) continue;
         if (seen[href]) continue;
         seen[href] = true;
         var fullHref = href.charCodeAt(0) !== 47 ? href : BASE_URL + href;
         var chapName = a.text().trim();
-        if (!chapName) chapName = a.attr("title") || a.attr("aria-label") || "";
+        if (!chapName) chapName = a.attr("title") || "";
         if (!chapName) continue;
         chapters.push({ name: chapName, url: fullHref, host: HOST });
     }
 
-    // Nếu vẫn không có — fallback không lọc slug
-    if (chapters.length === 0) {
-        for (var i2 = 0; i2 < chapLinks.size(); i2++) {
-            var a2 = chapLinks.get(i2);
-            var href2 = a2.attr("href");
-            if (!href2 || HASH_RE.test(href2)) continue;
-            if (seen[href2]) continue;
-            seen[href2] = true;
-            var fullHref2 = href2.charCodeAt(0) !== 47 ? href2 : BASE_URL + href2;
-            var chapName2 = a2.text().trim();
-            if (!chapName2) chapName2 = a2.attr("title") || a2.attr("aria-label") || "";
-            if (!chapName2) continue;
-            chapters.push({ name: chapName2, url: fullHref2, host: HOST });
+    // Tìm bookId và tổng số trang từ paging section
+    var bookId = null;
+    var totalPages = 1;
+    var pagingLinks = doc.select(".paging a[onclick]");
+    for (var j = 0; j < pagingLinks.size(); j++) {
+        var onclick = pagingLinks.get(j).attr("onclick");
+        if (!onclick) continue;
+        var idMatch = /page\((\d+),(\d+)\)/.exec(onclick);
+        if (idMatch) {
+            if (!bookId) bookId = idMatch[1];
+            var pn = parseInt(idMatch[2]);
+            if (pn > totalPages) totalPages = pn;
+        }
+    }
+
+    // Fetch các trang chương còn lại qua AJAX API
+    if (bookId && totalPages > 1) {
+        for (var p = 2; p <= totalPages && p <= 100; p++) {
+            var pageRes = fetchRetry(BASE_URL + "/get/listchap/" + bookId + "?page=" + p);
+            if (!pageRes.ok) break;
+            var json;
+            try { json = pageRes.json(); } catch (e) { break; }
+            if (!json || !json.data) break;
+            parseChapHtml(json.data, slug, seen, chapters);
         }
     }
 

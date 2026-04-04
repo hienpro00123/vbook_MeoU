@@ -3,14 +3,17 @@ load("config.js");
 function execute(input, page) {
     var storyUrl = resolveUrl(input);
 
-    var doc = fetchSmart(storyUrl);
+    // Suggest lấy từ sidebar detail page — static HTML đủ dùng
+    var res = fetchRetry(storyUrl);
+    if (!res || !res.ok) return Response.success([], null);
+    var doc = res.html();
     if (!doc) return Response.success([], null);
 
     var result = [];
     var seen = {};
 
     // Tìm section truyện tương tự / liên quan
-    var relSection = doc.selectFirst(
+    var relSection = selFirst(doc,
         ".truyen-tuong-tu, .related-story, .story-related, .same-author, " +
         ".truyen-lien-quan, .truyen-de-xuat, .box-truyen-hot, " +
         "#truyen-hot-moi, .truyen-hot-moi"
@@ -39,12 +42,13 @@ function execute(input, page) {
         var name = a.text().trim();
         if (!name || name.length < 3) continue;
         // Tìm ảnh bìa qua CSS href match
-        var coverImg = container.selectFirst("a[href='" + href + "'] img");
+        var coverImg = selFirst(container, "a[href='" + href + "'] img");
         if (!coverImg) {
             var altHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : BASE_URL + href;
-            coverImg = container.selectFirst("a[href='" + altHref + "'] img");
+            coverImg = selFirst(container, "a[href='" + altHref + "'] img");
         }
         var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
+        if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
         result.push({ name: name, link: href, host: HOST, cover: cover });
         if (result.length >= 20) break;
     }

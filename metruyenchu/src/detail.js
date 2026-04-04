@@ -3,19 +3,22 @@ load("config.js");
 function execute(url) {
     var storyUrl = resolveUrl(url);
 
-    var doc = fetchSmart(storyUrl);
+    // Detail page có đủ thông tin trong static HTML → dùng HTTP trực tiếp (nhanh hơn fetchSmart)
+    var res = fetchRetry(storyUrl);
+    if (!res.ok) return Response.error("Không tải được trang truyện");
+    var doc = res.html();
     if (!doc) return Response.error("Không tải được trang truyện");
 
     // Tên truyện
-    var nameEl = doc.selectFirst(
+    var nameEl = selFirst(doc,
         "h1.title-truyen, h1.book-title, h1.story-name, h1.truyen-title, h1.story-title, " +
         ".book-detail h1, .title h1, .info-book h1, .truyen-info h1, h1"
     );
     var name = nameEl ? nameEl.text().trim() : "";
 
     // Ảnh bìa
-    var coverEl = doc.selectFirst(
-        ".book-img img, .cover-truyen img, .book-cover img, .img-truyen img, " +
+    var coverEl = selFirst(doc,
+        ".book-info-pic img, .book-img img, .cover-truyen img, .book-cover img, .img-truyen img, " +
         ".thumb img, .bia-truyen img, .poster img, .info-img img, " +
         "img.img-responsive, img.lazyload[data-original], img.lazyload[data-src]"
     );
@@ -24,28 +27,29 @@ function execute(url) {
         cover = coverEl.attr("data-original") || coverEl.attr("data-src") || coverEl.attr("src") || "";
     }
     if (!cover) {
-        var fallbackImg = doc.selectFirst("img[src]:not([src*='logo']):not([src*='icon']):not([src*='banner']):not([src*='ads'])");
+        var fallbackImg = selFirst(doc, "img[src]:not([src*='logo']):not([src*='icon']):not([src*='banner']):not([src*='ads'])");
         if (fallbackImg) cover = fallbackImg.attr("src") || "";
     }
+    if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
 
     // Tác giả
-    var authorEl = doc.selectFirst("a[href*='/tac-gia/'], .author a, .book-author a, .tac-gia a, .info-author a, .writer a");
+    var authorEl = selFirst(doc, "a[href*='/tac-gia/'], .author a, .book-author a, .tac-gia a, .info-author a, .writer a");
     var author = authorEl ? authorEl.text().trim() : "";
     if (!author) {
-        var authorText = doc.selectFirst(".author, .tac-gia, .book-author, .info-author");
+        var authorText = selFirst(doc, ".author, .tac-gia, .book-author, .info-author");
         if (authorText) author = authorText.text().replace(AUTHOR_RE, "").trim();
     }
 
     // Mô tả
-    var descEl = doc.selectFirst(
-        ".desc-text, .book-desc, .summary-content, .description, " +
+    var descEl = selFirst(doc,
+        "[itemprop='description'], .desc-text, .book-desc, .summary-content, .description, " +
         "#story-detail-description, .truyen-tomtat, .tom-tat, .mo-ta, " +
         ".story-synopsis, .synopsis, .info-desc, .box-desc, .detail-desc"
     );
     var description = descEl ? stripHtml(descEl.html()) : "";
 
     // Thể loại — ưu tiên tìm trong info section, nếu không có thì lấy toàn trang (giới hạn 8)
-    var infoSection = doc.selectFirst(
+    var infoSection = selFirst(doc,
         ".book-detail, .info-book, .book-info, .story-info, .truyen-info, " +
         ".detail-info, .info-story, .book-container, .truyen-detail"
     );
@@ -70,8 +74,8 @@ function execute(url) {
 
     // Trạng thái
     var ongoing = true;
-    var statusEl = doc.selectFirst(
-        ".trang-thai, .book-status, .status-label, .badge-status, " +
+    var statusEl = selFirst(doc,
+        ".label-status, .trang-thai, .book-status, .status-label, .badge-status, " +
         ".status-full, .badge-full, .label-full, .label-hoan, " +
         ".complete, .finished, .truyen-full"
     );
@@ -84,11 +88,18 @@ function execute(url) {
 
     // detail info — build string trực tiếp, không cần mảng
     var detail = genreTitles ? "Thể loại: " + genreTitles : "";
-    var chapCountEl = doc.selectFirst(
+    // Trích số chương: ưu tiên class selector, fallback tìm text "Số chương" trong info section
+    var chapCountEl = selFirst(doc,
         ".chapter-count, .so-chuong, .total-chapter, .num-chapter, " +
         "[class*='chapter-count'], [class*='so-chuong']"
     );
-    if (chapCountEl) detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
+    if (chapCountEl) {
+        detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
+    } else if (infoSection) {
+        var infoText = infoSection.text();
+        var chapMatch = /Số chương\s*[:\uff1a]?\s*(\d[\d.]+)/.exec(infoText);
+        if (chapMatch) detail += (detail ? " | " : "") + "Số chương: " + chapMatch[1];
+    }
 
     // Suggests — luôn thêm suggest (trang truyện có truyện tương tự dưới dạng sidebar)
     var suggests = [{ title: "Truyện tương tự", input: storyUrl, script: "suggest.js" }];

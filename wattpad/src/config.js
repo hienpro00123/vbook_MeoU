@@ -20,17 +20,42 @@ function extractChapId(url) {
   return m ? m[1] : null;
 }
 
-// Gọi HTTP với retry 1 lần nếu thất bại
-function fetchWattpad(url, params) {
-  var req = Http.get(url);
-  if (params) req = req.params(params);
-  var res = req.string();
-  if (!res) {
-    req = Http.get(url);
-    if (params) req = req.params(params);
-    res = req.string();
+var FETCH_OPTIONS = {
+  headers: {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "Accept": "*/*",
   }
-  return res;
+};
+
+// Xây dựng URL với query params
+function buildUrl(base, params) {
+  if (!params) return base;
+  var qs = [];
+  for (var key in params) {
+    qs.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+  }
+  return qs.length > 0 ? base + "?" + qs.join("&") : base;
+}
+
+// Fetch JSON từ Wattpad API với retry 1 lần
+function fetchWattpadJson(url, params) {
+  var fullUrl = buildUrl(url, params);
+  var res = fetch(fullUrl, FETCH_OPTIONS);
+  if (!res || !res.ok) res = fetch(fullUrl, FETCH_OPTIONS);
+  if (!res || !res.ok) return null;
+  try { return res.json(); } catch (e) { return null; }
+}
+
+// Fetch nội dung chương HTML từ Wattpad (apiv2/storytext)
+function fetchWattpadHtml(url) {
+  var res = fetch(url, FETCH_OPTIONS);
+  if (!res || !res.ok) res = fetch(url, FETCH_OPTIONS);
+  if (!res || !res.ok) return null;
+  try {
+    var doc = res.html();
+    var body = doc.select("body");
+    return body.size() > 0 ? body.get(0).html() : doc.html();
+  } catch (e) { return null; }
 }
 
 function parseStories(data) {
@@ -43,6 +68,7 @@ function parseStories(data) {
     list.push({
       name: v.title || "(Không có tên)",
       link: v.url,
+      host: BASE_URL,
       cover: v.cover || "",
       description: v.user ? v.user.name : "",
     });

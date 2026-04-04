@@ -22,6 +22,12 @@ var STATUS_CLS_RE = /status-full|badge-full|label-full|label-hoan/;
 var HREF_SKIP_RE = /\/the-loai|\/danh-sach|\/tac-gia|\/chuong-|javascript/;
 var HASH_RE = /^#|javascript/; // dùng trong toc lọc href rác
 
+// selectFirst trên Element — vBook chỉ hỗ trợ selectFirst trên Document
+function selFirst(el, css) {
+    var r = el.select(css);
+    return r.size() > 0 ? r.get(0) : null;
+}
+
 // Fetch với retry và User-Agent cho list page (không cần JS)
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
@@ -56,25 +62,51 @@ function fetchSmart(url) {
 function parseList(doc) {
     var result = [];
     var seen = {};
-    // Chọn tất cả link trong H3 (tên truyện)
-    var titleLinks = doc.select("h3 a[href]");
-    for (var i = 0; i < titleLinks.size(); i++) {
-        var a = titleLinks.get(i);
-        var href = a.attr("href");
-        if (!href || href === "/" || HREF_SKIP_RE.test(href)) continue;
-        if (seen[href]) continue;
-        seen[href] = true;
-        var name = a.text().trim();
-        if (!name) continue;
-        // Tìm ảnh bìa: tìm img trong <a> cùng href (link bọc ảnh cùng URL với link tên)
-        var coverImg = doc.selectFirst("a[href='" + href + "'] img");
-        if (!coverImg) {
-            var altHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : BASE_URL + href;
-            coverImg = doc.selectFirst("a[href='" + altHref + "'] img");
+    // Ưu tiên: div.item cards có h3 > a (trang hot/full/thể loại)
+    // Kiểm tra nhanh trước khi duyệt từng card — tránh lặp thừa trên homepage
+    var cardTitles = doc.select("div.item h3 a[href]");
+    if (cardTitles.size() > 0) {
+        var cards = doc.select("div.item");
+        for (var i = 0; i < cards.size(); i++) {
+            var card = cards.get(i);
+            var titleLink = selFirst(card, "h3 a[href]");
+            if (!titleLink) continue;
+            var href = titleLink.attr("href");
+            if (!href || href === "/" || HREF_SKIP_RE.test(href)) continue;
+            if (seen[href]) continue;
+            seen[href] = true;
+            var name = titleLink.text().trim();
+            if (!name) continue;
+            var coverImg = selFirst(card, "img");
+            var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
+            if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
+            var authorA = selFirst(card, "a[href*='/tac-gia/']");
+            var desc = authorA ? authorA.text().trim() : "";
+            result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
+            if (result.length >= 30) break;
         }
-        var cover = coverImg ? (coverImg.attr("data-original") || coverImg.attr("data-src") || coverImg.attr("src") || "") : "";
-        result.push({ name: name, link: href, host: HOST, cover: cover, description: "" });
-        if (result.length >= 30) break;
+    }
+    // Fallback: duyệt h3 a[href] (trang không có div.item)
+    if (result.length === 0) {
+        var titleLinks = doc.select("h3 a[href]");
+        for (var j = 0; j < titleLinks.size(); j++) {
+            var a = titleLinks.get(j);
+            var href2 = a.attr("href");
+            if (!href2 || href2 === "/" || HREF_SKIP_RE.test(href2)) continue;
+            if (seen[href2]) continue;
+            seen[href2] = true;
+            var name2 = a.text().trim();
+            if (!name2) continue;
+            var coverImg2 = selFirst(doc, "a[href='" + href2 + "'] img");
+            if (!coverImg2) {
+                var altHref = href2.indexOf("http") === 0 ? href2.replace(BASE_URL, "") : BASE_URL + href2;
+                coverImg2 = selFirst(doc, "a[href='" + altHref + "'] img");
+            }
+            var cover2 = coverImg2 ? (coverImg2.attr("data-original") || coverImg2.attr("data-src") || coverImg2.attr("src") || "") : "";
+            if (cover2 && cover2.charAt(0) === 47) cover2 = BASE_URL + cover2;
+            result.push({ name: name2, link: href2, host: HOST, cover: cover2, description: "" });
+            if (result.length >= 30) break;
+        }
     }
     return result;
 }
@@ -83,10 +115,10 @@ function parseList(doc) {
 var NEXT_PAGE_RE = /[❭›>]|sau|next/i;
 function getNextPage(doc, current) {
     // Cách 1: link href trực tiếp
-    var next = doc.selectFirst("a[href*='page=" + (current + 1) + "']");
+    var next = selFirst(doc, "a[href*='page=" + (current + 1) + "']");
     if (next) return String(current + 1);
 
-    var pager = doc.selectFirst(
+    var pager = selFirst(doc,
         ".pagination, .pager, .page-nav, .phan-trang, " +
         "[class*='pagination'], [class*='pager'], ul.pager, nav.pagination"
     );
