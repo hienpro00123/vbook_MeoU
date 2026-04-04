@@ -51,6 +51,18 @@
       "description": "MeTruyenChu - Đọc truyện chữ online miễn phí, không quảng cáo",
       "type": "novel",
       "locale": "vi_VN"
+    },
+    {
+      "name": "Bixiange",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bixiange/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bixiange/plugin.json",
+      "version": 1,
+      "source": "https://m.bixiange.me",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bixiange/icon.png",
+      "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
+      "type": "novel",
+      "locale": "zh_CN"
     }
   ]
 }

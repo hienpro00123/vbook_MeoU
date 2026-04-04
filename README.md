@@ -33,6 +33,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v24 | Comic | vi_VN |
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v16 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v7 | Novel | vi_VN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v1 | Novel | zh_CN |
 
 ## Tính năng
 
@@ -73,6 +74,15 @@ Sau khi có phiên bản mới được push lên GitHub:
 - **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, số chương, trạng thái
 - **Truyện tương tự**: Gợi ý truyện liên quan
 - **Mục lục**: Danh sách chương, hỗ trợ phân trang AJAX
+- **Đọc truyện**: Nội dung chương dạng văn bản
+
+### Bixiange (笔仙阁)
+- **Trang chủ**: Mới nhất, Nổi bật, Đề xuất
+- **Thể loại**: 12 thể loại (都市言情, 武侠修真, 玄幻奇幻...)
+- **Tìm kiếm**: Tìm kiếm theo từ khóa
+- **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, trạng thái
+- **Truyện gợi ý**: Gợi ý theo cùng thể loại
+- **Mục lục**: Tất cả chương trên 1 trang (không AJAX)
 - **Đọc truyện**: Nội dung chương dạng văn bản
 
 ## Cấu trúc
@@ -134,5 +144,19 @@ metruyenchu/
     ├── search.js       # Tìm kiếm
     ├── suggest.js      # Truyện tương tự
     ├── toc.js          # Mục lục (hỗ trợ pagination AJAX)
+    └── chap.js         # Nội dung chương
+
+bixiange/
+├── icon.png, plugin.json, plugin.zip
+└── src/
+    ├── config.js       # Hằng số + helpers (paginateUrl, parseList, getNextPage)
+    ├── home.js         # Trang chủ (3 tab: Mới nhất, Nổi bật, Đề xuất)
+    ├── homecontent.js  # Nội dung trang chủ
+    ├── genre.js        # 12 thể loại tiếng Trung
+    ├── genrecontent.js # Truyện theo thể loại
+    ├── detail.js       # Chi tiết truyện
+    ├── search.js       # Tìm kiếm
+    ├── suggest.js      # Gợi ý theo thể loại
+    ├── toc.js          # Mục lục (tất cả chương 1 trang)
     └── chap.js         # Nội dung chương
 ```
