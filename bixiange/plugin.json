@@ -7,7 +7,7 @@
     "regexp": "m\\.bixiange\\.me",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
     "locale": "zh_CN",
-    "type": "novel"
+    "type": "chinese_novel"
   },
   "script": {
     "home": "home.js",
