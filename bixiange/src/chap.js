@@ -28,17 +28,17 @@ function execute(url) {
     var chapUrl = resolveUrl(url);
     var content = "";
 
-    // Fast path: HTTP fetch
-    var res = fetchRetry(chapUrl);
-    if (res && res.ok) {
-        var doc = res.html();
-        if (doc) content = findContent(doc);
-    }
+    // Primary: browser (xử lý GBK encoding đúng)
+    var doc = fetchBrowser(chapUrl);
+    if (doc) content = findContent(doc);
 
-    // Slow path: browser — chỉ khi HTTP trả về rỗng hoàn toàn
+    // Fallback: HTTP fetch
     if (!content) {
-        var doc2 = fetchBrowser(chapUrl);
-        if (doc2) content = findContent(doc2);
+        var res = fetchRetry(chapUrl);
+        if (res && res.ok) {
+            var doc2 = res.html();
+            if (doc2) content = findContent(doc2);
+        }
     }
 
     if (!content || content.length < 50) return Response.error("Không tìm thấy nội dung chương");

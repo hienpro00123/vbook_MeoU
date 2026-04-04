@@ -10,9 +10,7 @@ function execute(url, page) {
         // sort   → /sort/    or  /sort/index_N.html
         fetchUrl = paginateUrl(url, p);
     }
-    var res = fetchRetry(fetchUrl);
-    if (!res.ok) return Response.error("Lỗi tải trang: " + fetchUrl);
-    var doc = res.html();
+    var doc = fetchBrowser(fetchUrl);
     if (!doc) return Response.error("Lỗi tải trang: " + fetchUrl);
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
