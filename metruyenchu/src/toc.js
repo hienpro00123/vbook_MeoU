@@ -46,11 +46,11 @@ function execute(url) {
         if (!href || HASH_RE.test(href)) continue;
         if (slug && href.indexOf("/" + slug + "/") === -1) continue;
         if (seen[href]) continue;
-        seen[href] = true;
         var fullHref = href.charCodeAt(0) !== 47 ? href : BASE_URL + href;
         var chapName = a.text().trim();
         if (!chapName) chapName = a.attr("title") || "";
         if (!chapName) continue;
+        seen[href] = true;  // mark sau khi xác nhận tên hợp lệ
         chapters.push({ name: chapName, url: fullHref, host: HOST });
     }
 
