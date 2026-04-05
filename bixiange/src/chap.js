@@ -11,6 +11,7 @@ var CHAP_CSS = "#BookText, .booktext, #nr, .nr, #read_content, .readcont, " +
 var SEPARATOR_RE = /^[^\u4e00-\u9fff\u3400-\u4dbf\w\d]+$/;
 
 // Regex lọc dòng watermark/promo DedeCMS inject vào nội dung tiểu thuyết TQ
+// Khớp dòng chứa: URL site, lời mời đọc, thông báo cập nhật, tên site, v.v.
 var PROMO_LINE_RE = /本书由|提供下载|最新章节|手机用户|一秒钟记住|请记住|本站网址|章节错误|内容更新|本章字数|正文字数|分享本书|点击右上角|阅读全文|www\.|\.net|\.com|\.me|bixiange/i;
 
 // Thêm indent　　cho từng đoạn — chuẩn tiểu thuyết Trung Quốc
