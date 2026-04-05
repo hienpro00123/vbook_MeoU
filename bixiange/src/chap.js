@@ -30,8 +30,13 @@ function addIndent(text) {
         if (PROMO_LINE_RE.test(trimmed)) continue;
         // Dòng phân cách ký hiệu — giữ nguyên, không indent, không tính là nội dung
         if (SEPARATOR_RE.test(trimmed)) { out.push(trimmed); prevContent = false; continue; }
-        // Tiêu đề ngắn (≤5 ký tự) — giữ nguyên
-        if (trimmed.length <= 5) { out.push(trimmed); prevContent = false; continue; }
+        // Tiêu đề ngắn (≤5 ký tự) — giữ khoảng cách với đoạn liền trước/sau
+        if (trimmed.length <= 5) {
+            if (prevContent) out.push("");
+            out.push(trimmed);
+            prevContent = true;
+            continue;
+        }
         // Đoạn nội dung — chèn dòng trắng ngăn cách nếu đoạn trước cũng là nội dung
         if (prevContent) out.push("");
         if (trimmed.charAt(0) === "\u3000") {

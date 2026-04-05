@@ -24,7 +24,8 @@ function cleanText(txt) {
         .replace(/[\u00b7\u2022\u22c5]{2,}/g, "")     // 2+ dấu chấm giữa liên tiếp → xóa
         .replace(/^\s*[\u00b7\u2022]\s*/gm, "")         // · đầu dòng → xóa
         .replace(/\s*[\u00b7\u2022]\s*$/gm, "")         // · cuối dòng → xóa
-        .replace(/\n{3,}/g, "\n\n")
+        .replace(/\n/g, "\n\n")           // chuẩn hóa: mọi \n → \n\n (paragraph break)
+        .replace(/\n{3,}/g, "\n\n")       // squeeze thừa: tối đa 2 newlines
         .trim();
 }
 
