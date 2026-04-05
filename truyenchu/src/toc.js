@@ -6,10 +6,6 @@ var CHAP_HREF_RE = /\/truyen\/[^\/]+\/chuong/;
 // Parse chapter links từ HTML fragment (static hoặc AJAX response)
 function parseChapLinks(container, seen, out) {
     var links = container.select(".wp-manga-chapter a[href], li.wp-manga-chapter a[href]");
-    if (links.size() === 0) {
-        // Fallback: tìm bất kỳ link nào trỏ đến /chuong
-        links = container.select("a[href*='/chuong']");
-    }
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href") || "";
