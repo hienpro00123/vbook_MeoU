@@ -93,37 +93,27 @@ function findContent(doc) {
     removeNoise(doc);
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
-        el.select("a").remove(); // Xóa link nav/promo inject vào nội dung (下一章, ads...)
-        // Ưu tiên: xử lý trực tiếp từng <p> → format chuẩn chinese_novel:
-        // mỗi đoạn 1 dòng (\n separator), prefix 　　 — Vietphrase dịch line-by-line
+        el.select("a").remove();
         var paras = el.select("p");
         if (paras.size() > 2) {
+            // Trả HTML với <p> tags — vBook render <p> thành paragraph breaks
+            // Vietphrase dịch text bên trong mỗi <p>, cấu trúc đoạn được giữ nguyên
             var parts = [];
             for (var i = 0; i < paras.size(); i++) {
-                var ptxt = stripHtml(paras.get(i).html()).trim().replace(/^\u3000+/, "");
+                var ptxt = paras.get(i).text().trim().replace(/^\u3000+/, "");
                 if (!ptxt || PROMO_LINE_RE.test(ptxt)) continue;
-                // Giữ lại 　　 prefix chuẩn chinese_novel
-                parts.push("\u3000\u3000" + ptxt);
+                parts.push("<p>\u3000\u3000" + ptxt + "</p>");
             }
             if (parts.length > 0) {
-                var joined = parts.join("\n").trim();
-                if (joined.length > 200) return joined;
+                var html = parts.join("\n");
+                if (html.length > 200) return html;
             }
         }
-        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags, dùng <br>)
-        var txt = stripHtml(el.html());
-        // Đảm bảo mỗi dòng có 　　 prefix nếu chưa có
-        var lines = txt.split("\n");
-        var flines = [];
-        for (var li = 0; li < lines.length; li++) {
-            var ln = lines[li].replace(/^\u3000+/, "").trim();
-            if (!ln || PROMO_LINE_RE.test(ln)) continue;
-            flines.push("\u3000\u3000" + ln);
-        }
-        txt = flines.join("\n").trim();
-        if (txt.length > 200) return txt;
+        // Fallback plain text (khi không có <p> tags — dùng <br>)
+        var txt = addIndent(stripHtml(el.html()));
+        if (txt.length > 100) return txt;
     }
-    // Fallback: duyệt div có text dài nhất — bỏ qua div chứa nhiều link (nav/list)
+    // Fallback: div có text dài nhất
     var divs = doc.select("div");
     var best = null;
     var bestLen = 200;
@@ -131,23 +121,12 @@ function findContent(doc) {
         var d = divs.get(i);
         var textLen = d.text().length;
         if (textLen <= bestLen) continue;
-        // Lọc div có tỉ lệ link/text cao — là nav hoặc danh sách, không phải nội dung
         var linkLen = d.select("a").text().length;
         if (linkLen > textLen * 0.4) continue;
         bestLen = textLen;
         best = d;
     }
-    if (best) {
-        var blines = stripHtml(best.html()).split("\n");
-        var bout = [];
-        for (var bi = 0; bi < blines.length; bi++) {
-            var bl = blines[bi].replace(/^\u3000+/, "").trim();
-            if (!bl || PROMO_LINE_RE.test(bl)) continue;
-            bout.push("\u3000\u3000" + bl);
-        }
-        return bout.join("\n").trim();
-    }
-    return "";
+    return best ? addIndent(stripHtml(best.html())) : "";
 }
 
 function execute(url) {
@@ -181,7 +160,7 @@ function execute(url) {
         var pageDoc = fetchBrowser(pageUrl, 8000);
         if (!pageDoc) break;
         var pageContent = findContent(pageDoc);
-        if (pageContent) content = content + "\n\n" + pageContent;
+        if (pageContent) content = content + "\n" + pageContent;
     }
 
     if (!content || content.length < 50) return Response.error("Không tìm thấy nội dung chương");
