@@ -15,6 +15,7 @@ function execute() {
         { title: "Hài Hước",    input: "hai-huoc",    script: "genrecontent.js" },
         { title: "Hệ Thống",    input: "he-thong",    script: "genrecontent.js" },
         { title: "Huyền Huyễn", input: "huyen-huyen", script: "genrecontent.js" },
+        { title: "Khác",        input: "khac",        script: "genrecontent.js" },
         { title: "Khoa Huyễn",  input: "khoa-huyen",  script: "genrecontent.js" },
         { title: "Kiếm Hiệp",   input: "kiem-hiep",   script: "genrecontent.js" },
         { title: "Lịch Sử",     input: "lich-su",     script: "genrecontent.js" },
