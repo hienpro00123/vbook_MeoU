@@ -12,16 +12,6 @@ function execute(url) {
 
     el.select("script, style, a, ins, noscript, iframe").remove();
     var html = el.html();
-
-    // </p><p> → xuống dòng
-    var text = html
-        .replace(/<\/p>\s*<p[^>]*>/gi, "\n")
-        .replace(/<br\s*\/?>/gi, "\n")
-        .replace(/<[^>]+>/g, "")
-        .replace(/&nbsp;/gi, " ")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
-
-    if (!text) return null;
-    return Response.success(text);
+    if (!html) return null;
+    return Response.success(html);
 }
