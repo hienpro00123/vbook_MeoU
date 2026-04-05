@@ -35,6 +35,20 @@ function findContent(doc) {
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
         el.select("a").remove(); // Xóa link nav/promo inject vào nội dung
+        // Ưu tiên: xử lý trực tiếp từng <p> → đảm bảo paragraph break đúng (mỗi <p> = \n\n)
+        var paras = el.select("p");
+        if (paras.size() > 2) {
+            var parts = [];
+            for (var i = 0; i < paras.size(); i++) {
+                var ptxt = stripHtml(paras.get(i).html()).trim();
+                if (ptxt) parts.push(ptxt);
+            }
+            if (parts.length > 0) {
+                var joined = cleanText(parts.join("\n\n"));
+                if (joined.length > 100) return joined;
+            }
+        }
+        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags)
         var txt = cleanText(stripHtml(el.html()));
         if (txt.length > 100) return txt;
     }

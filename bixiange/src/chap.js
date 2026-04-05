@@ -1,7 +1,7 @@
 load("config.js");
 
-// Selector nội dung chương — bixiange DedeCMS trước, rồi generic fallback
-var CHAP_CSS = "#BookText, .booktext, #nr, .nr, #read_content, .readcont, " +
+// Selector nội dung chương — bixiange DedeCMS trước (#mycontent là ID cụ thể trên m.bixiange.me), rồi generic fallback
+var CHAP_CSS = "#mycontent, #BookText, .booktext, #nr, .nr, #read_content, .readcont, " +
     "#content, .content, #chaptercontent, .chaptercontent, " +
     ".read-content, .reading-content, .chapter-content, " +
     "#article-content, .article-content, .story-content, " +
@@ -89,6 +89,21 @@ function findContent(doc) {
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
         el.select("a").remove(); // Xóa link nav/promo inject vào nội dung (下一章, ads...)
+        // Ưu tiên: xử lý trực tiếp từng <p> → đảm bảo paragraph break đúng (mỗi <p> = \n\n)
+        var paras = el.select("p");
+        if (paras.size() > 2) {
+            var parts = [];
+            for (var i = 0; i < paras.size(); i++) {
+                var ptxt = stripHtml(paras.get(i).html()).trim();
+                if (!ptxt || PROMO_LINE_RE.test(ptxt)) continue;
+                parts.push(ptxt);
+            }
+            if (parts.length > 0) {
+                var joined = parts.join("\n\n");
+                if (joined.length > 200) return addIndent(joined);
+            }
+        }
+        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags)
         var txt = stripHtml(el.html());
         if (txt.length > 200) return addIndent(txt);
     }
