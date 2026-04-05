@@ -1,59 +1,56 @@
 load("config.js");
 
-// Selector nội dung chương — thêm selectors mới của metruyenchu, giữ còn generic fallback
-var CHAP_CSS = "#chapter-content, .chapter-content, .chap-content, " +
-    "#chapter-detail-content, .box-chapter-content, " +
-    ".content-chapter, .truyen, #truyen-content, .truyen-content, " +
-    ".reading-content, .content-text, .text-content, " +
-    "#noi-dung, .noi-dung, .box-reading, " +
-    ".story-content, .text-story, #story-content";
+// =============================================================================
+// Cấu trúc thực tế metruyenchu (đã xác nhận qua raw HTML):
+//   <div id="vungdoc">
+//     <div class="chapter_wrap">   ← tiêu đề + nav (xóa trước khi đọc text)
+//       <div class="chapter-title">...</div>
+//       <div class="chapter_control" id="gotochap">...</div>
+//       <div><button id="download-book">Tải Ebook</button></div>
+//     </div>
+//     <div class="truyen">         ← NỘI DUNG TEXT dạng <br><br>
+//       Văn bản chương...<br><br>...
+//     </div>
+//   </div>
+// =============================================================================
 
-// Dọn noise trước khi trích xuất — script, ads, nav, comment
-function removeNoise(doc) {
-    doc.select("script, style, ins, iframe, noscript").remove();
-    doc.select(".ads, .ad-wrapper, .quang-cao, .advertisement").remove();
-    doc.select("[class*=advert], [id*=advert], [class*=-ads], [id*=-ads]").remove();
-    doc.select(".chapter-header, .chapter-footer, .chapter-info, .action-bar").remove();
-    doc.select(".chapter-nav, .nav-chapter, .page-nav, .btn-chapter, .chapter-title").remove();
-    doc.select(".comment, .comment-area, .fb-comments, #disqus_thread").remove();
-}
-
-// Dọn watermark/noise text — dấu · và ký tự rác mà sites inject vào nội dung
+// Làm sạch text — xóa watermark, chuẩn hóa khoảng trắng
 function cleanText(txt) {
     return txt
-        .replace(/[\u00b7\u2022\u22c5]{2,}/g, "")     // 2+ dấu chấm giữa liên tiếp → xóa
-        .replace(/^\s*[\u00b7\u2022]\s*/gm, "")         // · đầu dòng → xóa
-        .replace(/\s*[\u00b7\u2022]\s*$/gm, "")         // · cuối dòng → xóa
-        .replace(/^\s*[Tt]ải\s+[Ee]book\b[^\n]*/gm, "")  // Xóa watermark "Tải Ebook ..."
-        .replace(/\n/g, "\n\n")           // chuẩn hóa: mọi \n → \n\n (paragraph break)
-        .replace(/\n{3,}/g, "\n\n")       // squeeze thừa: tối đa 2 newlines
+        .replace(/[\u00b7\u2022\u22c5]{2,}/g, "")
+        .replace(/^\s*[\u00b7\u2022]\s*/gm, "")
+        .replace(/\s*[\u00b7\u2022]\s*$/gm, "")
+        .replace(/^\s*[Tt]ải\s+[Ee]book\b[^\n]*/gm, "")
+        .replace(/\n{3,}/g, "\n\n")
         .trim();
 }
 
 function findContent(doc) {
-    removeNoise(doc);
-    var el = selFirst(doc, CHAP_CSS);
+    // === Pass 1: target trực tiếp div.truyen trong #vungdoc ===
+    var el = selFirst(doc, "#vungdoc .truyen");
+    if (!el) el = selFirst(doc, ".truyen");
+
     if (el) {
-        el.select("a").remove(); // Xóa link nav/promo inject vào nội dung
-        // Ưu tiên: xử lý trực tiếp từng <p> → đảm bảo paragraph break đúng (mỗi <p> = \n\n)
-        var paras = el.select("p");
-        if (paras.size() > 2) {
-            var parts = [];
-            for (var i = 0; i < paras.size(); i++) {
-                var ptxt = stripHtml(paras.get(i).html()).trim();
-                if (ptxt) parts.push(ptxt);
-            }
-            if (parts.length > 0) {
-                var joined = cleanText(parts.join("\n\n"));
-                if (joined.length > 100) return joined;
-            }
-        }
-        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags)
+        el.select("a, button, script, style, ins, noscript").remove();
         var txt = cleanText(stripHtml(el.html()));
         if (txt.length > 100) return txt;
     }
-    // Fallback: duyệt div[class]/div[id], chọn div text dài nhất
-    // Bỏ qua div có tỉ lệ link/text cao — là nav hoặc danh sách
+
+    // === Pass 2: fallback — dùng #vungdoc, xóa nav/button rồi trích text ===
+    var vungdoc = selFirst(doc, "#vungdoc");
+    if (vungdoc) {
+        vungdoc.select("script, style, ins, iframe, noscript, button").remove();
+        vungdoc.select(".chapter_wrap, .chapter-title, .chapter_control").remove();
+        vungdoc.select("#gotochap, #download-book").remove();
+        vungdoc.select(".ads, .ad-wrapper, [class*=advert], [id*=advert]").remove();
+        vungdoc.select(".comment, #disqus_thread").remove();
+        vungdoc.select("a").remove();
+        var txt2 = cleanText(stripHtml(vungdoc.html()));
+        if (txt2.length > 100) return txt2;
+    }
+
+    // === Pass 3: last resort — quét div, lấy div text dài nhất (không nhiều link) ===
+    doc.select("script, style, ins, iframe, noscript").remove();
     var divs = doc.select("div[class], div[id]");
     var best = null;
     var bestLen = 200;
@@ -73,14 +70,14 @@ function execute(url) {
     var chapUrl = resolveUrl(url);
     var content = "";
 
-    // Fast path: HTTP fetch (metruyenchu phục vụ nội dung qua HTML tĩnh)
+    // Metruyenchu trả nội dung trong static HTML → fetch thường là đủ
     var res = fetchRetry(chapUrl);
     if (res && res.ok) {
         var doc = res.html();
         if (doc) content = findContent(doc);
     }
 
-    // Slow path: browser — chỉ khi HTTP trả về rỗng hoàn toàn
+    // Browser fallback — chỉ khi HTTP không trả nội dung
     if (!content) {
         var doc2 = fetchBrowser(chapUrl);
         if (doc2) content = findContent(doc2);
