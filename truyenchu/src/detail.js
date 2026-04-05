@@ -61,7 +61,7 @@ function execute(url) {
 
     // Mô tả
     var description = "";
-    var descEl = selFirst(doc, ".summary__content, .manga-summary, .description-summary");
+    var descEl = selFirst(doc, ".manga-excerpt, .summary__content, .manga-summary, .description-summary");
     if (descEl) {
         // Lấy text từ các thẻ p
         var descPs = descEl.select("p");

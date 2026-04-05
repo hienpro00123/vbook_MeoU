@@ -41,9 +41,7 @@ function execute(input, page) {
     var cards = container.select(".page-item-detail, .manga__item");
     if (cards.size() === 0) {
         // Fallback: lấy từ toàn trang nhưng chỉ truyện khác trang hiện tại
-        var storyPath = storyUrl.indexOf(BASE_URL) === 0
-            ? storyUrl.substring(BASE_URL.length)
-            : storyUrl;
+        var storyPath = stripHost(storyUrl);
 
         var links = doc2.select(".post-title a[href], h3 a[href]");
         for (var i = 0; i < links.size(); i++) {
@@ -51,7 +49,7 @@ function execute(input, page) {
             var href = a.attr("href") || "";
             if (!href || HREF_SKIP_RE.test(href)) continue;
             if (href.indexOf("/the-loai/") !== -1 || href.indexOf("/tac-gia/") !== -1) continue;
-            var link = href.indexOf(BASE_URL) === 0 ? href.substring(BASE_URL.length) : href;
+            var link = stripHost(href);
             if (link === storyPath || seen[link]) continue;
             seen[link] = true;
             var name = a.text().trim();
@@ -69,7 +67,7 @@ function execute(input, page) {
         if (!titleA) continue;
         var href2 = titleA.attr("href") || "";
         if (!href2) continue;
-        var link2 = href2.indexOf(BASE_URL) === 0 ? href2.substring(BASE_URL.length) : href2;
+        var link2 = stripHost(href2);
         if (seen[link2]) continue;
         seen[link2] = true;
         var name2 = titleA.text().trim();

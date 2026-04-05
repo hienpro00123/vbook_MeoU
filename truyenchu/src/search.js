@@ -3,11 +3,11 @@ load("config.js");
 function execute(keyword, page) {
     var p = page ? parseInt(page) : 1;
     var q = encodeURIComponent(keyword);
-    // Madara WP-Manga: tìm kiếm với post_type=manga
+    // Madara WP-Manga: tìm kiếm với post_type=wp-manga
     // WordPress /page/N/ cho kết quả search pagination
     var fetchUrl = p <= 1
-        ? BASE_URL + "/?s=" + q + "&post_type=manga"
-        : BASE_URL + "/page/" + p + "/?s=" + q + "&post_type=manga";
+        ? BASE_URL + "/?s=" + q + "&post_type=wp-manga"
+        : BASE_URL + "/page/" + p + "/?s=" + q + "&post_type=wp-manga";
 
     var res = fetchRetry(fetchUrl);
     if (!res || !res.ok) return Response.success([], null);

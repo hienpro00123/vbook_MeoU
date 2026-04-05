@@ -1,11 +1,12 @@
-var BASE_URL = "https://truyenchu.net";
-var HOST = "https://truyenchu.net";
+var BASE_URL = "https://www.truyenchu.net";
+var HOST = "https://www.truyenchu.net";
+var BASE_URL_ALT = "https://truyenchu.net";
 
 var FETCH_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
-    "Referer": "https://truyenchu.net/"
+    "Referer": "https://www.truyenchu.net/"
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
 
@@ -17,8 +18,19 @@ function selFirst(el, css) {
     return r.size() > 0 ? r.get(0) : null;
 }
 
+// Strip host (www hoặc non-www) từ URL tuyệt đối → relative path
+function stripHost(href) {
+    if (href.indexOf(BASE_URL) === 0) return href.substring(BASE_URL.length);
+    if (href.indexOf(BASE_URL_ALT) === 0) return href.substring(BASE_URL_ALT.length);
+    return href;
+}
+
 function resolveUrl(url) {
     if (!url) return BASE_URL;
+    // Normalize non-www → www
+    if (url.indexOf(BASE_URL_ALT + "/") === 0 && url.indexOf(BASE_URL) !== 0) {
+        url = BASE_URL + url.substring(BASE_URL_ALT.length);
+    }
     if (url.indexOf("http") === 0) return url;
     return BASE_URL + (url.charAt(0) === "/" ? url : "/" + url);
 }
@@ -68,7 +80,7 @@ function parseList(doc) {
         if (href.indexOf("/the-loai/") !== -1 || href.indexOf("/tac-gia/") !== -1) continue;
 
         // Chuẩn hoá về relative path
-        var link = href.indexOf(BASE_URL) === 0 ? href.substring(BASE_URL.length) : href;
+        var link = stripHost(href);
         if (seen[link]) continue;
         seen[link] = true;
 

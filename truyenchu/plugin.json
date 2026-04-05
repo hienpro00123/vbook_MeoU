@@ -2,8 +2,8 @@
   "metadata": {
     "name": "TruyenChu",
     "author": "Meo",
-    "version": 2,
-    "source": "https://truyenchu.net",
+    "version": 3,
+    "source": "https://www.truyenchu.net",
     "regexp": "truyenchu\\.net\\/truyen\\/[^\\/]+\\/?$",
     "description": "TruyenChu - Đọc truyện chữ online miễn phí",
     "locale": "vi_VN",
