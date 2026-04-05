@@ -34,7 +34,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v20 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v16 | Novel | vi_VN |
 | Bixiange | [m.bixiange.me](https://m.bixiange.me) | v7 | Chinese Novel | zh_CN |
-| TruyenChu | [truyenchu.net](https://truyenchu.net) | v1 | Novel | vi_VN |
+| TruyenChu | [truyenchu.net](https://truyenchu.net) | v2 | Novel | vi_VN |
 
 ## Tính năng
 
