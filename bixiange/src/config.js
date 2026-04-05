@@ -138,10 +138,11 @@ var ENTITY_MAP = {
 function stripHtml(html) {
     if (!html) return "";
     return html
-        .replace(/(<br\s*\/?>){2,}/gi, "\n\n")          // 2+ <br> liên tiếp → đoạn mới
+        .replace(/(<br\s*\/?>) {2,}/gi, "\n\n")         // 2+ <br> liên tiếp → đoạn mới
         .replace(/<br\s*\/?>/gi, "\n")                   // <br> đơn → xuống dòng
+        .replace(/<\/p>/gi, "\n\n")                      // đóng <\/p> → xuống đoạn (dòng trắng)
+        .replace(/<p[^>]*>/gi, "")                        // mở <p> → bỏ (close tag đã tạo khoảng)
         .replace(/<\/(div|section|article|blockquote)>/gi, "\n")  // đóng block → xuống dòng
-        .replace(/<p[^>]*>/gi, "\n").replace(/<\/p>/gi, "\n")
         .replace(/<[^>]*>/g, "")
         .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; })
         .replace(/[ \t\r]+/g, " ")      // chuẩn hóa khoảng trắng ngang

@@ -54,9 +54,11 @@ function execute() {
     { title: "Chuyển ver",           query: "chuyển-ver" },
   ];
 
-  var list = genres.map(function (g) {
-    return { title: g.title, input: g.query, script: "genrecontent.js" };
-  });
+  var list = [];
+  for (var i = 0; i < genres.length; i++) {
+    var g = genres[i];
+    list.push({ title: g.title, input: g.query, script: "genrecontent.js" });
+  }
   return Response.success(list);
 }
 

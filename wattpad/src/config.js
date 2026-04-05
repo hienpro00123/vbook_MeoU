@@ -47,15 +47,12 @@ function fetchWattpadJson(url, params) {
 }
 
 // Fetch nội dung chương HTML từ Wattpad (apiv2/storytext)
+// Trả về raw HTML string — apiv2/storytext trả về HTML fragment sạch, không cần parse lại
 function fetchWattpadHtml(url) {
   var res = fetch(url, FETCH_OPTIONS);
   if (res && !res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
   if (!res || !res.ok) return null;
-  try {
-    var doc = res.html();
-    var body = doc.select("body");
-    return body.size() > 0 ? body.get(0).html() : doc.html();
-  } catch (e) { return null; }
+  try { return res.text(); } catch (e) { return null; }
 }
 
 function parseStories(data) {
@@ -63,8 +60,10 @@ function parseStories(data) {
   var next = data.nextUrl ? OFFSET_RE.exec(data.nextUrl) : null;
   next = next ? next[1] : null;
   var list = [];
-  data.stories.forEach(function (v) {
-    if (!v.url) return; // bỏ qua truyện không có link
+  var stories = data.stories;
+  for (var i = 0; i < stories.length; i++) {
+    var v = stories[i];
+    if (!v.url) continue;
     list.push({
       name: v.title || "(Không có tên)",
       link: v.url,
@@ -72,6 +71,6 @@ function parseStories(data) {
       cover: v.cover || "",
       description: v.user ? v.user.name : "",
     });
-  });
+  }
   return Response.success(list, next);
 }

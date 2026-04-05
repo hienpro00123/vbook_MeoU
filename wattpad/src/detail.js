@@ -18,21 +18,25 @@ function execute(url) {
   var firstTag = null;
   var firstGenre = null;
   if (data.categories) {
-    data.categories.forEach(function (c) {
-      var name = c.viName || c.name || c.enName;
-      if (name) {
-        if (!firstGenre) firstGenre = name;
+    var cats = data.categories;
+    for (var ci = 0; ci < cats.length; ci++) {
+      var c = cats[ci];
+      var cname = c.viName || c.name || c.enName;
+      if (cname) {
+        if (!firstGenre) firstGenre = cname;
         if (genreStr) genreStr += ", ";
-        genreStr += name;
+        genreStr += cname;
       }
-    });
+    }
   }
   if (data.tags) {
-    data.tags.forEach(function (t) {
+    var tags = data.tags;
+    for (var ti = 0; ti < tags.length; ti++) {
+      var t = tags[ti];
       if (!firstTag) firstTag = t;
       if (genreStr) genreStr += ", ";
       genreStr += t;
-    });
+    }
   }
 
   var suggests = [];

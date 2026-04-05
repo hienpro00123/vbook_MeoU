@@ -156,14 +156,17 @@ function getNextPage(doc, current) {
     return null;
 }
 
-// Dọn HTML thành plain text — 4 pass thay vì 11 để giảm copy string
+// Dọn HTML thành plain text — 5 pass: block tags, strip tags, entities, whitespace, blank lines
 var ENTITY_MAP = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#039;": "'", "&nbsp;": " ", "&#160;": " " };
 function stripHtml(html) {
     if (!html) return "";
     return html
-        .replace(/<br\s*\/?>|<p[^>]*>|<\/p>/gi, "\n")  // block tags → newline (1 pass)
-        .replace(/<[^>]*>/g, "")                          // strip remaining tags (1 pass)
-        .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; }) // entities (1 pass)
-        .replace(/\n{3,}/g, "\n\n")                       // collapse blank lines (1 pass)
+        .replace(/<\/p>/gi, "\n\n")                   // đóng <\/p> → xuống đoạn (dòng trắng)
+        .replace(/<br\s*\/?>|<p[^>]*>|<\/div>|<\/section>|<\/article>/gi, "\n")
+        .replace(/<[^>]*>/g, "")
+        .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; })
+        .replace(/[ \t]+/g, " ")          // chuẩn hóa khoảng trắng ngang
+        .replace(/\n[ \t]+/g, "\n")       // bỏ space/tab đầu mỗi dòng
+        .replace(/\n{3,}/g, "\n\n")       // tối đa 2 dòng trắng liên tiếp
         .trim();
 }

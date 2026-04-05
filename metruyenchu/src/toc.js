@@ -1,7 +1,16 @@
 load("config.js");
 
 // Regex trích link chương từ HTML fragment (AJAX response)
-var CHAP_A_RE = /<a\s+href='([^']+)'[^>]*>([^<]+)<\/a>/g;
+// Hỗ trợ cả href='...' và href="..." — một số server trả về double quotes
+var CHAP_A_RE = /<a\s+href=["']([^"']+)["'][^>]*>([^<]+)<\/a>/g;
+
+// Decode HTML entities trong tên chương (từ AJAX response)
+function decodeEntities(s) {
+    return s.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"').replace(/&#(\d+);/g, function(m, n) {
+                return String.fromCharCode(parseInt(n, 10));
+            });
+}
 
 function parseChapHtml(html, slug, seen, chapters) {
     var m;
@@ -10,9 +19,9 @@ function parseChapHtml(html, slug, seen, chapters) {
         var href = m[1];
         if (slug && href.indexOf("/" + slug + "/") === -1) continue;
         if (seen[href]) continue;
-        seen[href] = true;
-        var name = m[2].trim();
+        var name = decodeEntities(m[2].trim());
         if (!name) continue;
+        seen[href] = true;
         chapters.push({
             name: name,
             url: href.charCodeAt(0) !== 47 ? href : BASE_URL + href,
