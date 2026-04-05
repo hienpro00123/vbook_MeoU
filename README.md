@@ -29,11 +29,12 @@ Sau khi có phiên bản mới được push lên GitHub:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| OTruyen | [otruyen.cc](https://otruyen.cc) | v22 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v25 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v19 | Novel | vi |
-| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v15 | Novel | vi_VN |
-| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v6 | Chinese Novel | zh_CN |
+| OTruyen | [otruyen.cc](https://otruyen.cc) | v23 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v26 | Comic | vi_VN |
+| Wattpad | [wattpad.com](https://www.wattpad.com) | v20 | Novel | vi |
+| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v16 | Novel | vi_VN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v7 | Chinese Novel | zh_CN |
+| TruyenChu | [truyenchu.net](https://truyenchu.net) | v1 | Novel | vi_VN |
 
 ## Tính năng
 
@@ -83,6 +84,15 @@ Sau khi có phiên bản mới được push lên GitHub:
 - **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, trạng thái
 - **Truyện gợi ý**: Gợi ý theo cùng thể loại
 - **Mục lục**: Tất cả chương trên 1 trang (không AJAX)
+- **Đọc truyện**: Nội dung chương dạng văn bản
+
+### TruyenChu
+- **Trang chủ**: Mới cập nhật
+- **Thể loại**: 33 thể loại (Tiên Hiệp, Ngôn Tình, Huyền Huyễn, Đô Thị...)
+- **Tìm kiếm**: Tìm kiếm theo từ khóa
+- **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, trạng thái
+- **Truyện cùng tác giả**: Gợi ý toàn bộ truyện của tác giả
+- **Mục lục**: Danh sách chương, hỗ trợ AJAX fallback
 - **Đọc truyện**: Nội dung chương dạng văn bản
 
 ## Cấu trúc
