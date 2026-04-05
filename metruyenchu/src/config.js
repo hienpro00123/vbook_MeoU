@@ -162,7 +162,7 @@ function stripHtml(html) {
     if (!html) return "";
     return html
         .replace(/<\/p>/gi, "\n\n")                   // đóng <\/p> → xuống đoạn (dòng trắng)
-        .replace(/<br\s*\/?>/gi, "\n\n")                      // <br> → xuống đoạn (paragraph break)
+        .replace(/<br[^>]*>(\s*<\/br>)?/gi, "\n\n")    // <br>, <br/>, <br></br> → xuống đoạn
         .replace(/<p[^>]*>|<\/div>|<\/section>|<\/article>/gi, "\n")
         .replace(/<[^>]*>/g, "")
         .replace(/&[a-z#0-9]+;/gi, function(e) { return ENTITY_MAP[e] || e; })

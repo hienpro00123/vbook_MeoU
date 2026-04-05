@@ -138,7 +138,7 @@ var ENTITY_MAP = {
 function stripHtml(html) {
     if (!html) return "";
     return html
-        .replace(/<br\s*\/?>\s*(<br\s*\/?>\s*)*/gi, "\n\n")  // <br> (1+) → paragraph break
+        .replace(/(<br[^>]*>\s*(<\/br>)?\s*)+/gi, "\n\n")  // <br>, <br/>, <br></br> (1+) → paragraph break
         .replace(/<\/p>/gi, "\n\n")                      // đóng <\/p> → xuống đoạn (dòng trắng)
         .replace(/<p[^>]*>/gi, "")                        // mở <p> → bỏ (close tag đã tạo khoảng)
         .replace(/<\/(div|section|article|blockquote)>/gi, "\n")  // đóng block → xuống dòng
