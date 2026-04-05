@@ -34,6 +34,7 @@ function findContent(doc) {
     removeNoise(doc);
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
+        el.select("a").remove(); // Xóa link nav/promo inject vào nội dung
         var txt = cleanText(stripHtml(el.html()));
         if (txt.length > 100) return txt;
     }

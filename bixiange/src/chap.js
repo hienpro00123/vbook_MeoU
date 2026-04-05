@@ -88,6 +88,7 @@ function findContent(doc) {
     removeNoise(doc);
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
+        el.select("a").remove(); // Xóa link nav/promo inject vào nội dung (下一章, ads...)
         var txt = stripHtml(el.html());
         if (txt.length > 200) return addIndent(txt);
     }
