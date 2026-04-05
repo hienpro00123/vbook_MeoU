@@ -63,6 +63,18 @@
       "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
       "type": "chinese_novel",
       "locale": "zh_CN"
+    },
+    {
+      "name": "TruyenChu",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyenchu/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyenchu/plugin.json",
+      "version": 1,
+      "source": "https://truyenchu.net",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyenchu/icon.png",
+      "description": "TruyenChu - Đọc truyện chữ online miễn phí",
+      "type": "novel",
+      "locale": "vi_VN"
     }
   ]
 }
