@@ -72,7 +72,8 @@ function execute(url) {
                 if (t) parts.push(t);
             }
             description = parts.join("\n");
-        } else {
+        }
+        if (!description) {
             description = descEl.text().trim();
         }
     }
