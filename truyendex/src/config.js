@@ -26,9 +26,12 @@ function toBase64(str) {
   return result;
 }
 
+// Pre-detect btoa — tránh try/catch overhead mỗi lần gọi proxyImage (32+ lần/trang)
+var HAS_BTOA = false;
+try { HAS_BTOA = typeof btoa === "function"; } catch(e) {}
+
 function proxyImage(url) {
-  // Dùng native btoa nếu engine hỗ trợ (nhanh hơn đáng kể) — fallback sang toBase64
-  try { return PROXY_URL + btoa(url); } catch(e) { return PROXY_URL + toBase64(url); }
+  return PROXY_URL + (HAS_BTOA ? btoa(url) : toBase64(url));
 }
 
 function getLocalized(obj) {

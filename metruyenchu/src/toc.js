@@ -79,9 +79,9 @@ function execute(url) {
         }
     }
 
-    // Fetch các trang chương còn lại qua AJAX API
+    // Fetch các trang chương còn lại qua AJAX API (tối đa 50 trang — ~2500 chương)
     if (bookId && totalPages > 1) {
-        for (var p = 2; p <= totalPages && p <= 100; p++) {
+        for (var p = 2; p <= totalPages && p <= 50; p++) {
             var pageRes = fetchRetry(BASE_URL + "/get/listchap/" + bookId + "?page=" + p);
             if (!pageRes.ok) break;
             var json;

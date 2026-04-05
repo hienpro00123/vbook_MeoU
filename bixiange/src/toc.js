@@ -1,5 +1,8 @@
 load("config.js");
 
+// Precompile regex — dùng trong loop
+var INDEX_PAGE_RE = /\/index_(\d+)\.html/;
+
 // Regex nhận diện text là ký tự UI toggle — không phải tên chương thật
 var UI_TOGGLE_RE = /^[+\-×✕▸▾▼▲◆□■●○\s]{1,4}$|^(展开|收起|更多|显示|隐藏)$/;
 // Nhãn điều hướng — bỏ qua
@@ -57,15 +60,15 @@ function execute(url) {
     var pageLinks = doc.select("a[href*='" + storyPath + "/index_']");
     for (var pi = 0; pi < pageLinks.size(); pi++) {
         var ph = pageLinks.get(pi).attr("href") || "";
-        var pm = /\/index_(\d+)\.html/.exec(ph);
+        var pm = INDEX_PAGE_RE.exec(ph);
         if (pm) {
             var pn = parseInt(pm[1], 10);
             if (pn > maxPage) maxPage = pn;
         }
     }
 
-    // Fetch các trang TOC tiếp theo (tối đa 15 trang)
-    for (var p = 2; p <= maxPage && p <= 15; p++) {
+    // Fetch các trang TOC tiếp theo (tối đa 10 trang — ~500 chương)
+    for (var p = 2; p <= maxPage && p <= 10; p++) {
         var pageUrl = BASE_URL + storyPath + "/index_" + p + ".html";
         var pageDoc = fetchBrowser(pageUrl, 5000);
         if (!pageDoc) break;

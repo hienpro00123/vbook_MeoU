@@ -1,5 +1,8 @@
 load("config.js");
 
+// Precompile regex — dùng trong loop scan tác giả
+var AUTHOR_ZH_RE = /\u4f5c\u8005[\uff1a:]\s*(.+)/;
+
 // Map category slug → tên hiển thị
 var GENRE_MAP = {
     dsyq: "\u90fd\u5e02\u8a00\u60c5",
@@ -69,7 +72,7 @@ function execute(url) {
         var spans = doc.select("p, span, em");
         for (var ai = 0; ai < spans.size(); ai++) {
             var atxt = spans.get(ai).text().trim();
-            var am = /\u4f5c\u8005[\uff1a:]\s*(.+)/.exec(atxt);  // 作者：
+            var am = AUTHOR_ZH_RE.exec(atxt);  // 作者：
             if (am && am[1] && am[1].length < 50) {
                 author = am[1].trim();
                 break;

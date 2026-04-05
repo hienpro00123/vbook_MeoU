@@ -1,8 +1,11 @@
 load("config.js");
 
+// Precompile regex — tránh tạo mới mỗi lần gọi execute
+var CATEGORY_RE = /\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\//;
+
 function execute(url) {
     // Lấy truyện đề xuất từ cùng thể loại với bộ truyện đang xem
-    var m = /\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\//.exec(url);
+    var m = CATEGORY_RE.exec(url);
     if (!m) return Response.success([]);
     var category = m[1];
     var fetchUrl = paginateUrl(category, 1);

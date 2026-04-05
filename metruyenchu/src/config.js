@@ -1,5 +1,5 @@
-const BASE_URL = "https://metruyenchu.com.vn";
-const HOST = "https://metruyenchu.com.vn";
+var BASE_URL = "https://metruyenchu.com.vn";
+var HOST = "https://metruyenchu.com.vn";
 
 // Cache headers — khởi tạo 1 lần, tái dùng mãi
 var FETCH_HEADERS = {
@@ -34,29 +34,6 @@ function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
     if (!res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
     return res;
-}
-
-// Fetch bằng browser (cho trang cần JS render như detail/chap)
-function fetchBrowser(url, timeout) {
-    var t = timeout || 7000;
-    var browser = Engine.newBrowser();
-    try {
-        return browser.launch(url, t);
-    } finally {
-        browser.close();
-    }
-}
-
-// Thử HTTP fetch nhanh trước, fallback sang browser nếu trang cần JS
-function fetchSmart(url) {
-    var res = fetchRetry(url);
-    if (res && res.ok) {
-        var doc = res.html();
-        // Kiểm tra có story card hoặc story title — chỉnh xác hơn đếm a[href]
-        // tránh false positive khi trang JS-render nhưng nav/footer đã có 6+ links
-        if (doc && doc.select("div.item, h3 a[href]").size() > 0) return doc;
-    }
-    return fetchBrowser(url);
 }
 
 // Parse danh sách truyện từ doc (list/genre/search pages)

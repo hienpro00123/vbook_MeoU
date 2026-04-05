@@ -1,5 +1,9 @@
 load("config.js");
 
+// Precompile regex — dùng mỗi lần đọc chương, tránh compile lại
+var EMPTY_P_RE = /<p[^>]*>\s*(<br\s*\/?>)?\s*<\/p>/gi;
+var MULTI_BR_RE = /(<br\s*\/?>\s*){3,}/gi;
+
 function execute(url) {
   var chapId = extractChapId(url);
   if (!chapId) return Response.error("URL chương không hợp lệ");
@@ -16,19 +20,17 @@ function execute(url) {
   try { doc = res.html(); } catch (e) {}
 
   if (doc) {
-    // Xóa script, style, ads, author-note label
-    doc.select("script, style, ins, iframe, noscript").remove();
-    doc.select(".ad, .ads, .advertisement, [class*=advert]").remove();
-    doc.select(".author-note-label, .note-label, .paid-content").remove();
+    // Xóa noise tags — gộp 1 selector duy nhất, tránh 3 DOM scan riêng
+    doc.select("script, style, ins, iframe, noscript, .ad, .ads, .advertisement, [class*=advert], .author-note-label, .note-label, .paid-content").remove();
 
     // Lấy body HTML (fragment sạch — không có <html><head> boilerplate)
     var body = doc.select("body");
     var html = body.size() > 0 ? body.get(0).html() : doc.html();
 
     // Xóa <p> rỗng hoặc chứa <br> thuần — vBook render thành dòng trắng thừa
-    html = html.replace(/<p[^>]*>\s*(<br\s*\/?>)?\s*<\/p>/gi, "");
+    html = html.replace(EMPTY_P_RE, "");
     // Chuẩn hóa: tối đa 2 <br> liên tiếp — tránh khoảng trắng thừa do Wattpad inject
-    html = html.replace(/(<br\s*\/?>\s*){3,}/gi, "<br><br>");
+    html = html.replace(MULTI_BR_RE, "<br><br>");
 
     if (html && html.length > 20) return Response.success(html);
   }

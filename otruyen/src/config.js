@@ -1,6 +1,6 @@
-const BASE_URL = "https://otruyenapi.com/v1/api";
-const CDN_IMAGE = "https://img.otruyenapi.com";
-const HOST = "https://otruyen.cc";
+var BASE_URL = "https://otruyenapi.com/v1/api";
+var CDN_IMAGE = "https://img.otruyenapi.com";
+var HOST = "https://otruyen.cc";
 
 function extractSlug(url) {
   var slug = url;
