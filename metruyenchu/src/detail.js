@@ -5,7 +5,7 @@ function execute(url) {
 
     // Detail page có đủ thông tin trong static HTML → dùng HTTP trực tiếp (nhanh hơn fetchSmart)
     var res = fetchRetry(storyUrl);
-    if (!res.ok) return Response.error("Không tải được trang truyện");
+    if (!res || !res.ok) return Response.error("Không tải được trang truyện");
     var doc = res.html();
     if (!doc) return Response.error("Không tải được trang truyện");
 
@@ -35,6 +35,12 @@ function execute(url) {
     // Tác giả
     var authorEl = selFirst(doc, "a[href*='/tac-gia/'], .author a, .book-author a, .tac-gia a, .info-author a, .writer a");
     var author = authorEl ? authorEl.text().trim() : "";
+    var authorSlug = "";
+    if (authorEl) {
+        var authorHref = authorEl.attr("href") || "";
+        var slugM = /\/tac-gia\/([^\/\?]+)/.exec(authorHref);
+        if (slugM) authorSlug = slugM[1];
+    }
     if (!author) {
         var authorText = selFirst(doc, ".author, .tac-gia, .book-author, .info-author");
         if (authorText) author = authorText.text().replace(AUTHOR_RE, "").trim();
@@ -103,6 +109,9 @@ function execute(url) {
 
     // Suggests — luôn thêm suggest (trang truyện có truyện tương tự dưới dạng sidebar)
     var suggests = [{ title: "Truyện tương tự", input: storyUrl, script: "suggest.js" }];
+    if (authorSlug) {
+        suggests.push({ title: "Truyện cùng tác giả", input: "author:" + authorSlug, script: "suggest.js" });
+    }
 
     return Response.success({
         name: name || "Đang cập nhật",

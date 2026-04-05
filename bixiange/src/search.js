@@ -9,6 +9,8 @@ function execute(key, page) {
     if (!doc) return Response.error("Lỗi tìm kiếm");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
-    var next = getNextPage(doc, p);
+    // Search dùng ?page=N — không dùng getNextPage (vốn chỉ hiểu index_N.html)
+    var nextLink = selFirst(doc, "a[href*='page=" + (p + 1) + "']");
+    var next = nextLink ? String(p + 1) : null;
     return Response.success(items, next);
 }

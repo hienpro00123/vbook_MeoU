@@ -1,7 +1,8 @@
 load("config.js");
 
-// Precompile regex — dùng trong loop scan tác giả
+// Precompile regex — tránh compile lại mỗi lần execute()
 var AUTHOR_ZH_RE = /\u4f5c\u8005[\uff1a:]\s*(.+)/;
+var DETAIL_CAT_RE = /\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\//;
 
 // Map category slug → tên hiển thị
 var GENRE_MAP = {
@@ -112,10 +113,15 @@ function execute(url) {
 
     // --- Thể loại từ URL ---
     var genres = [];
-    var catM = /\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\//.exec(storyUrl);
+    var catM = DETAIL_CAT_RE.exec(storyUrl);
     if (catM) {
         var catSlug = catM[1];
         genres.push({ title: GENRE_MAP[catSlug] || catSlug, input: catSlug, script: "genrecontent.js" });
+    }
+
+    var suggests = [{ title: "\u63a8\u8350", input: storyUrl, script: "suggest.js" }];
+    if (author) {
+        suggests.push({ title: "\u540c\u4f5c\u8005", input: "author:" + author, script: "suggest.js" });
     }
 
     return Response.success({
@@ -127,6 +133,6 @@ function execute(url) {
         detail: genres.length > 0 ? "\u5206\u7c7b\uff1a" + genres[0].title : "",
         ongoing: ongoing,
         genres: genres,
-        suggests: [{ title: "\u63a8\u8350", input: storyUrl, script: "suggest.js" }]
+        suggests: suggests
     });
 }

@@ -7,8 +7,9 @@ function execute(url, page) {
         ? BASE_URL + "/"
         : BASE_URL + "/danh-sach/" + url + "?page=" + p;
     var res = fetchRetry(fetchUrl);
-    if (!res.ok) return Response.error("Không tải được trang " + fetchUrl);
+    if (!res || !res.ok) return Response.error("Không tải được trang " + fetchUrl);
     var doc = res.html();
+    if (!doc) return Response.success([], null);
 
     if (isHome) {
         // Homepage dùng div.itemupdate (khác cấu trúc div.item ở genre/danh-sach)

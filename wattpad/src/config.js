@@ -64,9 +64,11 @@ function parseStories(data) {
   for (var i = 0; i < stories.length; i++) {
     var v = stories[i];
     if (!v.url) continue;
+    var linkPath = v.url;
+    if (linkPath.indexOf("http") === 0) linkPath = linkPath.replace(BASE_URL, "");
     list.push({
       name: v.title || "(Không có tên)",
-      link: v.url,
+      link: linkPath,
       host: BASE_URL,
       cover: v.cover || "",
       description: v.user ? v.user.name : "",

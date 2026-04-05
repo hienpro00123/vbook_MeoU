@@ -48,6 +48,7 @@ function paginateUrl(section, page) {
 // Fetch với retry — bỏ qua 4xx
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
+    if (!res) return res;
     if (!res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
     return res;
 }

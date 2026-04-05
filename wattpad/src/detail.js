@@ -39,6 +39,16 @@ function execute(url) {
     }
   }
 
+  var genres = [];
+  if (data.categories) {
+    var gcats = data.categories;
+    for (var gi = 0; gi < gcats.length; gi++) {
+      var gc = gcats[gi];
+      var gname = gc.viName || gc.name || gc.enName;
+      if (gname) genres.push({ title: gname, input: gname, script: "genrecontent.js" });
+    }
+  }
+
   var suggests = [];
   if (firstTag) {
     suggests.push({ title: "Truyện cùng thể loại", input: firstTag, script: "suggest.js" });
@@ -57,6 +67,7 @@ function execute(url) {
     description: data.description || "",
     detail: genreStr,
     ongoing: !data.completed,
+    genres: genres,
     suggests: suggests,
   });
 }

@@ -35,7 +35,7 @@ function execute(url) {
     var storyUrl = resolveUrl(url);
     // TOC có chapter links + paging trong static HTML → HTTP trực tiếp
     var res = fetchRetry(storyUrl);
-    if (!res.ok) return Response.error("Không tải được mục lục");
+    if (!res || !res.ok) return Response.error("Không tải được mục lục");
     var doc = res.html();
     if (!doc) return Response.error("Không tải được mục lục");
 
@@ -83,7 +83,7 @@ function execute(url) {
     if (bookId && totalPages > 1) {
         for (var p = 2; p <= totalPages && p <= 50; p++) {
             var pageRes = fetchRetry(BASE_URL + "/get/listchap/" + bookId + "?page=" + p);
-            if (!pageRes.ok) break;
+            if (!pageRes || !pageRes.ok) break;
             var json;
             try { json = pageRes.json(); } catch (e) { break; }
             if (!json || !json.data) break;

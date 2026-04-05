@@ -2,9 +2,9 @@
   "metadata": {
     "name": "Wattpad - Tiếng Việt",
     "author": "Meo",
-    "version": 19,
+    "version": 20,
     "source": "https://www.wattpad.com",
-    "regexp": "(www\\.)?wattpad\\.com/(story/)?\\d+",
+    "regexp": "(www\\.|m\\.)?wattpad\\.com/(story/)?\\d+",
     "description": "Đọc truyện tiếng Việt trên Wattpad",
     "locale": "vi",
     "type": "novel"

@@ -1,6 +1,21 @@
 load("config.js");
 
 function execute(input, page) {
+    // Truyện cùng tác giả — fetch trang /tac-gia/{slug}
+    if (input.indexOf("author:") === 0) {
+        var slug = input.substring(7);
+        var p = page ? parseInt(page) : 1;
+        var authorUrl = BASE_URL + "/tac-gia/" + slug + "?page=" + p;
+        var res = fetchRetry(authorUrl);
+        if (!res || !res.ok) return Response.success([], null);
+        var doc = res.html();
+        if (!doc) return Response.success([], null);
+        var items = parseList(doc);
+        if (!items || items.length === 0) return Response.success([], null);
+        var next = getNextPage(doc, p);
+        return Response.success(items, next);
+    }
+
     var storyUrl = resolveUrl(input);
 
     // Suggest lấy từ sidebar detail page — static HTML đủ dùng
@@ -60,7 +75,7 @@ function execute(input, page) {
         var normHref = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : href;
         var cover = coverMap[normHref] || "";
         if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
-        result.push({ name: name, link: href, host: HOST, cover: cover });
+        result.push({ name: name, link: normHref, host: HOST, cover: cover });
         if (result.length >= 20) break;
     }
 

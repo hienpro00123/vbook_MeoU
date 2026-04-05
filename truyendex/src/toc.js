@@ -13,7 +13,7 @@ function execute(url) {
 
   // Fetch additional pages if manga has >500 chapters
   var allData = data.data;
-  var fetched = data.offset + data.data.length;
+  var fetched = (data.offset || 0) + data.data.length;
   var maxPages = 20; // guard: tối đa 20 request (10000 chương), tránh loop vô hạn khi mạng kém
   var pageCount = 0;
   while (fetched < data.total && pageCount < maxPages) {

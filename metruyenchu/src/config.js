@@ -32,6 +32,7 @@ function selFirst(el, css) {
 // Fetch với retry — bỏ qua 4xx (không retry lỗi client)
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
+    if (!res) return res;
     if (!res.ok && !(res.status >= 400 && res.status < 500)) res = fetch(url, FETCH_OPTIONS);
     return res;
 }
@@ -60,7 +61,8 @@ function parseList(doc) {
             if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
             var authorA = selFirst(card, "a[href*='/tac-gia/']");
             var desc = authorA ? authorA.text().trim() : "";
-            result.push({ name: name, link: href, host: HOST, cover: cover, description: desc });
+            var linkPath = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : href;
+            result.push({ name: name, link: linkPath, host: HOST, cover: cover, description: desc });
             if (result.length >= 30) break;
         }
     }
@@ -92,7 +94,7 @@ function parseList(doc) {
             if (!name2) continue;
             var normHref2 = href2.indexOf("http") === 0 ? href2.replace(BASE_URL, "") : href2;
             var cover2 = coverMap[normHref2] || "";
-            result.push({ name: name2, link: href2, host: HOST, cover: cover2, description: "" });
+            result.push({ name: name2, link: normHref2, host: HOST, cover: cover2, description: "" });
             if (result.length >= 30) break;
         }
     }
