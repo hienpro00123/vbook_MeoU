@@ -84,7 +84,7 @@ function detectChapPages(doc, chapPath) {
     return maxPage;
 }
 
-// Strip 　　 prefix từ text — tránh translator Vietphrase xử lý sai full-width space
+// Strip 　　 prefix từ text — dùng khi cần text sạch để kiểm tra
 function stripIndent(txt) {
     return txt.replace(/^\u3000+/, "").trim();
 }
@@ -94,24 +94,33 @@ function findContent(doc) {
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
         el.select("a").remove(); // Xóa link nav/promo inject vào nội dung (下一章, ads...)
-        // Ưu tiên: xử lý trực tiếp từng <p> → mỗi <p> = 1 đoạn, nối bằng \n\n
-        // KHÔNG dùng addIndent() — translator Vietphrase sẽ strip \n\n nếu có 　　 prefix
+        // Ưu tiên: xử lý trực tiếp từng <p> → format chuẩn chinese_novel:
+        // mỗi đoạn 1 dòng (\n separator), prefix 　　 — Vietphrase dịch line-by-line
         var paras = el.select("p");
         if (paras.size() > 2) {
             var parts = [];
             for (var i = 0; i < paras.size(); i++) {
-                var ptxt = stripIndent(stripHtml(paras.get(i).html()));
+                var ptxt = stripHtml(paras.get(i).html()).trim().replace(/^\u3000+/, "");
                 if (!ptxt || PROMO_LINE_RE.test(ptxt)) continue;
-                parts.push(ptxt);
+                // Giữ lại 　　 prefix chuẩn chinese_novel
+                parts.push("\u3000\u3000" + ptxt);
             }
             if (parts.length > 0) {
-                var joined = parts.join("\n\n").replace(/\n{3,}/g, "\n\n").trim();
+                var joined = parts.join("\n").trim();
                 if (joined.length > 200) return joined;
             }
         }
         // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags, dùng <br>)
         var txt = stripHtml(el.html());
-        txt = txt.replace(/^\u3000+/gm, "").replace(/\n{3,}/g, "\n\n").trim();
+        // Đảm bảo mỗi dòng có 　　 prefix nếu chưa có
+        var lines = txt.split("\n");
+        var flines = [];
+        for (var li = 0; li < lines.length; li++) {
+            var ln = lines[li].replace(/^\u3000+/, "").trim();
+            if (!ln || PROMO_LINE_RE.test(ln)) continue;
+            flines.push("\u3000\u3000" + ln);
+        }
+        txt = flines.join("\n").trim();
         if (txt.length > 200) return txt;
     }
     // Fallback: duyệt div có text dài nhất — bỏ qua div chứa nhiều link (nav/list)
@@ -129,9 +138,14 @@ function findContent(doc) {
         best = d;
     }
     if (best) {
-        var ftxt = stripHtml(best.html());
-        ftxt = ftxt.replace(/^\u3000+/gm, "").replace(/\n{3,}/g, "\n\n").trim();
-        return ftxt;
+        var blines = stripHtml(best.html()).split("\n");
+        var bout = [];
+        for (var bi = 0; bi < blines.length; bi++) {
+            var bl = blines[bi].replace(/^\u3000+/, "").trim();
+            if (!bl || PROMO_LINE_RE.test(bl)) continue;
+            bout.push("\u3000\u3000" + bl);
+        }
+        return bout.join("\n").trim();
     }
     return "";
 }
