@@ -53,9 +53,8 @@ function fetchRetry(url) {
 }
 
 // Fetch bằng browser (cho trang cần JS render) — GBK encoding
-// timeout: ms, mặc định 10000
 function fetchBrowser(url, timeout) {
-    var t = timeout || 10000;
+    var t = timeout || 7000;
     var browser = Engine.newBrowser();
     try {
         return browser.launch(url, t);

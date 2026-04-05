@@ -64,10 +64,10 @@ function execute(url) {
         }
     }
 
-    // Fetch các trang TOC tiếp theo (tối đa 50 trang — ~5000 chương)
-    for (var p = 2; p <= maxPage && p <= 50; p++) {
+    // Fetch các trang TOC tiếp theo (tối đa 15 trang)
+    for (var p = 2; p <= maxPage && p <= 15; p++) {
         var pageUrl = BASE_URL + storyPath + "/index_" + p + ".html";
-        var pageDoc = fetchBrowser(pageUrl, 7000);
+        var pageDoc = fetchBrowser(pageUrl, 5000);
         if (!pageDoc) break;
         extractChaps(pageDoc, storyPath, chapters, seen);
     }

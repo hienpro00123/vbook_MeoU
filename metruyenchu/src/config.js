@@ -37,10 +37,11 @@ function fetchRetry(url) {
 }
 
 // Fetch bằng browser (cho trang cần JS render như detail/chap)
-function fetchBrowser(url) {
+function fetchBrowser(url, timeout) {
+    var t = timeout || 7000;
     var browser = Engine.newBrowser();
     try {
-        return browser.launch(url, 10000);
+        return browser.launch(url, t);
     } finally {
         browser.close();
     }

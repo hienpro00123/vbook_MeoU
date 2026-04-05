@@ -3,6 +3,7 @@ load("config.js");
 // Regex trích link chương từ HTML fragment (AJAX response)
 // Hỗ trợ cả href='...' và href="..." — một số server trả về double quotes
 var CHAP_A_RE = /<a\s+href=["']([^"']+)["'][^>]*>([^<]+)<\/a>/g;
+var PAGE_ONCLICK_RE = /page\((\d+),(\d+)\)/;
 
 // Decode HTML entities trong tên chương (từ AJAX response)
 function decodeEntities(s) {
@@ -70,7 +71,7 @@ function execute(url) {
     for (var j = 0; j < pagingLinks.size(); j++) {
         var onclick = pagingLinks.get(j).attr("onclick");
         if (!onclick) continue;
-        var idMatch = /page\((\d+),(\d+)\)/.exec(onclick);
+        var idMatch = PAGE_ONCLICK_RE.exec(onclick);
         if (idMatch) {
             if (!bookId) bookId = idMatch[1];
             var pn = parseInt(idMatch[2]);

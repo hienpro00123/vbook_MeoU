@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var chapUrl = resolveUrl(url);
-    var doc = fetchBrowser(chapUrl);
+    var doc = fetchBrowser(chapUrl, 8000);
     if (!doc) return null;
 
     var el = selFirst(doc, "#BookText");
