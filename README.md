@@ -31,9 +31,9 @@ Sau khi có phiên bản mới được push lên GitHub:
 |-----|-------|-----------|------|----------|
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v21 | Comic | vi_VN |
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v24 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v17 | Novel | vi |
-| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v8 | Novel | vi_VN |
-| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v2 | Chinese Novel | zh_CN |
+| Wattpad | [wattpad.com](https://www.wattpad.com) | v18 | Novel | vi |
+| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v11 | Novel | vi_VN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v5 | Chinese Novel | zh_CN |
 
 ## Tính năng
 
