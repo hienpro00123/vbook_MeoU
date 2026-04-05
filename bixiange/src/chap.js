@@ -12,7 +12,7 @@ var SEPARATOR_RE = /^[^\u4e00-\u9fff\u3400-\u4dbf\w\d]+$/;
 
 // Regex lọc dòng watermark/promo DedeCMS inject vào nội dung tiểu thuyết TQ
 // Khớp dòng chứa: URL site, lời mời đọc, thông báo cập nhật, tên site, v.v.
-var PROMO_LINE_RE = /本书由|提供下载|最新章节|手机用户|一秒钟记住|请记住|本站网址|章节错误|内容更新|本章字数|正文字数|分享本书|点击右上角|阅读全文|www\.|\.net|\.com|\.me|bixiange/i;
+var PROMO_LINE_RE = /本书由|提供下载|最新章节|手机用户|一秒钟记住|请记住|本站网址|章节错误|内容更新|本章字数|正文字数|分享本书|点击右上角|阅读全文|www\.|\.net|\.com|\.me|bixiange|笔仙阁|全文免费|免费阅读|作者有话|下载地址|最新站点/i;
 
 // Thêm indent　　cho từng đoạn — chuẩn tiểu thuyết Trung Quốc
 // Đảm bảo mỗi đoạn nội dung cách nhau 1 dòng trắng dù HTML dùng <br> hay <p>
@@ -31,6 +31,13 @@ function addIndent(text) {
         if (PROMO_LINE_RE.test(trimmed)) continue;
         // Dòng phân cách ký hiệu — giữ nguyên, không indent, không tính là nội dung
         if (SEPARATOR_RE.test(trimmed)) { out.push(trimmed); prevContent = false; continue; }
+        // System messages 【…】 trong LitRPG/isekai — giữ nguyên, không indent
+        if (trimmed.charAt(0) === "\u3010") {
+            if (prevContent) out.push("");
+            out.push(trimmed);
+            prevContent = true;
+            continue;
+        }
         // Tiêu đề ngắn (≤5 ký tự) — giữ khoảng cách với đoạn liền trước/sau
         if (trimmed.length <= 5) {
             if (prevContent) out.push("");

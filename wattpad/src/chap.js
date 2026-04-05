@@ -27,6 +27,8 @@ function execute(url) {
 
     // Xóa <p> rỗng hoặc chứa <br> thuần — vBook render thành dòng trắng thừa
     html = html.replace(/<p[^>]*>\s*(<br\s*\/?>)?\s*<\/p>/gi, "");
+    // Chuẩn hóa: tối đa 2 <br> liên tiếp — tránh khoảng trắng thừa do Wattpad inject
+    html = html.replace(/(<br\s*\/?>\s*){3,}/gi, "<br><br>");
 
     if (html && html.length > 20) return Response.success(html);
   }
