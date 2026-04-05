@@ -84,28 +84,35 @@ function detectChapPages(doc, chapPath) {
     return maxPage;
 }
 
+// Strip 　　 prefix từ text — tránh translator Vietphrase xử lý sai full-width space
+function stripIndent(txt) {
+    return txt.replace(/^\u3000+/, "").trim();
+}
+
 function findContent(doc) {
     removeNoise(doc);
     var el = selFirst(doc, CHAP_CSS);
     if (el) {
         el.select("a").remove(); // Xóa link nav/promo inject vào nội dung (下一章, ads...)
-        // Ưu tiên: xử lý trực tiếp từng <p> → đảm bảo paragraph break đúng (mỗi <p> = \n\n)
+        // Ưu tiên: xử lý trực tiếp từng <p> → mỗi <p> = 1 đoạn, nối bằng \n\n
+        // KHÔNG dùng addIndent() — translator Vietphrase sẽ strip \n\n nếu có 　　 prefix
         var paras = el.select("p");
         if (paras.size() > 2) {
             var parts = [];
             for (var i = 0; i < paras.size(); i++) {
-                var ptxt = stripHtml(paras.get(i).html()).trim();
+                var ptxt = stripIndent(stripHtml(paras.get(i).html()));
                 if (!ptxt || PROMO_LINE_RE.test(ptxt)) continue;
                 parts.push(ptxt);
             }
             if (parts.length > 0) {
-                var joined = parts.join("\n\n");
-                if (joined.length > 200) return addIndent(joined);
+                var joined = parts.join("\n\n").replace(/\n{3,}/g, "\n\n").trim();
+                if (joined.length > 200) return joined;
             }
         }
-        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags)
+        // Fallback: stripHtml toàn bộ HTML (khi không dùng <p> tags, dùng <br>)
         var txt = stripHtml(el.html());
-        if (txt.length > 200) return addIndent(txt);
+        txt = txt.replace(/^\u3000+/gm, "").replace(/\n{3,}/g, "\n\n").trim();
+        if (txt.length > 200) return txt;
     }
     // Fallback: duyệt div có text dài nhất — bỏ qua div chứa nhiều link (nav/list)
     var divs = doc.select("div");
@@ -121,7 +128,12 @@ function findContent(doc) {
         bestLen = textLen;
         best = d;
     }
-    return best ? addIndent(stripHtml(best.html())) : "";
+    if (best) {
+        var ftxt = stripHtml(best.html());
+        ftxt = ftxt.replace(/^\u3000+/gm, "").replace(/\n{3,}/g, "\n\n").trim();
+        return ftxt;
+    }
+    return "";
 }
 
 function execute(url) {
