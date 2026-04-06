@@ -29,12 +29,12 @@ Sau khi có phiên bản mới được push lên GitHub:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| OTruyen | [otruyen.cc](https://otruyen.cc) | v23 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v26 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v20 | Novel | vi |
-| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v16 | Novel | vi_VN |
-| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v7 | Chinese Novel | zh_CN |
-| TruyenChu | [truyenchu.net](https://truyenchu.net) | v2 | Novel | vi_VN |
+| OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v27 | Comic | vi_VN |
+| Wattpad | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
+| MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v8 | Chinese Novel | zh_CN |
+| TruyenChu | [truyenchu.net](https://truyenchu.net) | v7 | Novel | vi_VN |
 
 ## Tính năng
 
