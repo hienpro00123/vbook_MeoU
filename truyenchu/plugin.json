@@ -2,7 +2,7 @@
   "metadata": {
     "name": "TruyenChu",
     "author": "Meo",
-    "version": 7,
+    "version": 8,
     "source": "https://truyenchu.net",
     "regexp": "truyenchu\\.net\\/truyen\\/[^\\/]+\\/?$",
     "description": "TruyenChu - Đọc truyện chữ online miễn phí",
@@ -12,8 +12,6 @@
   "script": {
     "home": "home.js",
     "homecontent": "homecontent.js",
-    "genre": "genre.js",
-    "genrecontent": "genrecontent.js",
     "detail": "detail.js",
     "search": "search.js",
     "toc": "toc.js",
