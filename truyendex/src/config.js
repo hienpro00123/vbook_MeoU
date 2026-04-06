@@ -134,13 +134,16 @@ function getAuthorFull(relationships) {
 
 function getGroupName(relationships) { return getRelName(relationships, "scanlation_group"); }
 
+// Sentinel object — fetchRetry luôn trả non-null để callers dùng .ok trực tiếp
+var FAIL_RESP = { ok: false, status: 0 };
+
 function fetchRetry(url, options) {
   var r = options ? fetch(url, options) : fetch(url);
-  if (!r) return r;
+  if (!r) return FAIL_RESP;
   if (r.ok) return r;
   // Không retry lỗi client (4xx) — chỉ retry lỗi mạng / server
   if (r.status >= 400 && r.status < 500) return r;
-  return options ? fetch(url, options) : fetch(url);
+  return (options ? fetch(url, options) : fetch(url)) || FAIL_RESP;
 }
 
 function getAuthorId(relationships) {
