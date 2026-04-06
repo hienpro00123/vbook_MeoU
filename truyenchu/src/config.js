@@ -11,8 +11,7 @@ var FETCH_HEADERS = {
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
 
 var BG_IMAGE_RE = /url\(['""]?([^'""\)\s]+)['""]?\)/;
-var HREF_SKIP_RE = /^\s*$|^javascript:|^#|\/wp-login|\/wp-admin|\/cart|\/checkout|\/account|\/contact|\/tag\//;
-
+var HREF_SKIP_RE = /^\s*$|^javascript:|^#|\/wp-login|\/wp-admin|\/cart|\/checkout|\/account|\/contact|\/tag\//;var PAGE_NUM_RE = /\/page\/(\d+)\/?/;
 function selFirst(el, css) {
     var r = el.select(css);
     return r.size() > 0 ? r.get(0) : null;
@@ -101,11 +100,21 @@ function getNextPage(doc, p) {
     // Tìm link chứa /page/{nextP}/
     var nextLinks = doc.select("a[href*='/page/" + nextP + "/']");
     if (nextLinks.size() > 0) return String(nextP);
-    // Kiểm tra nút "Cũ hơn" / "Older posts"
-    var olderLink = selFirst(doc, ".nav-previous a, a[rel='prev'], a:contains(Cũ hơn), a:contains(Older)");
+    // Kiểm tra nút "Cũ hơn" / "Older posts" — dùng loop thay :contains() (nhanh hơn)
+    var olderLink = selFirst(doc, ".nav-previous a, a[rel='prev']");
+    if (!olderLink) {
+        var navAs = doc.select("a[href*='/page/']");
+        for (var ni = 0; ni < navAs.size(); ni++) {
+            var nt = navAs.get(ni).text().trim();
+            if (nt === "C\u0169 h\u01a1n" || nt.indexOf("Older") === 0) {
+                olderLink = navAs.get(ni);
+                break;
+            }
+        }
+    }
     if (olderLink) {
         var href = olderLink.attr("href") || "";
-        var m = /\/page\/(\d+)\/?/.exec(href);
+        var m = PAGE_NUM_RE.exec(href);
         if (m) return m[1];
         if (href) return String(nextP);
     }

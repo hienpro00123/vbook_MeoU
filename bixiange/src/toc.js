@@ -68,9 +68,10 @@ function execute(url) {
     }
 
     // Fetch các trang TOC tiếp theo (tối đa 10 trang — ~500 chương)
+    // Timeout 3000ms: subpages đơn giản hơn trang chính (ít JS, chỉ list chương)
     for (var p = 2; p <= maxPage && p <= 10; p++) {
         var pageUrl = BASE_URL + storyPath + "/index_" + p + ".html";
-        var pageDoc = fetchBrowser(pageUrl, 5000);
+        var pageDoc = fetchBrowser(pageUrl, 3000);
         if (!pageDoc) break;
         extractChaps(pageDoc, storyPath, chapters, seen);
     }

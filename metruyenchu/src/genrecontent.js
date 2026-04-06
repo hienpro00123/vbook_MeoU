@@ -6,6 +6,7 @@ function execute(url, page) {
     var res = fetchRetry(fetchUrl);
     if (!res || !res.ok) return Response.error("Không tải được thể loại: " + url);
     var doc = res.html();
+    if (!doc) return Response.success([], null);
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
     var next = getNextPage(doc, p);
