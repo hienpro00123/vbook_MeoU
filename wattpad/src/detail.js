@@ -17,6 +17,7 @@ function execute(url) {
   var genreStr = "";
   var firstTag = null;
   var firstGenre = null;
+  var genres = [];
   if (data.categories) {
     var cats = data.categories;
     for (var ci = 0; ci < cats.length; ci++) {
@@ -26,6 +27,7 @@ function execute(url) {
         if (!firstGenre) firstGenre = cname;
         if (genreStr) genreStr += ", ";
         genreStr += cname;
+        genres.push({ title: cname, input: cname, script: "genrecontent.js" });
       }
     }
   }
@@ -36,16 +38,6 @@ function execute(url) {
       if (!firstTag) firstTag = t;
       if (genreStr) genreStr += ", ";
       genreStr += t;
-    }
-  }
-
-  var genres = [];
-  if (data.categories) {
-    var gcats = data.categories;
-    for (var gi = 0; gi < gcats.length; gi++) {
-      var gc = gcats[gi];
-      var gname = gc.viName || gc.name || gc.enName;
-      if (gname) genres.push({ title: gname, input: gname, script: "genrecontent.js" });
     }
   }
 
