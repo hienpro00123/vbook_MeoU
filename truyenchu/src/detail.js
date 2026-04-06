@@ -1,6 +1,7 @@
 ﻿load("config.js");
 
 var AUTHOR_SLUG_RE = /\/tac-gia\/([^\/]+)\/?/;
+var GENRE_SLUG_RE = /\/the-loai\/([^\/]+)\/?/;
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
@@ -35,7 +36,6 @@ function execute(url) {
     // Thể loại — lấy cả text lẫn slug từ href
     var genres = [];
     var genresList = [];
-    var GENRE_SLUG_RE = /\/the-loai\/([^\/]+)\/?/;
     var genreEls = doc.select(".genres-content a[href*='/the-loai/']");
     for (var gi = 0; gi < genreEls.size(); gi++) {
         var ga = genreEls.get(gi);
