@@ -42,10 +42,8 @@ function parseList(doc) {
     var result = [];
     var seen = {};
     // Ưu tiên: div.item cards có h3 > a (trang hot/full/thể loại)
-    // Kiểm tra nhanh trước khi duyệt từng card — tránh lặp thừa trên homepage
-    var cardTitles = doc.select("div.item h3 a[href]");
-    if (cardTitles.size() > 0) {
-        var cards = doc.select("div.item");
+    var cards = doc.select("div.item");
+    if (cards.size() > 0) {
         for (var i = 0; i < cards.size(); i++) {
             var card = cards.get(i);
             var titleLink = selFirst(card, "h3 a[href]");
