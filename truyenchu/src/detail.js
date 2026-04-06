@@ -9,8 +9,8 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Không đọc được nội dung trang");
 
-    // Tiêu đề
-    var titleEl = selFirst(doc, ".post-title h1, h1.post-title, h1");
+    // Tiêu đề — truyenchu.net dùng <h1> nằm ngoài .post-title
+    var titleEl = selFirst(doc, "h1.entry-title, .post-title h1, h1.post-title, h1");
     var title = titleEl ? titleEl.text().trim() : "";
 
     // Cover
@@ -32,12 +32,19 @@ function execute(url) {
         if (aMatch) authorLink = "author:" + aMatch[1];
     }
 
-    // Thể loại
+    // Thể loại — lấy cả text lẫn slug từ href
     var genres = [];
+    var genresList = [];
+    var GENRE_SLUG_RE = /\/the-loai\/([^\/]+)\/?/;
     var genreEls = doc.select(".genres-content a[href*='/the-loai/']");
     for (var gi = 0; gi < genreEls.size(); gi++) {
-        var g = genreEls.get(gi).text().trim();
-        if (g) genres.push(g);
+        var ga = genreEls.get(gi);
+        var gText = ga.text().trim();
+        if (!gText) continue;
+        genres.push(gText);
+        var gHref = ga.attr("href") || "";
+        var gm = GENRE_SLUG_RE.exec(gHref);
+        if (gm) genresList.push({ title: gText, input: gm[1], script: "genrecontent.js" });
     }
 
     // Tình trạng — dùng selector trực tiếp
@@ -81,7 +88,7 @@ function execute(url) {
         description: description,
         detail: detail,
         ongoing: ongoing,
-        genres: [],
+        genres: genresList,
         suggests: suggests,
         comments: []
     });
