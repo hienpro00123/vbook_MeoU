@@ -35,6 +35,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
 | Bixiange | [m.bixiange.me](https://m.bixiange.me) | v8 | Chinese Novel | zh_CN |
 | TruyenChu | [truyenchu.net](https://truyenchu.net) | v8 | Novel | vi_VN |
+| nettruyen.work | [nettruyen.work](https://nettruyen.work) | v1 | Comic | vi_VN |
 
 ## Tính năng
 
@@ -94,6 +95,14 @@ Sau khi có phiên bản mới được push lên GitHub:
 - **Truyện cùng tác giả**: Gợi ý toàn bộ truyện của tác giả
 - **Mục lục**: Danh sách chương, hỗ trợ AJAX fallback
 - **Đọc truyện**: Nội dung chương dạng văn bản
+
+### nettruyen.work
+- **Trang chủ**: Mới cập nhật, Truyện Hot, Tất cả
+- **Thể loại**: 42 thể loại (Action, Romance, Fantasy, Manhwa, Manhua...)
+- **Tìm kiếm**: Tìm kiếm theo từ khóa
+- **Chi tiết**: Thông tin truyện, tác giả, mô tả, thể loại, trạng thái
+- **Mục lục**: Danh sách 20 chương mới nhất
+- **Đọc truyện**: Ảnh chương từ CDN kcgsbok.com
 
 ## Cấu trúc
 

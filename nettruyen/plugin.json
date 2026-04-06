@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "nettruyen.work",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://nettruyen.work",
+    "regexp": "nettruyen\\.work\\/truyen-tranh\\/[^\\/]+\\/?$",
+    "description": "Đọc truyện tranh từ NetTruyen",
+    "locale": "vi_VN",
+    "type": "comic"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}
