@@ -1,12 +1,12 @@
-var BASE_URL = "https://www.truyenchu.net";
-var HOST = "https://www.truyenchu.net";
-var BASE_URL_ALT = "https://truyenchu.net";
+var BASE_URL = "https://truyenchu.net";
+var HOST = "https://truyenchu.net";
+var BASE_URL_ALT = "https://www.truyenchu.net";
 
 var FETCH_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
-    "Referer": "https://www.truyenchu.net/"
+    "Referer": "https://truyenchu.net/"
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
 
