@@ -1,5 +1,9 @@
 load("config.js");
 
+var AUTHOR_SLUG_RE = /\/tac-gia\/([^\/\?]+)/;
+var GENRE_SLUG_RE2 = /\/the-loai\/([^\/\?]+)/;
+var CHAP_COUNT_RE = /Số chương\s*[:\uFF1A]?\s*(\d[\d.]+)/;
+
 function execute(url) {
     var storyUrl = resolveUrl(url);
 
@@ -38,7 +42,7 @@ function execute(url) {
     var authorSlug = "";
     if (authorEl) {
         var authorHref = authorEl.attr("href") || "";
-        var slugM = /\/tac-gia\/([^\/\?]+)/.exec(authorHref);
+        var slugM = AUTHOR_SLUG_RE.exec(authorHref);
         if (slugM) authorSlug = slugM[1];
     }
     if (!author) {
@@ -70,7 +74,8 @@ function execute(url) {
         var gEl = genreAs.get(j);
         var gTitle = gEl.text().trim();
         var gHref = gEl.attr("href") || "";
-        var gSlug = gHref.replace(/^.*\/the-loai\//, "").replace(/[\/\?].*$/, "");
+        var gSlugM = GENRE_SLUG_RE2.exec(gHref);
+        var gSlug = gSlugM ? gSlugM[1] : "";
         if (gTitle && gSlug && !seenGenre[gSlug]) {
             seenGenre[gSlug] = true;
             genreDetail.push({ title: gTitle, input: gSlug, script: "genrecontent.js" });
@@ -103,7 +108,7 @@ function execute(url) {
         detail += (detail ? " | " : "") + "Số chương: " + chapCountEl.text().trim();
     } else if (infoSection) {
         var infoText = infoSection.text();
-        var chapMatch = /Số chương\s*[:\uff1a]?\s*(\d[\d.]+)/.exec(infoText);
+        var chapMatch = CHAP_COUNT_RE.exec(infoText);
         if (chapMatch) detail += (detail ? " | " : "") + "Số chương: " + chapMatch[1];
     }
 
