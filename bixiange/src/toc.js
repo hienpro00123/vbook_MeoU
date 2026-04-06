@@ -41,7 +41,7 @@ function extractChaps(doc, storyPath, chapters, seen) {
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
-    var doc = fetchBrowser(storyUrl, 7000);
+    var doc = fetchBrowserFast(storyUrl); // trang mục lục đơn giản — 5000ms đủ
     if (!doc) return Response.error("Lỗi tải mục lục");
 
     // storyUrl = "https://m.bixiange.me/wxxz/20921"

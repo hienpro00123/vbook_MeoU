@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var chapUrl = resolveUrl(url);
-    var doc = fetchBrowser(chapUrl, 7000);
+    var doc = fetchBrowserFast(chapUrl); // chương đơn giản — 5000ms đủ
     if (!doc) return Response.error("Lỗi tải nội dung chương");
 
     var el = selFirst(doc, "#BookText, #mycontent, #content");
