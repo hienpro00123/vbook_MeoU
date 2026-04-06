@@ -25,6 +25,9 @@ function execute(url) {
     var doc = fetchBrowser(storyUrl, 7000);
     if (!doc) return Response.error("Lỗi tải trang truyện");
 
+    // Cache info container — dùng lại cho tác giả + mô tả fallback
+    var infoBox = selFirst(doc, ".bookinfo, .info, .book-detail, .bookdetail, .detail, #info");
+
     // --- Tên truyện ---
     var nameEl = selFirst(doc, "h1, h2.title, .book-title, .btitle, .story-title");
     var name = nameEl ? nameEl.text().trim() : "";
@@ -69,10 +72,12 @@ function execute(url) {
         author = authorEl.text().trim();
     }
     if (!author) {
-        // Scan p và span tìm "作者："
-        var spans = doc.select("p, span, em");
-        for (var ai = 0; ai < spans.size(); ai++) {
-            var atxt = spans.get(ai).text().trim();
+        // Scan trong info container trước, giới hạn phạm vi
+        var authSpans = infoBox ? infoBox.select("p, span") : doc.select(".bookinfo p, .info p, #info p");
+        // Hard fallback: scan toàn doc nếu vẫn không có
+        if (!authSpans || authSpans.size() === 0) authSpans = doc.select("p, span");
+        for (var ai = 0; ai < authSpans.size(); ai++) {
+            var atxt = authSpans.get(ai).text().trim();
             var am = AUTHOR_ZH_RE.exec(atxt);  // 作者：
             if (am && am[1] && am[1].length < 50) {
                 author = am[1].trim();
@@ -84,13 +89,13 @@ function execute(url) {
     // --- Mô tả ---
     var descEl = selFirst(doc, ".intro, #intro, .desc, .summary, .synopsis, [class*='intro'], [class*='desc'], [class*='summary']");
     var description = descEl ? stripHtml(descEl.html()) : "";
-    // Fallback: tìm đoạn text sau "简介"
+    // Fallback: tìm đoạn text sau "简介" — scan trong infoBox trước, fallback toàn doc
     if (!description) {
-        var allPs = doc.select("p");
+        var descPs = infoBox ? infoBox.select("p") : doc.select("p");
         var foundIntro = false;
         var lines = [];
-        for (var di = 0; di < allPs.size(); di++) {
-            var ptxt = allPs.get(di).text().trim();
+        for (var di = 0; di < descPs.size(); di++) {
+            var ptxt = descPs.get(di).text().trim();
             if (!foundIntro && ptxt.indexOf("\u7b80\u4ecb") !== -1) { foundIntro = true; continue; }  // 简介
             if (foundIntro && ptxt.length > 10) {
                 lines.push(ptxt);
