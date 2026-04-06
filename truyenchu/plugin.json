@@ -12,6 +12,8 @@
   "script": {
     "home": "home.js",
     "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
     "detail": "detail.js",
     "search": "search.js",
     "toc": "toc.js",
