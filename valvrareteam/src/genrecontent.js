@@ -18,9 +18,9 @@ function execute(input, page) {
         var recentChaps = novel.chapters || [];
         var latestChap = recentChaps.length > 0 ? (recentChaps[0].title || "") : "";
         items.push({
-            title: novel.title || "",
+            name: novel.title || "",
             cover: novel.illustration || "",
-            url: makeNovelUrl(novel._id),
+            link: makeNovelUrl(novel._id),
             description: mapStatus(novel.status) + (latestChap ? " | " + latestChap : "")
         });
     }

@@ -13,9 +13,9 @@ function execute(keyword, page) {
     for (var i = 0; i < data.length; i++) {
         var novel = data[i];
         items.push({
-            title: novel.title || "",
+            name: novel.title || "",
             cover: novel.illustration || "",
-            url: makeNovelUrl(novel._id),
+            link: makeNovelUrl(novel._id),
             description: "Tác giả: " + (novel.author || "") + " | " + mapStatus(novel.status) + " | " + (novel.totalChapters || 0) + " chương"
         });
     }
