@@ -2,7 +2,7 @@
   "metadata": {
     "name": "nettruyen.work",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://nettruyen.work",
     "regexp": "nettruyen\\.work\\/truyen-tranh\\/[^\\/]+\\/?$",
     "description": "Đọc truyện tranh từ NetTruyen",

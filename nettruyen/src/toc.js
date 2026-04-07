@@ -1,30 +1,31 @@
 load("config.js");
 
 function execute(url) {
-    var storyUrl = (url.indexOf("http") === 0) ? url : BASE_URL + url;
-    var res = fetchRetry(storyUrl);
-    if (!res || !res.ok) return Response.error("Không tải được mục lục");
-    var doc = res.html();
-    if (!doc) return Response.error("Không đọc được mục lục");
+    // Extract comic slug from URL: /truyen-tranh/{slug}
+    var slug = url.replace(/.*\/truyen-tranh\/([^\/\?#]+).*/, "$1");
+    if (!slug || slug === url) return Response.error("Không lấy được slug từ URL");
 
-    var links = doc.select("#chapter_list li a[href]");
-    if (links.size() === 0) return Response.error("Không tìm thấy danh sách chương");
+    // Call ChapterList API - returns all chapters
+    var apiUrl = BASE_URL + "/Comic/Services/ComicService.asmx/ChapterList?slug=" + slug;
+    var res = fetch(apiUrl, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": BASE_URL + "/truyen-tranh/" + slug
+        }
+    });
+    if (!res || !res.ok) return Response.error("Không tải được danh sách chương");
 
+    var json = res.json();
+    if (!json || !json.data) return Response.error("API không trả dữ liệu chương");
+
+    var data = json.data;
+    // API trả mới nhất trước → đảo ngược để chương 1 đầu tiên
     var chapters = [];
-    for (var i = 0; i < links.size(); i++) {
-        var a = links.get(i);
-        var href = a.attr("href") || "";
-        var name = a.text().trim();
-        if (!href || !name) continue;
-        if (href.indexOf("http") !== 0) href = BASE_URL + href;
-        chapters.push({ name: name, url: href, host: HOST });
+    for (var i = data.length - 1; i >= 0; i--) {
+        var item = data[i];
+        var chapUrl = BASE_URL + "/truyen-tranh/" + slug + "/chuong-" + item.chapter_num;
+        chapters.push({ name: item.chapter_name, url: chapUrl, host: HOST });
     }
 
-    // HTML có chương mới nhất trước → đảo ngược để chương 1 trước
-    var reversed = [];
-    for (var j = chapters.length - 1; j >= 0; j--) {
-        reversed.push(chapters[j]);
-    }
-
-    return Response.success(reversed);
+    return Response.success(chapters);
 }
