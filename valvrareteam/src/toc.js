@@ -12,7 +12,7 @@ function execute(url) {
     if (!data || !data.novel) return Response.error("Không tìm thấy truyện");
 
     var novel = data.novel;
-    var modules = novel.modules || [];
+    var modules = data.modules || [];
     var chapters = [];
 
     // Duyệt từng tập (module) → từng chương

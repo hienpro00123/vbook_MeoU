@@ -1,4 +1,4 @@
-load("config.js");
+﻿load("config.js");
 
 function execute(url) {
     var novelId = extractNovelId(url);
@@ -26,7 +26,7 @@ function execute(url) {
 
     // Đếm tổng chương
     var totalChaps = 0;
-    var modules = novel.modules || [];
+    var modules = data.modules || [];
     for (var mi = 0; mi < modules.length; mi++) {
         var chaps = modules[mi].chapters || [];
         totalChaps += chaps.length;
@@ -54,3 +54,4 @@ function execute(url) {
         comments: [{ title: "Bình luận", input: novelId, script: "comment.js" }]
     });
 }
+

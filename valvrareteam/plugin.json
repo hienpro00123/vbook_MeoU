@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Valvrareteam",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://valvrareteam.net",
     "regexp": "valvrareteam\\.net/truyen/__ID__[0-9a-fA-F]{24}$",
     "description": "Light Novel Vietsub - Valvrareteam",
