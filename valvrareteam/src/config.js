@@ -32,19 +32,42 @@ function mapStatus(status) {
     return status || "";
 }
 
-function fetchApi(path) {
-    var url = API_BASE + path;
+// Fetch JSON với fallback chain: fetch → fetch+headers → WebView
+function fetchJson(url) {
+    // Attempt 1: direct fetch
     var res = fetch(url);
-    if (res && res.ok) return res;
-    // Retry với headers
+    if (res && res.ok) {
+        try { return res.json(); } catch(e) {}
+    }
+    // Attempt 2: fetch with headers
     res = fetch(url, {
         headers: {
             "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36",
             "Accept": "application/json"
         }
     });
-    if (!res || !res.ok) return null;
-    return res;
+    if (res && res.ok) {
+        try { return res.json(); } catch(e) {}
+    }
+    // Attempt 3: WebView fallback
+    var browser = Engine.newBrowser();
+    try {
+        var doc = browser.launch(url, 15000);
+        if (doc) {
+            var pre = doc.selectFirst("pre");
+            var rawText = pre ? pre.text() : doc.text();
+            if (rawText) return JSON.parse(rawText);
+        }
+    } catch(e) {
+        Console.log("[fetchJson] browser error: " + e);
+    } finally {
+        try { browser.close(); } catch(e2) {}
+    }
+    return null;
+}
+
+function fetchApiJson(path) {
+    return fetchJson(API_BASE + path);
 }
 
 // Lấy phần text ngắn (strip HTML tags) cho description

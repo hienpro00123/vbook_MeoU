@@ -4,11 +4,7 @@ function execute(url) {
     var novelId = extractNovelId(url);
     if (!novelId) return Response.error("URL không hợp lệ");
 
-    var res = fetchApi("/api/novels/" + novelId);
-    if (!res) return Response.error("Không tải được thông tin truyện");
-
-    var data;
-    try { data = res.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
+    var data = fetchApiJson("/api/novels/" + novelId);
     if (!data || !data.novel) return Response.error("Không tìm thấy truyện");
 
     var novel = data.novel;

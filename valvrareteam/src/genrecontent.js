@@ -4,11 +4,7 @@ function execute(input, page) {
     var p = page ? parseInt(page) : 1;
     var url = input + "&page=" + p;
 
-    var res = fetch(url);
-    if (!res || !res.ok) return Response.success([], null);
-
-    var data;
-    try { data = res.json(); } catch (e) { return Response.success([], null); }
+    var data = fetchJson(url);
     if (!data || !data.novels) return Response.success([], null);
 
     var items = [];

@@ -4,11 +4,8 @@ function execute(novelId, page) {
     var p = page ? parseInt(page) : 1;
     var url = API_BASE + "/api/comments/novel/" + novelId + "?sort=newest&page=" + p + "&limit=10&hideChapterComments=false";
 
-    var res = fetch(url);
-    if (!res || !res.ok) return Response.success([]);
-
-    var data;
-    try { data = res.json(); } catch (e) { return Response.success([]); }
+    var data = fetchJson(url);
+    if (!data) return Response.success([]);
 
     var comments = data.comments || [];
     var items = [];

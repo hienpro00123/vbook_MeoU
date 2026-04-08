@@ -2,11 +2,7 @@ load("config.js");
 
 function execute(url) {
     // Gợi ý: lấy danh sách truyện mới cập nhật (không có "related" API)
-    var res = fetchApi("/api/novels?limit=10&page=1");
-    if (!res) return Response.success([]);
-
-    var data;
-    try { data = res.json(); } catch (e) { return Response.success([]); }
+    var data = fetchApiJson("/api/novels?limit=10&page=1");
     if (!data || !data.novels) return Response.success([]);
 
     var items = [];
