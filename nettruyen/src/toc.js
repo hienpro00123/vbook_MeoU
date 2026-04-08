@@ -1,26 +1,42 @@
 load("config.js");
 
 function execute(url) {
-    // Extract comic slug from URL: /truyen-tranh/{slug}
     var slug = url.replace(/.*\/truyen-tranh\/([^\/\?#]+).*/, "$1");
     if (!slug || slug === url) return Response.error("Không lấy được slug từ URL");
 
     var apiUrl = BASE_URL + "/Comic/Services/ComicService.asmx/ChapterList?slug=" + slug;
-    Console.log("[toc] apiUrl=" + apiUrl);
 
+    // Thử fetch thường trước
+    var json = null;
     var res = fetchRetry(apiUrl);
-    Console.log("[toc] res=" + (res ? "ok=" + res.ok + " status=" + res.status : "null"));
-    if (!res || !res.ok) return Response.error("Không tải được danh sách chương (status=" + (res ? res.status : "null") + ")");
-
-    var json;
-    try {
-        json = res.json();
-    } catch (e) {
-        Console.log("[toc] json parse error: " + e);
-        return Response.error("Lỗi parse JSON chương");
+    if (res && res.ok) {
+        try { json = res.json(); } catch (e) {}
     }
-    Console.log("[toc] json=" + (json ? "data.length=" + (json.data ? json.data.length : "no data") : "null"));
-    if (!json || !json.data) return Response.error("API không trả dữ liệu chương");
+
+    // Fallback: dùng WebView để bypass Cloudflare
+    if (!json || !json.data) {
+        var browser = Engine.newBrowser();
+        try {
+            var doc = browser.launch(apiUrl, 15000);
+            if (doc) {
+                var rawText = "";
+                var pre = doc.selectFirst("pre");
+                if (pre) {
+                    rawText = pre.text();
+                } else {
+                    rawText = doc.body().text();
+                }
+                if (rawText && rawText.indexOf('"data"') >= 0) {
+                    try { json = JSON.parse(rawText); } catch (e) {}
+                }
+            }
+        } catch (e) {
+        } finally {
+            try { browser.close(); } catch (e2) {}
+        }
+    }
+
+    if (!json || !json.data) return Response.error("Không tải được danh sách chương");
 
     var data = json.data;
     // API trả mới nhất trước → đảo ngược để chương 1 đầu tiên
