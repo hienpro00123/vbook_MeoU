@@ -18,5 +18,7 @@ function execute(novelId, page) {
             description: c.createdAt ? c.createdAt.substring(0, 10) : ""
         });
     }
-    var pg = data.pagination || {}; var next = (pg.hasNext) ? String(p + 1) : null; return Response.success(items, next);
+    var pg = data.pagination || {};
+    var next = pg.hasNext ? String(p + 1) : null;
+    return Response.success(items, next);
 }

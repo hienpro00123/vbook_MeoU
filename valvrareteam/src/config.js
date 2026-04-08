@@ -27,6 +27,22 @@ function fetchJson(url) {
 
 function fetchApi(path) { return fetchJson(BASE_URL + path); }
 
+function parseNovels(input, page) {
+    var p = page ? parseInt(page) : 1;
+    var data = fetchJson(input + "&page=" + p);
+    if (!data || !data.novels) return Response.success([], null);
+    var items = [];
+    var novels = data.novels;
+    for (var i = 0; i < novels.length; i++) {
+        var n = novels[i];
+        var ch = n.chapters || [];
+        var latest = ch.length > 0 ? (ch[0].title || "") : "";
+        items.push({ name: n.title || "", cover: n.illustration || "", link: makeNovelUrl(n._id), description: mapStatus(n.status) + (latest ? " | " + latest : "") });
+    }
+    var pg = data.pagination || {};
+    return Response.success(items, (p < (pg.totalPages || 1)) ? (p + 1) : null);
+}
+
 function stripHtml(html) {
     if (!html) return "";
     return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&nbsp;/g," ").replace(/&apos;/g,"'").replace(/&quot;/g,"\"").replace(/&#(\d+);/g, function(m, d) { return String.fromCharCode(parseInt(d,10)); }).trim();
