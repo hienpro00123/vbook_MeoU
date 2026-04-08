@@ -33,7 +33,16 @@ function mapStatus(status) {
 }
 
 function fetchApi(path) {
-    var res = fetch(API_BASE + path);
+    var url = API_BASE + path;
+    var res = fetch(url);
+    if (res && res.ok) return res;
+    // Retry với headers
+    res = fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Accept": "application/json"
+        }
+    });
     if (!res || !res.ok) return null;
     return res;
 }
