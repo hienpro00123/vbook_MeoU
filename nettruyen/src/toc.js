@@ -5,17 +5,21 @@ function execute(url) {
     var slug = url.replace(/.*\/truyen-tranh\/([^\/\?#]+).*/, "$1");
     if (!slug || slug === url) return Response.error("Không lấy được slug từ URL");
 
-    // Call ChapterList API - returns all chapters
     var apiUrl = BASE_URL + "/Comic/Services/ComicService.asmx/ChapterList?slug=" + slug;
-    var res = fetch(apiUrl, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": BASE_URL + "/truyen-tranh/" + slug
-        }
-    });
-    if (!res || !res.ok) return Response.error("Không tải được danh sách chương");
+    Console.log("[toc] apiUrl=" + apiUrl);
 
-    var json = res.json();
+    var res = fetchRetry(apiUrl);
+    Console.log("[toc] res=" + (res ? "ok=" + res.ok + " status=" + res.status : "null"));
+    if (!res || !res.ok) return Response.error("Không tải được danh sách chương (status=" + (res ? res.status : "null") + ")");
+
+    var json;
+    try {
+        json = res.json();
+    } catch (e) {
+        Console.log("[toc] json parse error: " + e);
+        return Response.error("Lỗi parse JSON chương");
+    }
+    Console.log("[toc] json=" + (json ? "data.length=" + (json.data ? json.data.length : "no data") : "null"));
     if (!json || !json.data) return Response.error("API không trả dữ liệu chương");
 
     var data = json.data;
