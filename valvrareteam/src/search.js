@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(keyword, page) {
     var q = encodeURIComponent(keyword);
-    var data = fetchApiJson("/api/novels/search?title=" + q);
+    var data = fetchApi("/api/novels/search?title=" + q);
     if (!data || !data.length) return Response.success([], null);
 
     var items = [];

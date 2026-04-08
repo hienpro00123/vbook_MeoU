@@ -4,7 +4,7 @@ function execute(url) {
     var novelId = extractNovelId(url);
     if (!novelId) return Response.error("URL không hợp lệ");
 
-    var data = fetchApiJson("/api/novels/" + novelId);
+    var data = fetchApi("/api/novels/" + novelId);
     if (!data || !data.novel) return Response.error("Không tìm thấy truyện");
 
     var novel = data.novel;
@@ -40,7 +40,7 @@ function execute(url) {
     return Response.success({
         name: novel.title || "",
         cover: novel.illustration || "",
-        host: SITE_URL,
+        host: BASE_URL,
         author: novel.author || "",
         description: stripHtml(novel.description || ""),
         detail: detailTxt,

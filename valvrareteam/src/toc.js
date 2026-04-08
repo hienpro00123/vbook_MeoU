@@ -4,7 +4,7 @@ function execute(url) {
     var novelId = extractNovelId(url);
     if (!novelId) return Response.error("URL không hợp lệ");
 
-    var data = fetchApiJson("/api/novels/" + novelId);
+    var data = fetchApi("/api/novels/" + novelId);
     if (!data || !data.novel) return Response.error("Không tải được danh sách chương");
 
     var modules = data.modules || [];
@@ -19,7 +19,7 @@ function execute(url) {
             chapters.push({
                 name: chap.title || ("Chương " + chap.order),
                 url: makeChapUrl(novelId, chap._id),
-                host: SITE_URL
+                host: BASE_URL
             });
         }
     }

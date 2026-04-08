@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     // Gợi ý: lấy danh sách truyện mới cập nhật (không có "related" API)
-    var data = fetchApiJson("/api/novels?limit=10&page=1");
+    var data = fetchApi("/api/novels?limit=10&page=1");
     if (!data || !data.novels) return Response.success([]);
 
     var items = [];
@@ -14,7 +14,7 @@ function execute(url) {
             cover: novel.illustration || "",
             link: makeNovelUrl(novel._id),
             description: mapStatus(novel.status),
-            host: SITE_URL
+            host: BASE_URL
         });
     }
     return Response.success(items);

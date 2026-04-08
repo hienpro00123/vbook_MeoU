@@ -15,7 +15,7 @@ function execute() {
     for (var i = 0; i < genres.length; i++) {
         items.push({
             title: genres[i],
-            input: API_BASE + "/api/novels?genre=" + encodeURIComponent(genres[i]) + "&limit=20",
+            input: BASE_URL + "/api/novels?genre=" + encodeURIComponent(genres[i]) + "&limit=20",
             script: "genrecontent.js"
         });
     }

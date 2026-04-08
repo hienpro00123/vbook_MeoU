@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(novelId, page) {
     var p = page ? parseInt(page) : 1;
-    var url = API_BASE + "/api/comments/novel/" + novelId + "?sort=newest&page=" + p + "&limit=10&hideChapterComments=false";
+    var url = BASE_URL + "/api/comments/novel/" + novelId + "?sort=newest&page=" + p + "&limit=10&hideChapterComments=false";
 
     var data = fetchJson(url);
     if (!data) return Response.success([]);
