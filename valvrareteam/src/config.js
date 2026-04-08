@@ -1,4 +1,4 @@
-var API_BASE = "https://val-ssr-2kzit.ondigitalocean.app";
+var API_BASE = "https://valvrareteam.net";
 var SITE_URL = "https://valvrareteam.net";
 var NOVEL_ID_PREFIX = "__ID__";
 var CHAP_ID_PREFIX = "__CHAPID__";
