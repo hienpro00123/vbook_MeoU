@@ -18,7 +18,7 @@ function execute(url) {
             if (chap.mode === "paid") continue;
             chapters.push({
                 name: chap.title || ("Chương " + chap.order),
-                url: makeChapUrl(chap._id),
+                url: makeChapUrl(novelId, chap._id),
                 host: SITE_URL
             });
         }

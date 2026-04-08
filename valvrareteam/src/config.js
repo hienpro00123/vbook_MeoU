@@ -21,8 +21,12 @@ function makeNovelUrl(novelId) {
     return SITE_URL + "/truyen/" + NOVEL_ID_PREFIX + novelId;
 }
 
-function makeChapUrl(chapterId) {
-    return SITE_URL + "/chuong/" + CHAP_ID_PREFIX + chapterId;
+function makeChapUrl(novelId, chapterId) {
+    return SITE_URL + "/truyen/" + NOVEL_ID_PREFIX + novelId + "/chuong/" + CHAP_ID_PREFIX + chapterId;
+}
+
+function shortId(id) {
+    return id.substring(id.length - 8);
 }
 
 function mapStatus(status) {
