@@ -2,13 +2,21 @@ load("config.js");
 
 function execute(url) {
     var novelId = extractNovelId(url);
+    Console.log("[toc] url=" + url + " novelId=" + novelId);
     if (!novelId) return Response.error("URL không hợp lệ");
 
-    var res = fetchApi("/api/novels/" + novelId);
+    var apiPath = "/api/novels/" + novelId;
+    Console.log("[toc] fetching " + API_BASE + apiPath);
+    var res = fetchApi(apiPath);
+    Console.log("[toc] res=" + (res ? "ok=" + res.ok + " status=" + res.status : "null"));
     if (!res) return Response.error("Không tải được danh sách chương");
 
     var data;
-    try { data = res.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
+    try { data = res.json(); } catch (e) {
+        Console.log("[toc] json error: " + e);
+        return Response.error("Dữ liệu không hợp lệ");
+    }
+    Console.log("[toc] modules=" + (data.modules ? data.modules.length : "none"));
     if (!data || !data.novel) return Response.error("Không tìm thấy truyện");
 
     var novel = data.novel;
