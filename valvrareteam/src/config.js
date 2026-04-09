@@ -45,5 +45,7 @@ function parseNovels(input, page) {
 
 function stripHtml(html) {
     if (!html) return "";
-    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&nbsp;/g," ").replace(/&apos;/g,"'").replace(/&quot;/g,"\"").replace(/&#(\d+);/g, function(m, d) { return String.fromCharCode(parseInt(d,10)); }).trim();
+    return html.replace(/<[^>]*>/g, " ").replace(/&(amp|lt|gt|nbsp|apos|quot);/g, function(m, e) {
+        return { amp:"&", lt:"<", gt:">", nbsp:" ", apos:"'", quot:'"' }[e] || m;
+    }).replace(/&#(\d+);/g, function(m, d) { return String.fromCharCode(parseInt(d,10)); }).replace(/\s+/g, " ").trim();
 }
