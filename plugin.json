@@ -97,6 +97,19 @@
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/valvrareteam/icon.png",
       "description": "Light Novel Vietsub - Valvrareteam",
       "type": "novel",
-      "locale": "vi_VN"    }
+      "locale": "vi_VN"
+    },
+    {
+      "name": "NovelCooksTW",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/plugin.json",
+      "version": 1,
+      "source": "https://novel.cooks.tw",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/icon.png",
+      "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
+      "type": "chinese_novel",
+      "locale": "zh_TW"
+    }
   ]
 }
