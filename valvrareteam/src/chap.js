@@ -8,7 +8,7 @@ function execute(url) {
     var webUrl = BASE_URL + "/truyen/x-" + shortId(novelId) + "/chuong/" + shortId(chapId);
     var res = fetch(webUrl);
     if (res && res.ok) {
-        var doc = Response.html(res.body);
+        var doc = res.html();
         var el = doc.selectFirst(".chapter-content");
         if (el) {
             el.select("script, style, noscript, iframe").remove();
