@@ -9,7 +9,8 @@ function execute(url) {
     var res = fetch(webUrl);
     if (res && res.ok) {
         var doc = res.html();
-        var el = doc.selectFirst(".chapter-content");
+        var els = doc.select(".chapter-content");
+        var el = els.size() > 0 ? els.get(0) : null;
         if (el) {
             el.select("script, style, noscript, iframe").remove();
             return Response.success(el.html());
