@@ -7,6 +7,9 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Không đọc được trang truyện");
 
+    // Remove badge spans to get clean chapter names
+    doc.select(".kuro-edit-badge").remove();
+
     var chapters = [];
     var seen = {};
     var links = doc.select(".chapter-list_kuro li a[href]");
@@ -16,8 +19,7 @@ function execute(url) {
         var href = a.attr("href") || "";
         if (!href || seen[href]) continue;
         seen[href] = true;
-        var name = a.ownText().trim();
-        if (!name) name = a.text().trim();
+        var name = a.text().trim();
         if (!name) continue;
         chapters.push({ name: name, url: href, host: HOST });
     }
