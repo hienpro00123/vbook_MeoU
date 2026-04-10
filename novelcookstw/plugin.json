@@ -13,6 +13,7 @@
   "script": {
     "home": "home.js",
     "homecontent": "homecontent.js",
+    "rankcontent": "rankcontent.js",
     "genre": "genre.js",
     "genrecontent": "genrecontent.js",
     "detail": "detail.js",
