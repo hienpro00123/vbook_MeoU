@@ -1,0 +1,22 @@
+{
+    "name": "LN Kuro",
+    "author": "MeoU",
+    "version": 1,
+    "host": "lnkuro.top",
+    "locale": "vi_VN",
+    "logo": "https://lnkuro.top/wp-content/uploads/2025/02/Logo.png",
+    "type": "novel",
+    "regexp": "lnkuro\\.top\\/.+",
+    "scripts": {
+        "config": "src/config.js",
+        "home": "src/home.js",
+        "homecontent": "src/homecontent.js",
+        "genre": "src/genre.js",
+        "genrecontent": "src/genrecontent.js",
+        "detail": "src/detail.js",
+        "toc": "src/toc.js",
+        "chap": "src/chap.js",
+        "search": "src/search.js",
+        "suggest": "src/suggest.js"
+    }
+}

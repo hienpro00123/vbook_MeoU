@@ -122,6 +122,18 @@
       "description": "Trích Tinh Lâu - Đọc truyện chữ online miễn phí",
       "type": "novel",
       "locale": "vi_VN"
+    },
+    {
+      "name": "LN Kuro",
+      "author": "MeoU",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.json",
+      "version": 1,
+      "source": "https://lnkuro.top",
+      "icon": "https://lnkuro.top/wp-content/uploads/2025/02/Logo.png",
+      "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
+      "type": "novel",
+      "locale": "vi_VN"
     }
   ]
 }
