@@ -40,18 +40,43 @@ function parseCards(doc) {
     var result = [];
     var seen = {};
     var cards = doc.select("article.item");
-    for (var i = 0; i < cards.size(); i++) {
-        var card = cards.get(i);
-        var a = selFirst(card, "a[href*='/xem-truyen/']");
-        if (!a) continue;
+
+    if (cards.size() > 0) {
+        for (var i = 0; i < cards.size(); i++) {
+            var card = cards.get(i);
+            var a = selFirst(card, "a[href*='/xem-truyen/']");
+            if (!a) continue;
+            var href = a.attr("href");
+            if (!href || seen[href]) continue;
+            seen[href] = true;
+            var titleEl = selFirst(card, "h5.card-title, .story-name, .story-card-name");
+            var name = titleEl ? titleEl.text().trim() : a.attr("title") || "";
+            if (!name) name = a.attr("title") || "";
+            if (!name) continue;
+            var imgEl = selFirst(card, "img");
+            var cover = "";
+            if (imgEl) {
+                cover = imgEl.attr("data-src") || imgEl.attr("src") || "";
+            }
+            if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
+            var link = href.indexOf("http") === 0 ? href.replace(BASE_URL, "") : href;
+            result.push({ name: name, link: link, host: HOST, cover: cover, description: "" });
+        }
+        return result;
+    }
+
+    // Fallback: scrape direct links (for pages using different layout)
+    var links = doc.select("a[href*='/xem-truyen/']");
+    for (var i = 0; i < links.size(); i++) {
+        var a = links.get(i);
         var href = a.attr("href");
         if (!href || seen[href]) continue;
+        var name = a.attr("title") || a.text().trim();
+        if (!name || name.length < 2) continue;
+        // Skip nav/button links (short/generic text)
+        if (name === "xem truyện" || name === "Xem truyện") continue;
         seen[href] = true;
-        var titleEl = selFirst(card, "h5.card-title, .story-name, .story-card-name");
-        var name = titleEl ? titleEl.text().trim() : a.attr("title") || "";
-        if (!name) name = a.text().trim();
-        if (!name) continue;
-        var imgEl = selFirst(card, "img");
+        var imgEl = selFirst(a, "img");
         var cover = "";
         if (imgEl) {
             cover = imgEl.attr("data-src") || imgEl.attr("src") || "";

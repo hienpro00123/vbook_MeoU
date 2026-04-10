@@ -50,13 +50,41 @@ function fetchCompleted(p) {
 }
 
 function fetchPopular(p) {
-    var fetchUrl = BASE_URL + "/bang-xep-hang?page=" + p;
-    var res = fetchRetry(fetchUrl);
-    if (!res || !res.ok) return Response.error("Không tải được bảng xếp hạng");
-    var doc = res.html();
-    if (!doc) return Response.success([], null);
-    var items = parseCards(doc);
-    if (!items || items.length === 0) return Response.success([], null);
-    var next = getNextPage(doc, p);
-    return Response.success(items, next);
+    var apiUrl = BASE_URL + "/api/newupdatestory?page=" + p;
+    var res = fetchRetry(apiUrl);
+    if (!res || !res.ok) return Response.error("Không tải được dữ liệu");
+    var json = res.json();
+    if (!json || !json.data) return Response.success([], null);
+    var data = json.data;
+    // Build items with view count
+    var items = [];
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var name = item.tentruyen || "";
+        if (!name) continue;
+        items.push({
+            name: name,
+            link: "/xem-truyen/" + (item.slug_post || ""),
+            host: HOST,
+            cover: item.image ? IMG_BASE + item.image : "",
+            description: item.author || "",
+            _v: item.view || 0
+        });
+    }
+    // Sort by view count desc (insertion sort - Rhino safe)
+    for (var i = 1; i < items.length; i++) {
+        var cur = items[i];
+        var j = i - 1;
+        while (j >= 0 && items[j]._v < cur._v) {
+            items[j + 1] = items[j];
+            j--;
+        }
+        items[j + 1] = cur;
+    }
+    var result = [];
+    for (var i = 0; i < items.length; i++) {
+        result.push({ name: items[i].name, link: items[i].link, host: items[i].host, cover: items[i].cover, description: items[i].description });
+    }
+    var next = json.next_page_url ? String(p + 1) : null;
+    return Response.success(result, next);
 }
