@@ -3,13 +3,18 @@ load("config.js");
 function execute(input) {
     if (!input) return Response.success([]);
 
-    var q = java.net.URLEncoder.encode(input, "UTF-8");
-    var url = BASE_URL + "/?s=" + q + "&post_type=wp-manga";
+    var data = searchAjax(input, 1);
+    if (!data || !data.success) return Response.success([]);
 
-    var res = fetchRetry(url);
-    if (!res || !res.ok) return Response.success([]);
-    var doc = res.html();
-    if (!doc) return Response.success([]);
-
-    return Response.success(parseCards(doc));
+    var items = [];
+    var arr = data.items || [];
+    for (var i = 0; i < arr.length; i++) {
+        var it = arr[i];
+        items.push({
+            name: it.title || "",
+            link: it.link || "",
+            cover: it.cover || ""
+        });
+    }
+    return Response.success(items);
 }

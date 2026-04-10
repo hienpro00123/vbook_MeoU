@@ -38,21 +38,48 @@ function extractCover(el) {
     return "";
 }
 
+function getNonce() {
+    var res = fetchRetry(BASE_URL + "/truyen-han-quoc/");
+    if (!res || !res.ok) return "";
+    var doc = res.html();
+    if (!doc) return "";
+    var el = selFirst(doc, "input[name=kr_nonce]");
+    return el ? el.attr("value") : "";
+}
+
+function searchAjax(keyword, page) {
+    var nonce = getNonce();
+    if (!nonce) return null;
+    var q = java.net.URLEncoder.encode(keyword, "UTF-8");
+    var p = page || 1;
+    var res = fetch(BASE_URL + "/wp-admin/admin-ajax.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": FETCH_HEADERS["User-Agent"],
+            "Referer": BASE_URL + "/truyen-han-quoc/"
+        },
+        body: "action=kr_search_truyen&q=" + q + "&kr_nonce=" + nonce + "&page=" + p
+    });
+    if (!res || !res.ok) return null;
+    try { return res.json(); } catch(e) { return null; }
+}
+
 function parseCards(doc) {
     var result = [];
     var seen = {};
 
-    var cards = doc.select(".page-item-detail");
-    if (cards.size() === 0) cards = doc.select(".manga, article.wp-manga");
+    var cards = doc.select("article.kr-card");
+    if (cards.size() === 0) cards = doc.select(".page-item-detail");
 
     for (var i = 0; i < cards.size(); i++) {
         var card = cards.get(i);
 
-        var titleA = selFirst(card, ".post-title a[href], h3 a[href], h2 a[href]");
+        var titleA = selFirst(card, ".kr-card__title a[href], h3 a[href], h2 a[href]");
         if (!titleA) continue;
 
         var href = titleA.attr("href") || "";
-        if (!href || href.indexOf("/the-loai/") !== -1 || href.indexOf("/tag-truyen/") !== -1) continue;
+        if (!href || href.indexOf("/the-loai/") !== -1) continue;
 
         var title = titleA.text().trim();
         if (!title || seen[href]) continue;

@@ -12,52 +12,43 @@ function execute(url) {
 
     // Title
     var title = "";
-    var h1 = selFirst(doc, ".post-title h1, h1");
+    var h1 = selFirst(doc, ".info_kuro h1, h1");
     if (h1) title = h1.text().trim();
 
     // Cover
     var cover = "";
-    var coverEl = selFirst(doc, ".summary_image img[data-src], .summary_image img[data-lazy-src], .summary_image img[src]");
-    if (!coverEl) coverEl = selFirst(doc, ".tab-summary img[data-src], .tab-summary img[src]");
-    if (!coverEl) coverEl = selFirst(doc, "img.wp-post-image[data-src], img.wp-post-image[src]");
+    var coverEl = selFirst(doc, ".cover_kuro img[data-src], .cover_kuro img[src]");
+    if (!coverEl) coverEl = selFirst(doc, ".novel_kuro img[data-src], .novel_kuro img[src]");
     if (coverEl) {
-        cover = coverEl.attr("data-src") || coverEl.attr("data-lazy-src") || coverEl.attr("src") || "";
+        cover = coverEl.attr("data-src") || coverEl.attr("src") || "";
         if (cover.indexOf("data:") === 0) cover = "";
     }
 
     // Author
     var author = "";
-    var authorEl = selFirst(doc, ".author-content a, .artist-content a");
-    if (authorEl) {
-        author = authorEl.text().trim();
-    } else {
-        // Try fallback with text content
-        var postContent = doc.select(".post-content_item, .post-content .summary-content");
-        for (var i = 0; i < postContent.size(); i++) {
-            var item = postContent.get(i);
-            var label = selFirst(item, ".summary-heading, h5");
-            if (label && label.text().indexOf("Tác giả") !== -1) {
-                var val = selFirst(item, ".summary-content, .artist-content");
-                if (val) author = val.text().trim();
-                break;
-            }
+    var infoPs = doc.select(".info_kuro p, .container_kuro p");
+    for (var i = 0; i < infoPs.size(); i++) {
+        var pText = infoPs.get(i).text();
+        if (pText.indexOf("Tác giả") !== -1) {
+            author = pText.replace("Tác giả:", "").replace("Tác giả", "").trim();
+            break;
         }
     }
     if (!author || author === "Chưa có thông tin") author = "Kuro Trans";
 
     // Status
     var status = "";
-    var statusEl = selFirst(doc, ".post-status .summary-content");
+    var statusEl = selFirst(doc, ".status-inline, .badge_kuro");
     if (statusEl) {
         var stxt = statusEl.text().trim();
-        if (stxt.indexOf("Completed") !== -1 || stxt.indexOf("completed") !== -1) status = "Completed";
-        else if (stxt.indexOf("Ongoing") !== -1 || stxt.indexOf("ongoing") !== -1) status = "Ongoing";
+        if (stxt.indexOf("Completed") !== -1 || stxt.indexOf("completed") !== -1 || stxt.indexOf("Hoàn") !== -1) status = "Completed";
+        else if (stxt.indexOf("Ongoing") !== -1 || stxt.indexOf("ongoing") !== -1 || stxt.indexOf("Đang ra") !== -1) status = "Ongoing";
     }
 
     // Genres
     var genres = [];
     var genresList = [];
-    var genreLinks = doc.select(".genres-content a, a[href*='/the-loai/']");
+    var genreLinks = doc.select(".genres_kuro a[href*='/the-loai/']");
     var seenGenre = {};
     for (var k = 0; k < genreLinks.size(); k++) {
         var gEl = genreLinks.get(k);
@@ -73,19 +64,12 @@ function execute(url) {
 
     // Description
     var desc = "";
-    var descEl = selFirst(doc, ".description-summary .summary__content, .summary__content, .description-summary");
-    if (descEl) {
-        desc = descEl.text().trim();
-    }
-    // Fallback: look for Tóm tắt section
-    if (!desc) {
-        var allText = doc.text();
-        var tomTatIdx = allText.indexOf("Tóm tắt:");
-        if (tomTatIdx !== -1) {
-            var endIdx = allText.indexOf("Chú thích", tomTatIdx);
-            if (endIdx === -1) endIdx = allText.indexOf("📚", tomTatIdx);
-            if (endIdx === -1) endIdx = Math.min(tomTatIdx + 500, allText.length);
-            desc = allText.substring(tomTatIdx + 8, endIdx).trim();
+    var summaries = doc.select(".summary_kuro");
+    for (var s = 0; s < summaries.size(); s++) {
+        var sumText = summaries.get(s).text().trim();
+        if (sumText.indexOf("Tóm tắt") !== -1) {
+            desc = sumText.replace("Tóm tắt:", "").replace("Tóm tắt", "").trim();
+            break;
         }
     }
 
