@@ -7,5 +7,5 @@ function execute(url) {
     if (!json || json.code !== 200) return Response.error("Tải nội dung chương thất bại");
     var data = json.data;
     if (!data || !data.content) return Response.error("Nội dung chương trống");
-    return Response.html(textToHtml(data.content));
+    return Response.success(textToHtml(data.content));
 }
