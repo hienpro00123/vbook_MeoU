@@ -25,8 +25,8 @@ function execute(input) {
             if (!title || !href) continue;
 
             items.push({
-                title: title,
-                url: href,
+                name: title,
+                link: href,
                 cover: ""
             });
         }

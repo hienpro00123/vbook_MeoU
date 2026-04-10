@@ -41,7 +41,7 @@ function execute(url) {
         }
 
         chapters.push({
-            title: text,
+            name: text,
             url: href,
             date: date
         });

@@ -61,8 +61,8 @@ function parseCards(doc) {
         var cover = extractCover(card);
 
         result.push({
-            title: title,
-            url: href,
+            name: title,
+            link: href,
             cover: cover
         });
     }
@@ -89,8 +89,8 @@ function parseCards(doc) {
             var cov = extractCover(parent);
 
             result.push({
-                title: t,
-                url: h,
+                name: t,
+                link: h,
                 cover: cov
             });
         }

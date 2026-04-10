@@ -28,8 +28,8 @@ function execute(page, input) {
             var cover = extractCover(row);
 
             items.push({
-                title: title,
-                url: href,
+                name: title,
+                link: href,
                 cover: cover
             });
         }
@@ -40,10 +40,8 @@ function execute(page, input) {
     var nextLinks = doc.select("a.nextpostslink, a.next, .nav-previous a");
     if (nextLinks.size() > 0) hasNext = true;
 
-    var result = {
-        list: items,
-        hasNext: hasNext
-    };
-
-    return Response.success(result);
+    if (hasNext) {
+        return Response.success(items, String(parseInt(page) + 1));
+    }
+    return Response.success(items);
 }
