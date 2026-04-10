@@ -130,7 +130,7 @@
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.json",
       "version": 1,
       "source": "https://lnkuro.top",
-      "icon": "https://lnkuro.top/wp-content/uploads/2025/02/Logo.png",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/icon.png",
       "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
       "type": "novel",
       "locale": "vi_VN"
