@@ -15,13 +15,13 @@ function execute(url) {
     var h1 = selFirst(doc, ".info_kuro h1, h1");
     if (h1) title = h1.text().trim();
 
-    // Cover
+    // Cover - try novel_kuro first (has real cover), then cover_kuro
     var cover = "";
-    var coverEl = selFirst(doc, ".cover_kuro img[data-src], .cover_kuro img[src]");
-    if (!coverEl) coverEl = selFirst(doc, ".novel_kuro img[data-src], .novel_kuro img[src]");
+    var coverEl = selFirst(doc, ".novel_kuro img[data-src], .cover_kuro img[data-src], .cover_kuro img[src]");
     if (coverEl) {
         cover = coverEl.attr("data-src") || coverEl.attr("src") || "";
         if (cover.indexOf("data:") === 0) cover = "";
+        if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
     }
 
     // Author

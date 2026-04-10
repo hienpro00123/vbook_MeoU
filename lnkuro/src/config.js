@@ -33,7 +33,10 @@ function extractCover(el) {
     var imgEl = selFirst(el, "img[data-src], img[data-lazy-src], img[src]");
     if (imgEl) {
         var src = imgEl.attr("data-src") || imgEl.attr("data-lazy-src") || imgEl.attr("src") || "";
-        if (src && src.indexOf("data:") !== 0) return src;
+        if (src && src.indexOf("data:") !== 0) {
+            if (src.charAt(0) === 47) src = BASE_URL + src;
+            return src;
+        }
     }
     return "";
 }
