@@ -6,8 +6,15 @@ function fetchApi(path) {
     var sep = path.indexOf("?") >= 0 ? "&" : "?";
     var url = API_BASE + path + sep + "lang=zh-TW";
     var res = fetch(url);
+    if (res && res.ok) { try { return res.json(); } catch(e) {} }
+    res = fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Accept": "application/json"
+        }
+    });
     if (!res || !res.ok) return null;
-    return JSON.parse(res.body);
+    try { return res.json(); } catch(e) { return null; }
 }
 
 // Tính URL cover từ articleid
