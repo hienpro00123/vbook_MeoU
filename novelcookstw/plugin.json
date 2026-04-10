@@ -2,7 +2,7 @@
   "metadata": {
     "name": "NovelCooksTW",
     "author": "Meo",
-    "version": 8,
+    "version": 9,
     "source": "https://novel.cooks.tw",
     "regexp": "novel\\.cooks\\.tw\\/reader\\.html",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",

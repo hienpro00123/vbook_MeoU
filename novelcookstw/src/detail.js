@@ -4,26 +4,16 @@ function execute(url) {
     if (!id) return Response.error("Không đọc được articleid từ URL");
     var json = fetchApi("/novel/detail/" + id);
     if (!json || json.code !== 200) return Response.error("Tải chi tiết thất bại");
-    var d = json.data;
-    var genres = [];
-    if (d.tag_list) {
-        for (var i = 0; i < d.tag_list.length; i++) {
-            var kw = d.tag_list[i].keyword;
-            if (kw) {
-                genres.push({ title: kw, input: "", script: "genrecontent.js" });
-            }
+    var d = json.data, genres = [], tags = d.tag_list;
+    if (tags) {
+        for (var i = 0; i < tags.length; i++) {
+            if (tags[i].keyword) genres.push({ title: tags[i].keyword, input: "", script: "genrecontent.js" });
         }
     }
-    var ongoing = d.fullflag === "0" || d.fullflag === 0;
     return Response.success({
-        name: d.articlename || "",
-        cover: coverUrl(id),
-        host: BASE_URL,
-        author: d.author || "",
-        description: d.intro || "",
-        detail: "",
-        ongoing: ongoing,
-        genres: genres,
-        suggests: []
+        name: d.articlename || "", cover: coverUrl(id), host: BASE_URL,
+        author: d.author || "", description: d.intro || "", detail: "",
+        ongoing: d.fullflag === "0" || d.fullflag === 0,
+        genres: genres, suggests: []
     });
 }

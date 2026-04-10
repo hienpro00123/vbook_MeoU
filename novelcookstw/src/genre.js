@@ -1,4 +1,3 @@
-load("config.js");
 function execute() {
     return Response.success([
         { title: "Kỳ Huyễn Tây Phương",   input: "1",  script: "genrecontent.js" },
