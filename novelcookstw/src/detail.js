@@ -8,7 +8,10 @@ function execute(url) {
     var genres = [];
     if (d.tag_list) {
         for (var i = 0; i < d.tag_list.length; i++) {
-            genres.push(d.tag_list[i].keyword);
+            var kw = d.tag_list[i].keyword;
+            if (kw) {
+                genres.push({ title: kw, input: "", script: "genrecontent.js" });
+            }
         }
     }
     var ongoing = d.fullflag === "0" || d.fullflag === 0;
