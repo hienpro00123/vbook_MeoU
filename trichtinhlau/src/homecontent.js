@@ -33,7 +33,7 @@ function fetchApiUpdate(p) {
         var author = item.author || "";
         result.push({ name: name, link: link, host: HOST, cover: cover, description: author });
     }
-    var next = (json.current_page < json.last_page) ? String(p + 1) : null;
+    var next = json.next_page_url ? String(p + 1) : null;
     return Response.success(result, next);
 }
 
