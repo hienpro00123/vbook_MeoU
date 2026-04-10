@@ -90,6 +90,7 @@ function parseCards(doc) {
         result.push({
             name: title,
             link: href,
+            host: HOST,
             cover: cover
         });
     }

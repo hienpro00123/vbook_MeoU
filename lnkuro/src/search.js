@@ -12,6 +12,7 @@ function execute(keyword, page) {
         items.push({
             name: it.title || "",
             link: it.link || "",
+            host: HOST,
             cover: it.cover || ""
         });
     }

@@ -13,6 +13,7 @@ function execute(input) {
         items.push({
             name: it.title || "",
             link: it.link || "",
+            host: HOST,
             cover: it.cover || ""
         });
     }
