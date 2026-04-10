@@ -47,22 +47,11 @@ function execute(url) {
 
     // Status
     var status = "";
-    var statusItems = doc.select(".post-status .summary-content, .post-content_item");
-    for (var j = 0; j < statusItems.size(); j++) {
-        var txt = statusItems.get(j).text();
-        if (txt.indexOf("Ongoing") !== -1 || txt.indexOf("ongoing") !== -1) {
-            status = "Ongoing";
-            break;
-        }
-        if (txt.indexOf("Completed") !== -1 || txt.indexOf("completed") !== -1) {
-            status = "Completed";
-            break;
-        }
-    }
-    if (!status) {
-        var bodyText = doc.text();
-        if (bodyText.indexOf("Completed") !== -1) status = "Completed";
-        else if (bodyText.indexOf("Ongoing") !== -1) status = "Ongoing";
+    var statusEl = selFirst(doc, ".post-status .summary-content");
+    if (statusEl) {
+        var stxt = statusEl.text().trim();
+        if (stxt.indexOf("Completed") !== -1 || stxt.indexOf("completed") !== -1) status = "Completed";
+        else if (stxt.indexOf("Ongoing") !== -1 || stxt.indexOf("ongoing") !== -1) status = "Ongoing";
     }
 
     // Genres

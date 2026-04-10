@@ -1,48 +1,39 @@
 load("config.js");
 
 function execute(url) {
-    var fullUrl = resolveUrl(url);
-
-    var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
-
+    var storyUrl = resolveUrl(url);
+    var ajaxUrl = storyUrl.replace(/\/?$/, "/") + "ajax/chapters/";
+    var res = fetch(ajaxUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Referer": storyUrl,
+            "User-Agent": FETCH_HEADERS["User-Agent"]
+        }
+    });
+    if (!res || !res.ok) return Response.error("Không tải được danh sách chương");
     var doc = res.html();
+    if (!doc) return Response.error("Không đọc được danh sách chương");
 
     var chapters = [];
     var seen = {};
-
-    // Find chapter links - look for links containing "chuong" in href
-    var allLinks = doc.select("a[href*=chuong]");
-    for (var i = 0; i < allLinks.size(); i++) {
-        var a = allLinks.get(i);
+    var links = doc.select(".wp-manga-chapter a[href], li a[href]");
+    for (var i = 0; i < links.size(); i++) {
+        var a = links.get(i);
         var href = a.attr("href") || "";
-        var text = a.text().trim();
-
-        // Skip navigation links, empty, or non-chapter links
-        if (!href || !text) continue;
-        if (href.indexOf("/the-loai/") !== -1) continue;
-        if (href.indexOf("/tag/") !== -1) continue;
-        if (text === "‹ Trước" || text === "Sau ›") continue;
-        if (text.indexOf("Đọc ngay") !== -1) continue;
-
-        // Must contain "chuong" or "Chương" to be a chapter link
-        var lowerText = text.toLowerCase();
-        var lowerHref = href.toLowerCase();
-        if (lowerHref.indexOf("chuong") === -1) continue;
-
-        // Skip duplicates
+        if (!href || href.indexOf("chuong") === -1) continue;
         if (seen[href]) continue;
         seen[href] = true;
-
-        // Try to find date
-        var date = "";
-
-        chapters.push({
-            name: text,
-            url: href,
-            date: date
-        });
+        var name = a.text().trim();
+        if (!name) continue;
+        chapters.push({ name: name, url: href, host: HOST });
     }
 
-    return Response.success(chapters);
+    if (chapters.length === 0) return Response.error("Không tìm thấy chương");
+
+    var reversed = [];
+    for (var j = chapters.length - 1; j >= 0; j--) {
+        reversed.push(chapters[j]);
+    }
+    return Response.success(reversed);
 }

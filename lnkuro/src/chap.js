@@ -1,64 +1,20 @@
 load("config.js");
 
 function execute(url) {
-    var fullUrl = resolveUrl(url);
-
-    var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
-
+    var chapUrl = resolveUrl(url);
+    var res = fetchRetry(chapUrl);
+    if (!res || !res.ok) return Response.error("Không tải được chương");
     var doc = res.html();
+    if (!doc) return Response.error("Không đọc được nội dung");
 
-    // Title
-    var title = "";
-    var h1 = selFirst(doc, "h1");
-    if (h1) title = h1.text().trim();
+    var el = selFirst(doc, ".reading-content .text-left, .reading-content, .entry-content, .text-left");
+    if (!el) return Response.error("Không tìm thấy nội dung chương");
 
-    // Content - reading content area (Madara theme)
-    var contentEl = selFirst(doc, ".reading-content .text-left, .reading-content, .entry-content, .text-left");
-    var content = "";
+    el.select("script, style, ins, noscript, iframe, button, .adsbygoogle, .code-block, .wp-block-buttons, .nav-links, .chapter-warning, [class*='ads']").remove();
+    el.select("a").remove();
 
-    if (contentEl) {
-        // Remove ads, scripts, navigation, VIP announcement blocks
-        contentEl.select("script, style, .code-block, .adsbygoogle, ins, .wp-block-buttons, .entry-title, .nav-links, .chapter-warning").remove();
+    var html = el.html();
+    if (!html || html.trim().length === 0) return Response.error("Nội dung chương trống");
 
-        // Remove VIP announcement block if exists
-        var allEls = contentEl.children();
-        var startRemove = false;
-        for (var i = 0; i < allEls.size(); i++) {
-            var el = allEls.get(i);
-            var txt = el.text().trim();
-            if (txt.indexOf("Thông báo") !== -1 && txt.indexOf("VIP") !== -1) {
-                startRemove = true;
-            }
-            if (startRemove && (txt.indexOf("Chương") !== -1 || txt.length > 100)) {
-                startRemove = false;
-            }
-            if (startRemove) {
-                el.remove();
-            }
-        }
-
-        content = contentEl.html();
-    }
-
-    if (!content) {
-        // Fallback: get all paragraphs
-        var paragraphs = doc.select("p");
-        var sb = [];
-        for (var j = 0; j < paragraphs.size(); j++) {
-            var pText = paragraphs.get(j).html();
-            if (pText && pText.trim().length > 20) {
-                sb.push("<p>" + pText + "</p>");
-            }
-        }
-        content = sb.join("\n");
-    }
-
-    var result = {
-        title: title,
-        content: content,
-        url: fullUrl
-    };
-
-    return Response.success(result);
+    return Response.success(html);
 }

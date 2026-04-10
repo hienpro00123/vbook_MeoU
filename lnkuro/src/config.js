@@ -67,33 +67,5 @@ function parseCards(doc) {
         });
     }
 
-    // Fallback: parse links directly
-    if (result.length === 0) {
-        var links = doc.select("a[href*='lnkuro.top/']");
-        for (var j = 0; j < links.size(); j++) {
-            var a = links.get(j);
-            var h = a.attr("href") || "";
-            if (!h || seen[h]) continue;
-            if (h.indexOf("/the-loai/") !== -1 || h.indexOf("/tag-truyen/") !== -1) continue;
-            if (h.indexOf("/convert/") !== -1 || h.indexOf("/page/") !== -1) continue;
-            if (h.indexOf("-chuong-") !== -1 || h.indexOf("/?") !== -1) continue;
-            if (h === BASE_URL || h === BASE_URL + "/") continue;
-
-            var t = a.text().trim();
-            if (!t || t.length < 3 || t.indexOf("Đọc ngay") !== -1) continue;
-            if (t.indexOf("Xem tất cả") !== -1 || t.indexOf("Menu") !== -1) continue;
-            if (seen[h]) continue;
-            seen[h] = true;
-
-            var cov = "";
-
-            result.push({
-                name: t,
-                link: h,
-                cover: cov
-            });
-        }
-    }
-
     return result;
 }
