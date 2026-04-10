@@ -1,10 +1,12 @@
+load("config.js");
+
 function execute(url) {
     var fullUrl = resolveUrl(url);
 
     var res = fetchRetry(fullUrl);
     if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
 
-    var doc = res.parse();
+    var doc = res.html();
 
     // Title
     var title = "";

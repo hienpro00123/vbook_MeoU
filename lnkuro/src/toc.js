@@ -1,10 +1,12 @@
+load("config.js");
+
 function execute(url) {
     var fullUrl = resolveUrl(url);
 
     var res = fetchRetry(fullUrl);
     if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
 
-    var doc = res.parse();
+    var doc = res.html();
 
     var chapters = [];
     var seen = {};
@@ -32,13 +34,8 @@ function execute(url) {
         if (seen[href]) continue;
         seen[href] = true;
 
-        // Try to find date from parent or sibling
+        // Try to find date
         var date = "";
-        var parent = a.parent();
-        if (parent) {
-            var dateEl = selFirst(parent, ".chapter-release-date, .chapter-release-date i, time, span.chapter-time");
-            if (dateEl) date = dateEl.text().trim();
-        }
 
         chapters.push({
             name: text,

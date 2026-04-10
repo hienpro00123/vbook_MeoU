@@ -1,10 +1,14 @@
+load("config.js");
+
+var GENRE_SLUG_RE = /\/the-loai\/([^\/]+)\/?/;
+
 function execute(url) {
     var fullUrl = resolveUrl(url);
 
     var res = fetchRetry(fullUrl);
     if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
 
-    var doc = res.parse();
+    var doc = res.html();
 
     // Title
     var title = "";
@@ -63,13 +67,18 @@ function execute(url) {
 
     // Genres
     var genres = [];
+    var genresList = [];
     var genreLinks = doc.select(".genres-content a, a[href*='/the-loai/']");
     var seenGenre = {};
     for (var k = 0; k < genreLinks.size(); k++) {
-        var g = genreLinks.get(k).text().trim();
+        var gEl = genreLinks.get(k);
+        var g = gEl.text().trim();
         if (g && !seenGenre[g]) {
             seenGenre[g] = true;
             genres.push(g);
+            var gHref = gEl.attr("href") || "";
+            var gm = GENRE_SLUG_RE.exec(gHref);
+            if (gm) genresList.push({ title: g, input: gm[1], script: "genrecontent.js" });
         }
     }
 
@@ -91,12 +100,17 @@ function execute(url) {
         }
     }
 
+    var detail = "";
+    if (status) detail += "Tình trạng: " + status;
+    if (genres.length > 0) detail += (detail ? "\n" : "") + "Thể loại: " + genres.join(", ");
+
     var result = {
         title: title,
         cover: cover,
         author: author,
         status: status,
-        genre: genres.join(", "),
+        detail: detail,
+        genres: genresList,
         description: desc,
         url: fullUrl
     };

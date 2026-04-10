@@ -1,3 +1,5 @@
+load("config.js");
+
 function execute(input, page) {
     var p = parseInt(page) || 1;
     var url = "";
@@ -15,7 +17,7 @@ function execute(input, page) {
     var res = fetchRetry(url);
     if (!res || !res.ok) return Response.error("Fetch error: " + url);
 
-    var doc = res.parse();
+    var doc = res.html();
     var items = parseCards(doc);
 
     if (items.length === 0) return Response.success([]);

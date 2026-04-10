@@ -85,8 +85,7 @@ function parseCards(doc) {
             if (seen[h]) continue;
             seen[h] = true;
 
-            var parent = a.parent();
-            var cov = extractCover(parent);
+            var cov = "";
 
             result.push({
                 name: t,

@@ -1,3 +1,5 @@
+load("config.js");
+
 function execute(page, input) {
     var query = input || "";
     if (!query) return Response.success([]);
@@ -8,7 +10,7 @@ function execute(page, input) {
     var res = fetchRetry(url);
     if (!res || !res.ok) return Response.error("Search error");
 
-    var doc = res.parse();
+    var doc = res.html();
 
     // Try parseCards first
     var items = parseCards(doc);
