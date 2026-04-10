@@ -28,6 +28,21 @@ function parseChapterId(url) {
     return m ? m[1] : null;
 }
 
+function buildItems(items, limit) {
+    var r = [], len = limit && limit < items.length ? limit : items.length;
+    for (var i = 0; i < len; i++) {
+        var n = items[i];
+        r.push({
+            name: n.articlename || "",
+            link: BASE_URL + "/novel.html?articleid=" + n.articleid,
+            host: BASE_URL,
+            cover: coverUrl(n.articleid),
+            description: n.intro || ""
+        });
+    }
+    return r;
+}
+
 function textToHtml(text) {
     if (!text) return "";
     var lines = text.split(/\r?\n/);
