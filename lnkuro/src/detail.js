@@ -104,15 +104,18 @@ function execute(url) {
     if (status) detail += "Tình trạng: " + status;
     if (genres.length > 0) detail += (detail ? "\n" : "") + "Thể loại: " + genres.join(", ");
 
+    var ongoing = (status.indexOf("Completed") === -1 && status.indexOf("Hoàn") === -1);
+
     var result = {
-        title: title,
+        name: title,
         cover: cover,
+        host: HOST,
         author: author,
-        status: status,
-        detail: detail,
-        genres: genresList,
         description: desc,
-        url: fullUrl
+        detail: detail,
+        ongoing: ongoing,
+        genres: genresList,
+        comments: []
     };
 
     return Response.success(result);

@@ -1,11 +1,12 @@
 {
-    "home": "",
-    "homecontent": "newupdate",
-    "genre": "",
-    "genrecontent": "action",
-    "detail": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai/",
-    "toc": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai/",
-    "chap": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai-chuong-100/",
-    "search": "bức thư",
-    "suggest": "bức thư"
+  "home": "",
+  "homecontent": "newupdate",
+  "genre": "",
+  "genrecontent": "action",
+  "detail": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai/",
+  "toc": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai/",
+  "chap": "https://lnkuro.top/buc-thu-tinh-den-tu-tuong-lai-chuong-100/",
+  "search": "bức thư",
+  "suggest": "bức thư",
+  "appIP": "http://192.168.1.40:8080"
 }
