@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "TrichTinhLau",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://trichtinhlau.com",
+    "regexp": "trichtinhlau\\.com\\/doc-truyen\\/[^\\/]+\\/[^\\/]+",
+    "description": "Trích Tinh Lâu - Đọc truyện chữ online miễn phí",
+    "locale": "vi_VN",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}
