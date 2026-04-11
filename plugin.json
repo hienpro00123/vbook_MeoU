@@ -115,9 +115,9 @@
     {
       "name": "WanwanSekai",
       "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.zip",
-      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.json",
-      "version": 3,
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.zip?v=4",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.json?v=4",
+      "version": 4,
       "source": "https://wanwansekai.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/icon.png",
       "description": "WanwanSekai - Đọc web novel tiếng Việt",

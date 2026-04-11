@@ -2,7 +2,7 @@
   "metadata": {
     "name": "WanwanSekai",
     "author": "Meo",
-    "version": 3,
+    "version": 4,
     "source": "https://wanwansekai.com",
     "regexp": "wanwansekai\\.com\\/novel\\/[^\\/]+\\/?$",
     "description": "WanwanSekai - Doc web novel tieng Viet",
