@@ -2,6 +2,14 @@
 
 Bộ extension VBook đọc truyện tranh tiếng Việt.
 
+## Ủng hộ tác giả
+
+Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR code bên dưới. Cảm ơn bạn! 🙏
+
+<p align="center">
+  <img src="donate.jpg" alt="QR Donate - NGUYEN MINH HIEN" width="300">
+</p>
+
 ## Cài đặt
 
 ### Cách 1: Thêm qua GitHub Repository
