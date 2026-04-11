@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "Storya",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://storya.click",
+    "regexp": "storya\\.click\\/truyen\\/[^\\/]+\\/?$",
+    "description": "Storya - Đọc truyện chữ online miễn phí",
+    "locale": "vi_VN",
+    "type": "novel"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}
