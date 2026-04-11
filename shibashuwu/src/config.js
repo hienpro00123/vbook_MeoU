@@ -94,6 +94,7 @@ function extractCover(el) {
     var lazy = imgEl.attr("_src") || imgEl.attr("data-src") || imgEl.attr("data-original") || "";
     var src = lazy || imgEl.attr("src") || "";
     src = resolveUrl(src);
+    if (src.indexOf("/17mb/images/enter.png") !== -1) return DEFAULT_COVER;
     return src || DEFAULT_COVER;
 }
 
