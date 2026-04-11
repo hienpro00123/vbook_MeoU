@@ -96,14 +96,7 @@ function isValidDetailDoc(doc) {
     if (!title) return false;
 
     var lowerTitle = title.toLowerCase();
-    if (lowerTitle.indexOf("404") !== -1 || lowerTitle.indexOf("not found") !== -1) {
-        return false;
-    }
-
-    var authorA = selFirst(doc, "a[href*='/writer/']");
-    var catalogA = selFirst(doc, "a[href*='/catalog/']");
-    var chapterA = selFirst(doc, "a[href*='/book/'][href$='.html']");
-    return !!(authorA || catalogA || chapterA);
+    return lowerTitle.indexOf("404") === -1 && lowerTitle.indexOf("not found") === -1;
 }
 
 function buildPostOptions(body) {
