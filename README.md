@@ -29,10 +29,16 @@ Sau khi có phiên bản mới được push lên GitHub:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
+| Biquge | [biquge.tw](https://www.biquge.tw) | v1 | Chinese Novel | zh_CN |
+| Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v27 | Comic | vi_VN |
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
-| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v8 | Chinese Novel | zh_CN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v9 | Chinese Novel | zh_CN |
 | TruyenChu | [truyenchu.net](https://truyenchu.net) | v8 | Novel | vi_VN |
-| nettruyen.work | [nettruyen.work](https://nettruyen.work) | v1 | Comic | vi_VN |
+| nettruyen.work | [nettruyen.work](https://nettruyen.work) | v3 | Comic | vi_VN |
+| Valvrareteam | [valvrareteam.net](https://valvrareteam.net) | v10 | Novel | vi_VN |
+| NovelCooksTW | [novel.cooks.tw](https://novel.cooks.tw) | v9 | Chinese Novel | zh_TW |
+| TrichTinhLau | [trichtinhlau.com](https://trichtinhlau.com) | v3 | Novel | vi_VN |
+| LN Kuro | [lnkuro.top](https://lnkuro.top) | v14 | Novel | vi_VN |
