@@ -4,7 +4,7 @@
     "author": "Meo",
     "version": 9,
     "source": "https://m.bixiange.me",
-    "regexp": "m\\.bixiange\\.me\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+",
+    "regexp": "m\\.bixiange\\.me\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
     "locale": "zh_CN",
     "type": "chinese_novel"
