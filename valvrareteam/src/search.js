@@ -12,6 +12,7 @@ function execute(keyword, page) {
             name: novel.title || "",
             cover: novel.illustration || "",
             link: makeNovelUrl(novel._id),
+            host: BASE_URL,
             description: "Tác giả: " + (novel.author || "") + " | " + mapStatus(novel.status) + " | " + (novel.totalChapters || 0) + " chương"
         });
     }

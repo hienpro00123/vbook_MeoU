@@ -37,7 +37,7 @@ function parseNovels(input, page) {
         var n = novels[i];
         var ch = n.chapters || [];
         var latest = ch.length > 0 ? (ch[0].title || "") : "";
-        items.push({ name: n.title || "", cover: n.illustration || "", link: makeNovelUrl(n._id), description: mapStatus(n.status) + (latest ? " | " + latest : "") });
+        items.push({ name: n.title || "", cover: n.illustration || "", link: makeNovelUrl(n._id), host: BASE_URL, description: mapStatus(n.status) + (latest ? " | " + latest : "") });
     }
     var pg = data.pagination || {};
     return Response.success(items, (p < (pg.totalPages || 1)) ? (p + 1) : null);
