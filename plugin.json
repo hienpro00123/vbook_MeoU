@@ -113,14 +113,14 @@
       "locale": "vi_VN"
     },
     {
-      "name": "WanwanSekai",
+      "name": "WanwanSekai- có 18+",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.json",
       "version": 1,
       "source": "https://wanwansekai.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/icon.png",
-      "description": "WanwanSekai - Đọc web novel tiếng Việt",
+      "description": "WanwanSekai - Đọc web novel tiếng Việt, có nội dung 18+",
       "type": "novel",
       "locale": "vi_VN"
     },

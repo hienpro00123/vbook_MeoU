@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "name": "WanwanSekai",
+    "name": "WanwanSekai- có 18+",
     "author": "Meo",
     "version": 1,
     "source": "https://wanwansekai.com",
     "regexp": "wanwansekai\\.com\\/novel\\/[^\\/]+\\/?$",
-    "description": "WanwanSekai - Doc web novel tieng Viet",
+    "description": "WanwanSekai - Doc web novel tieng Viet, co noi dung 18+",
     "locale": "vi_VN",
     "type": "novel"
   },
