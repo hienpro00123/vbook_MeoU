@@ -24,32 +24,23 @@ function extractChaps(doc, bookId) {
 
 function execute(url) {
     var bookUrl = resolveUrl(url);
-    var doc = fetchBrowser(bookUrl, 10000);
-    if (!doc) return Response.error("");
-
     var bookId = "";
     var m = BOOK_RE.exec(bookUrl);
     if (m) bookId = m[1];
 
-    var chapters = extractChaps(doc, bookId);
-
-    // If few chapters found, try full chapter list page
-    // biquge pattern: /book/{id}/ or chapterlist link
-    if (chapters.length < 10 && bookId) {
-        var allLink = selFirst(doc, ".chapterlist a[href], .allchapter a[href], a:contains(全部章节), a:contains(查看全部)");
-        var fullUrl = "";
-        if (allLink) {
-            fullUrl = allLink.attr("href") || "";
-            if (fullUrl && fullUrl.indexOf("http") !== 0) fullUrl = BASE_URL + fullUrl;
-        }
-        if (!fullUrl) {
-            fullUrl = BASE_URL + "/book/" + bookId + "/";
-        }
+    // Always load full chapter list page first: /book/{id}/
+    var chapters = [];
+    if (bookId) {
+        var fullUrl = BASE_URL + "/book/" + bookId + "/";
         var fullDoc = fetchBrowser(fullUrl, 10000);
-        if (fullDoc) {
-            var fullChaps = extractChaps(fullDoc, bookId);
-            if (fullChaps.length > chapters.length) chapters = fullChaps;
-        }
+        if (fullDoc) chapters = extractChaps(fullDoc, bookId);
+    }
+
+    // Fallback to detail page if full page failed
+    if (chapters.length === 0) {
+        var doc = fetchBrowser(bookUrl, 10000);
+        if (!doc) return Response.error("");
+        chapters = extractChaps(doc, bookId);
     }
 
     if (chapters.length === 0) return Response.error("");
