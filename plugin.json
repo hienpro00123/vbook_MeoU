@@ -5,6 +5,18 @@
   },
   "data": [
     {
+      "name": "DuaLeo",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dualeo/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dualeo/plugin.json",
+      "version": 1,
+      "source": "https://dualeotruyenfull.net",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dualeo/icon.png",
+      "description": "Dưa Leo Truyện Full - Đọc truyện chữ online",
+      "type": "novel",
+      "locale": "vi_VN"
+    },
+    {
       "name": "Biquge",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/biquge/plugin.zip",
