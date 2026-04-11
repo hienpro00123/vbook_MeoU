@@ -4,7 +4,7 @@ var SKIP_RE = /^(Đọc|Từ đầu|Mới nhất|Xem thêm|Trang trước|Trang 
 
 function execute(url) {
     var detailUrl = resolveUrl(url);
-    var doc = fetch(detailUrl);
+    var doc = fetchDoc(detailUrl);
     if (!doc) return Response.error("");
 
     // Try reversed order first (chapters listed newest first)

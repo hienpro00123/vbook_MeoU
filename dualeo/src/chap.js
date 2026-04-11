@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var chapUrl = resolveUrl(url);
-    var doc = fetch(chapUrl);
+    var doc = fetchDoc(chapUrl);
     if (!doc) return Response.error("");
 
     var el = selFirst(doc, "#chapter-content");

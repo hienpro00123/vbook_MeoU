@@ -4,7 +4,7 @@ function execute(url, page) {
     var p = page ? parseInt(page) : 1;
     var fetchUrl = BASE_URL + "/" + url + "/";
     if (p > 1) fetchUrl = BASE_URL + "/" + url + "/page/" + p + "/";
-    var doc = fetch(fetchUrl);
+    var doc = fetchDoc(fetchUrl);
     if (!doc) return Response.error("");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);

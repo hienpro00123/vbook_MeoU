@@ -8,7 +8,7 @@ function execute(url, page) {
     } else {
         fetchUrl = BASE_URL + "/the-loai/" + url + "/page/" + p + "/";
     }
-    var doc = fetch(fetchUrl);
+    var doc = fetchDoc(fetchUrl);
     if (!doc) return Response.error("");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);

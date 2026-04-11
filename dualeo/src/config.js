@@ -1,6 +1,20 @@
 var HOST = "https://dualeotruyenfull.net";
 var BASE_URL = "https://dualeotruyenfull.net";
 
+var FETCH_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
+    "Referer": "https://dualeotruyenfull.net/"
+};
+var FETCH_OPTIONS = { headers: FETCH_HEADERS };
+
+function fetchDoc(url) {
+    var res = fetch(url, FETCH_OPTIONS);
+    if (!res || !res.ok) return null;
+    return res.html();
+}
+
 function selFirst(el, css) {
     var r = el.select(css);
     return r.size() > 0 ? r.get(0) : null;

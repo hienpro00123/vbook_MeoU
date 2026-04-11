@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var detailUrl = resolveUrl(url);
-    var doc = fetch(detailUrl);
+    var doc = fetchDoc(detailUrl);
     if (!doc) return Response.error("");
 
     // Title
