@@ -113,6 +113,18 @@
       "locale": "vi_VN"
     },
     {
+      "name": "WanwanSekai",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/plugin.json",
+      "version": 1,
+      "source": "https://wanwansekai.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/icon.png",
+      "description": "WanwanSekai - Đọc web novel tiếng Việt",
+      "type": "novel",
+      "locale": "vi_VN"
+    },
+    {
       "name": "nettruyen.work",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/nettruyen/plugin.zip",
