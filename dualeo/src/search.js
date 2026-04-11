@@ -2,8 +2,9 @@ load("config.js");
 
 function execute(key, page) {
     var p = page ? parseInt(page) : 1;
-    var searchUrl = BASE_URL + "/search/" + encodeURIComponent(key) + "/";
-    if (p > 1) searchUrl = BASE_URL + "/search/" + encodeURIComponent(key) + "/page/" + p + "/";
+    var q = encodeURIComponent(key || "");
+    var searchUrl = BASE_URL + "/?s=" + q;
+    if (p > 1) searchUrl = BASE_URL + "/page/" + p + "/?s=" + q;
     var doc = fetchDoc(searchUrl);
     if (!doc) return Response.error("");
     var items = parseSearchList(doc);
