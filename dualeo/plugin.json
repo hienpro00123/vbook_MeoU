@@ -9,16 +9,15 @@
     "source": "https://dualeotruyenfull.net",
     "regexp": "dualeotruyenfull\\.net/doc-truyen/"
   },
-  "scripts": {
-    "config": "src/config.js",
-    "home": "src/home.js",
-    "homecontent": "src/homecontent.js",
-    "genre": "src/genre.js",
-    "genrecontent": "src/genrecontent.js",
-    "detail": "src/detail.js",
-    "toc": "src/toc.js",
-    "chap": "src/chap.js",
-    "search": "src/search.js",
-    "suggest": "src/suggest.js"
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "search": "search.js",
+    "suggest": "suggest.js"
   }
 }
