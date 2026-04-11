@@ -69,6 +69,14 @@ function parseList(doc) {
         var name = titleA.text().trim();
         if (!name) continue;
 
+        var adultBadge = selFirst(card, ".manga-title-badges.custom.adult, .adult");
+        if (adultBadge) {
+            var badgeText = adultBadge.text().trim();
+            if (badgeText.indexOf("18+") !== -1 && name.indexOf("18+") !== 0) {
+                name = "18+ " + name;
+            }
+        }
+
         var description = "";
         var latestA = selFirst(card, ".chapter-item a[href], .post-on a[href], .latest-chap a[href]");
         if (latestA) description = latestA.text().trim();
