@@ -77,6 +77,17 @@ function fetchRetry(url, options) {
     return res;
 }
 
+function fetchBrowser(url, timeout) {
+    var browser = Engine.newBrowser();
+    try {
+        return browser.launch(url, timeout || 12000);
+    } finally {
+        try {
+            browser.close();
+        } catch (e) {}
+    }
+}
+
 function buildPostOptions(body) {
     var headers = cloneHeaders();
     headers["Content-Type"] = "application/x-www-form-urlencoded";

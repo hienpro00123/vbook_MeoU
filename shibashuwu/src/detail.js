@@ -3,11 +3,23 @@ load("config.js");
 function execute(url) {
     var fullUrl = resolveUrl(url);
     var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) {
+    var doc = null;
+    if (res && res.ok) {
+        try {
+            doc = res.html();
+        } catch (e) {}
+    }
+
+    if (!doc) {
+        try {
+            doc = fetchBrowser(fullUrl, 12000);
+        } catch (e2) {}
+    }
+
+    if (!doc) {
         return Response.error("Khong tai duoc thong tin truyen");
     }
 
-    var doc = res.html();
     var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");
     var title = titleEl ? cleanText(titleEl.text()) : "";
     if (!title) {
