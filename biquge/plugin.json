@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "Biquge",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://www.biquge.tw",
+    "regexp": "biquge\\.tw/book/\\d+",
+    "description": "笔趣阁 - Truyện chữ Tiếng Trung",
+    "locale": "zh_CN",
+    "type": "chinese_novel"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}
