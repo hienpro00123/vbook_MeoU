@@ -15,12 +15,14 @@ function execute(url) {
     var h1 = selFirst(doc, ".info_kuro h1, h1");
     if (h1) title = h1.text().trim();
 
-    // Cover - try novel_kuro first (has real cover), then cover_kuro
+    // Cover - novel_kuro has real cover, cover_kuro has placeholder
     var cover = "";
-    var coverEl = selFirst(doc, ".novel_kuro img[data-src], .cover_kuro img[data-src], .cover_kuro img[src]");
+    var coverEl = selFirst(doc, ".novel_kuro img[data-src]");
+    if (!coverEl) coverEl = selFirst(doc, ".cover_kuro img[data-src]");
+    if (!coverEl) coverEl = selFirst(doc, ".cover_kuro img[src]");
     if (coverEl) {
         cover = coverEl.attr("data-src") || coverEl.attr("src") || "";
-        if (cover.indexOf("data:") === 0) cover = "";
+        if (cover.indexOf("data:") === 0 || cover.indexOf("dummy") !== -1) cover = "";
         if (cover && cover.charAt(0) === 47) cover = BASE_URL + cover;
     }
 
@@ -36,18 +38,18 @@ function execute(url) {
     }
     if (!author || author === "Chưa có thông tin") author = "Kuro Trans";
 
-    // Status
+    // Status - .status-inline has actual status text
     var status = "";
-    var statusEl = selFirst(doc, ".status-inline, .badge_kuro");
-    if (statusEl) {
-        var stxt = statusEl.text().trim();
-        if (stxt.indexOf("Completed") !== -1 || stxt.indexOf("completed") !== -1 || stxt.indexOf("Hoàn") !== -1) status = "Completed";
-        else if (stxt.indexOf("Ongoing") !== -1 || stxt.indexOf("ongoing") !== -1 || stxt.indexOf("Đang ra") !== -1) status = "Ongoing";
+    var statusEls = doc.select(".status-inline");
+    for (var si = 0; si < statusEls.size(); si++) {
+        var stxt = statusEls.get(si).text().trim();
+        if (stxt.indexOf("Completed") !== -1 || stxt.indexOf("completed") !== -1 || stxt.indexOf("Hoàn") !== -1) { status = "Completed"; break; }
+        if (stxt.indexOf("Ongoing") !== -1 || stxt.indexOf("ongoing") !== -1 || stxt.indexOf("Đang ra") !== -1) { status = "Ongoing"; break; }
     }
 
     // Genres
-    var genres = [];
     var genresList = [];
+    var genreNames = [];
     var genreLinks = doc.select(".genres_kuro a[href*='/the-loai/']");
     var seenGenre = {};
     for (var k = 0; k < genreLinks.size(); k++) {
@@ -55,7 +57,7 @@ function execute(url) {
         var g = gEl.text().trim();
         if (g && !seenGenre[g]) {
             seenGenre[g] = true;
-            genres.push(g);
+            genreNames.push(g);
             var gHref = gEl.attr("href") || "";
             var gm = GENRE_SLUG_RE.exec(gHref);
             if (gm) genresList.push({ title: g, input: gm[1], script: "genrecontent.js" });
@@ -75,9 +77,9 @@ function execute(url) {
 
     var detail = "";
     if (status) detail += "Tình trạng: " + status;
-    if (genres.length > 0) detail += (detail ? "\n" : "") + "Thể loại: " + genres.join(", ");
+    if (genreNames.length > 0) detail += (detail ? "\n" : "") + "Thể loại: " + genreNames.join(", ");
 
-    var ongoing = (status.indexOf("Completed") === -1 && status.indexOf("Hoàn") === -1);
+    var ongoing = (status !== "Completed");
 
     var result = {
         name: title,

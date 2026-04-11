@@ -41,13 +41,17 @@ function extractCover(el) {
     return "";
 }
 
+var _cachedNonce = "";
+
 function getNonce() {
+    if (_cachedNonce) return _cachedNonce;
     var res = fetchRetry(BASE_URL + "/truyen-han-quoc/");
     if (!res || !res.ok) return "";
     var doc = res.html();
     if (!doc) return "";
     var el = selFirst(doc, "input[name=kr_nonce]");
-    return el ? el.attr("value") : "";
+    _cachedNonce = el ? el.attr("value") : "";
+    return _cachedNonce;
 }
 
 function searchAjax(keyword, page) {
@@ -55,6 +59,7 @@ function searchAjax(keyword, page) {
     if (!nonce) return null;
     var q = java.net.URLEncoder.encode(keyword, "UTF-8");
     var p = page || 1;
+    var body = "action=kr_search_truyen&q=" + q + "&kr_nonce=" + nonce + "&page=" + p;
     var res = fetch(BASE_URL + "/wp-admin/admin-ajax.php", {
         method: "POST",
         headers: {
@@ -62,9 +67,25 @@ function searchAjax(keyword, page) {
             "User-Agent": FETCH_HEADERS["User-Agent"],
             "Referer": BASE_URL + "/truyen-han-quoc/"
         },
-        body: "action=kr_search_truyen&q=" + q + "&kr_nonce=" + nonce + "&page=" + p
+        body: body
     });
-    if (!res || !res.ok) return null;
+    if (!res || !res.ok) {
+        // Nonce expired — refresh and retry once
+        _cachedNonce = "";
+        nonce = getNonce();
+        if (!nonce) return null;
+        body = "action=kr_search_truyen&q=" + q + "&kr_nonce=" + nonce + "&page=" + p;
+        res = fetch(BASE_URL + "/wp-admin/admin-ajax.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": FETCH_HEADERS["User-Agent"],
+                "Referer": BASE_URL + "/truyen-han-quoc/"
+            },
+            body: body
+        });
+        if (!res || !res.ok) return null;
+    }
     try { return res.json(); } catch(e) { return null; }
 }
 
@@ -73,12 +94,11 @@ function parseCards(doc) {
     var seen = {};
 
     var cards = doc.select("article.kr-card");
-    if (cards.size() === 0) cards = doc.select(".page-item-detail");
 
     for (var i = 0; i < cards.size(); i++) {
         var card = cards.get(i);
 
-        var titleA = selFirst(card, ".kr-card__title a[href], h3 a[href], h2 a[href]");
+        var titleA = selFirst(card, ".kr-card__title a[href]");
         if (!titleA) continue;
 
         var href = titleA.attr("href") || "";
