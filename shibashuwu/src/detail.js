@@ -7,12 +7,14 @@ function execute(url) {
     if (res && res.ok) {
         try {
             doc = res.html();
+            if (!isValidDetailDoc(doc)) doc = null;
         } catch (e) {}
     }
 
     if (!doc) {
         try {
             doc = fetchBrowser(fullUrl, 12000);
+            if (!isValidDetailDoc(doc)) doc = null;
         } catch (e2) {}
     }
 

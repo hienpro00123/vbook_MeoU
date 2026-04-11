@@ -88,6 +88,24 @@ function fetchBrowser(url, timeout) {
     }
 }
 
+function isValidDetailDoc(doc) {
+    if (!doc) return false;
+
+    var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");
+    var title = titleEl ? cleanText(titleEl.text()) : "";
+    if (!title) return false;
+
+    var lowerTitle = title.toLowerCase();
+    if (lowerTitle.indexOf("404") !== -1 || lowerTitle.indexOf("not found") !== -1) {
+        return false;
+    }
+
+    var authorA = selFirst(doc, "a[href*='/writer/']");
+    var catalogA = selFirst(doc, "a[href*='/catalog/']");
+    var chapterA = selFirst(doc, "a[href*='/book/'][href$='.html']");
+    return !!(authorA || catalogA || chapterA);
+}
+
 function buildPostOptions(body) {
     var headers = cloneHeaders();
     headers["Content-Type"] = "application/x-www-form-urlencoded";
