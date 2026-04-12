@@ -2,7 +2,7 @@
   "metadata": {
     "name": "ShiBaShuWu",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://www.shibashuwu.net",
     "regexp": "(?:www\\.)?shibashuwu\\.net\\/book\\/\\d+\\/?$",
     "description": "ShiBaShuWu - Doc truyen chu Trung Quoc 18+",
