@@ -23,14 +23,12 @@ function execute(keyword, page) {
                 cover = BASE_URL + "/storage/" + s.cover;
             }
         }
-        var item = {
-            name: adultName(s.title),
+        items.push({
+            name: s.title,
             cover: cover,
             link: BASE_URL + "/truyen/" + s.slug,
             host: HOST
-        };
-        if (isAdult(s.title)) item.nsfw = true;
-        items.push(item);
+        });
     }
 
     return Response.success(items, null);

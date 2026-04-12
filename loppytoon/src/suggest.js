@@ -29,14 +29,12 @@ function execute(input, page) {
         var name = titleEl ? titleEl.text().trim() : (img ? img.attr("alt").trim() : "");
         if (!name) continue;
 
-        var item = {
-            name: adultName(name),
+        items.push({
+            name: name,
             cover: cover,
             link: BASE_URL + "/truyen/" + slug,
             host: HOST
-        };
-        if (isAdult(name)) item.nsfw = true;
-        items.push(item);
+        });
     }
 
     var next = null;
