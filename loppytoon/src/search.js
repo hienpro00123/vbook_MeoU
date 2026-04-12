@@ -24,7 +24,7 @@ function execute(keyword, page) {
             }
         }
         items.push({
-            name: s.title,
+            name: adultName(s.title),
             cover: cover,
             link: BASE_URL + "/truyen/" + s.slug,
             host: HOST
