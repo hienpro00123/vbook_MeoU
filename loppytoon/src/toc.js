@@ -18,7 +18,8 @@ function execute(url) {
         if (seen[href]) continue;
         seen[href] = true;
 
-        var name = a.text().trim().replace(/\s+/g, " ");
+        var nameEl = selFirst(a, "h3");
+        var name = nameEl ? nameEl.text().trim() : a.text().trim().replace(/\s+/g, " ");
         if (!name) continue;
 
         chapters.push({ name: name, url: href, host: HOST });
