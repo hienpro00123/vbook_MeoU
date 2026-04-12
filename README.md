@@ -1,7 +1,21 @@
 
+# vBook Extensions Repository
+
+Kho extension đọc truyện cho VBook, phát hành qua GitHub Repository để cài đặt và cập nhật thuận tiện hơn.
+
+## Thêm nhanh
+
+Repository URL:
+
+```text
+https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json
+```
+
+> Nên thêm repository bằng URL này nếu muốn nhận cập nhật nhanh và ổn định.
+
 ## Ủng hộ tác giả
-Thêm repository bằng URL: `https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json`
-Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR code bên dưới. Cảm ơn bạn! 🙏
+
+Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR code bên dưới.
 
 <p align="center">
   <img src="donate.jpg" alt="QR Donate - NGUYEN MINH HIEN" width="300">
@@ -12,24 +26,36 @@ Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR 
 ### Cách 1: Thêm qua GitHub Repository
 1. Mở VBook app
 2. Vào phần **Extensions** / **Kho tiện ích**
-3. Thêm repository bằng URL: `https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json`
+3. Dán repository URL ở trên
 4. Extension sẽ xuất hiện trong danh sách, nhấn cài đặt
+
+> Khuyến nghị: dùng cách này để cài mới và nhận cập nhật.
 
 ### Cách 2: Cài thủ công
 1. Tải file `plugin.zip` trong thư mục tương ứng
 2. Import vào VBook app
 
+> Phù hợp khi cần test nhanh một extension cụ thể.
+
 ## Cập nhật Extension
 
-Sau khi có phiên bản mới được push lên GitHub:
 1. Mở VBook app → vào phần **Extensions**
 2. Tìm extension muốn cập nhật → nhấn **Kiểm tra cập nhật** (hoặc pull-to-refresh)
 3. Nếu có bản mới → nút **Cập nhật** sẽ xuất hiện → nhấn để tải về
 
-> ⚠️ App **không tự động push thông báo** — user cần vào trang Extensions để kiểm tra.
+> Lưu ý: app không tự đẩy thông báo cập nhật. Cần vào trang Extensions để kiểm tra thủ công.
 
+## Xử lý khi chưa thấy cập nhật
+
+1. Kéo xuống để làm mới danh sách repository
+2. Mở extension cần cập nhật rồi bấm **Kiểm tra cập nhật** lại
+3. Nếu vừa push GitHub, chờ vài phút để CDN cập nhật file mới
+4. Kiểm tra lại repository URL có đúng với URL ở trên không
+5. Nếu vẫn chưa nhận, xoá extension cũ rồi cài lại từ repository
 
 ## Extensions
+
+Danh sách extension hiện có trong repository:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
