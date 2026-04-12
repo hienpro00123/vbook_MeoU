@@ -20,6 +20,25 @@ function execute(input, page) {
     var seen = {};
     if (currentSlug) seen[currentSlug] = true;
 
+    // Build cover map — img is sibling of <a>, not child
+    var coverMap = {};
+    var allEls = doc.select("a[href*='/truyen/'], img[src*='/uploads/']");
+    var lastSlug = "";
+    for (var m = 0; m < allEls.size(); m++) {
+        var el = allEls.get(m);
+        var elHref = el.attr("href") || "";
+        var elSrc = el.attr("src") || "";
+        if (elHref && elHref.indexOf("/truyen/") !== -1 && !elSrc) {
+            lastSlug = extractSlug(elHref) || "";
+        } else if (elSrc && elSrc.indexOf("/uploads/") !== -1) {
+            if (lastSlug && !coverMap[lastSlug]) {
+                var imgUrl = elSrc;
+                if (imgUrl.charAt(0) === "/") imgUrl = BASE_URL + imgUrl;
+                coverMap[lastSlug] = imgUrl;
+            }
+        }
+    }
+
     // Collect story links from "Truyện cùng thể loại" and same author sections
     var links = doc.select("a[href*='/truyen/']");
     for (var i = 0; i < links.size(); i++) {
@@ -36,12 +55,7 @@ function execute(input, page) {
 
         seen[slug] = true;
 
-        var cover = "";
-        var img = selFirst(a, "img");
-        if (img) {
-            cover = img.attr("src") || "";
-            if (cover && cover.charAt(0) === "/") cover = BASE_URL + cover;
-        }
+        var cover = coverMap[slug] || "";
 
         result.push({
             name: name,

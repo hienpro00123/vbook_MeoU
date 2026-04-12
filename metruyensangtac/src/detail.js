@@ -75,15 +75,12 @@ function execute(url) {
             }
         }
 
-        // Genres — text nodes after "Thể loại: "
-        var bodyText = doc.text();
-        var genreMatch = /Thể loại:\s*(.+?)(?:Tác Phẩm|Tình trạng|Chương|$)/i.exec(bodyText);
-        if (genreMatch) {
-            var genreText = genreMatch[1].trim();
-            var genreNames = genreText.split(/[,，]\s*/);
-            for (var gi = 0; gi < genreNames.length; gi++) {
-                var gn = genreNames[gi].trim();
-                if (gn) {
+        // Genres — find genre links or text after "Thể loại:"
+        var genreLinks = doc.select("a[href*='theloai=']");
+        if (genreLinks.size() > 0) {
+            for (var gi = 0; gi < genreLinks.size(); gi++) {
+                var gn = genreLinks.get(gi).text().trim();
+                if (gn && gn.length > 1) {
                     genres.push({
                         title: gn,
                         input: gn,
@@ -92,20 +89,38 @@ function execute(url) {
                 }
             }
         }
+        if (genres.length === 0) {
+            var bodyText = doc.text();
+            var genreMatch = /Thể loại:\s*([^\n]+)/i.exec(bodyText);
+            if (genreMatch) {
+                var genreNames = genreMatch[1].split(/[,，]\s*/);
+                for (var gj = 0; gj < genreNames.length; gj++) {
+                    var gn2 = genreNames[gj].trim();
+                    if (gn2 && gn2.length > 1) {
+                        genres.push({
+                            title: gn2,
+                            input: gn2,
+                            script: "genrecontent.js"
+                        });
+                    }
+                }
+            }
+        }
 
         // Status
-        var statusMatch = /Tình trạng:\s*(Đang ra|Hoàn thành|Full)/i.exec(bodyText);
+        var bodyText2 = doc.text();
+        var statusMatch = /Tình trạng:\s*(Đang ra|Hoàn thành|Full)/i.exec(bodyText2);
         if (statusMatch) {
             var statusText = statusMatch[1].trim();
             if (/Hoàn|Full/i.test(statusText)) ongoing = false;
         }
 
         // Chapter count for detail
-        var chapMatch = /Chương\s*(\d[\d,.]*)/i.exec(bodyText);
+        var chapMatch = /Chương\s*(\d[\d,.]*)/i.exec(bodyText2);
         var chapCount = chapMatch ? chapMatch[1].replace(/[,.]/g, "") : "";
-        var viewMatch = /Lượt đọc\s*(\d[\d,.]*)/i.exec(bodyText);
+        var viewMatch = /Lượt đọc\s*(\d[\d,.]*)/i.exec(bodyText2);
         var views = viewMatch ? viewMatch[1] : "";
-        var ratingMatch = /Đánh giá\s*([\d.]+\/\d+)/i.exec(bodyText);
+        var ratingMatch = /Đánh giá\s*([\d.]+\/\d+)/i.exec(bodyText2);
         var rating = ratingMatch ? ratingMatch[1] : "";
 
         var detailParts = [];
@@ -115,6 +130,25 @@ function execute(url) {
         detail = detailParts.join("\n");
 
         // Suggests — "Truyện cùng thể loại" or same author stories
+        // Build cover map for suggests — img is sibling of <a>
+        var sugCoverMap = {};
+        var sugAllEls = doc.select("a[href*='/truyen/'], img[src*='/uploads/']");
+        var sugLastSlug = "";
+        for (var sm = 0; sm < sugAllEls.size(); sm++) {
+            var sugEl = sugAllEls.get(sm);
+            var sugElHref = sugEl.attr("href") || "";
+            var sugElSrc = sugEl.attr("src") || "";
+            if (sugElHref && sugElHref.indexOf("/truyen/") !== -1 && !sugElSrc) {
+                sugLastSlug = extractSlug(sugElHref) || "";
+            } else if (sugElSrc && sugElSrc.indexOf("/uploads/") !== -1) {
+                if (sugLastSlug && !sugCoverMap[sugLastSlug]) {
+                    var sugImgUrl = sugElSrc;
+                    if (sugImgUrl.charAt(0) === "/") sugImgUrl = BASE_URL + sugImgUrl;
+                    sugCoverMap[sugLastSlug] = sugImgUrl;
+                }
+            }
+        }
+
         var suggestLinks = doc.select("a[href*='/truyen/']");
         var suggestSeen = {};
         suggestSeen[slug] = true;
@@ -131,12 +165,7 @@ function execute(url) {
 
             suggestSeen[sSlug] = true;
 
-            var sCover = "";
-            var sImg = selFirst(sa, "img");
-            if (sImg) {
-                sCover = sImg.attr("src") || "";
-                if (sCover && sCover.charAt(0) === "/") sCover = BASE_URL + sCover;
-            }
+            var sCover = sugCoverMap[sSlug] || "";
 
             suggests.push({
                 name: sName,
