@@ -32,7 +32,7 @@ function execute(input, page) {
         items.push({
             name: name,
             cover: cover,
-            url: BASE_URL + "/truyen/" + slug,
+            link: BASE_URL + "/truyen/" + slug,
             host: HOST
         });
     }

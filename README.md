@@ -1,9 +1,6 @@
-# VBook Extensions
-
-Bộ extension VBook đọc truyện tranh tiếng Việt.
 
 ## Ủng hộ tác giả
-
+Thêm repository bằng URL: `https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json`
 Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR code bên dưới. Cảm ơn bạn! 🙏
 
 <p align="center">
@@ -31,7 +28,6 @@ Sau khi có phiên bản mới được push lên GitHub:
 
 > ⚠️ App **không tự động push thông báo** — user cần vào trang Extensions để kiểm tra.
 
-> ⚠️ GitHub CDN có thể cache file cũ đến **5 phút** sau khi push. Nếu không thấy bản mới, chờ 5 phút rồi thử lại.
 
 ## Extensions
 

@@ -26,7 +26,7 @@ function execute(keyword, page) {
         items.push({
             name: s.title,
             cover: cover,
-            url: BASE_URL + "/truyen/" + s.slug,
+            link: BASE_URL + "/truyen/" + s.slug,
             host: HOST
         });
     }
