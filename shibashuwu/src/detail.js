@@ -2,23 +2,9 @@ load("config.js");
 
 function execute(url) {
     var fullUrl = resolveUrl(url);
-    var res = fetchRetry(fullUrl);
-    var doc = null;
-    if (res && res.ok) {
-        try {
-            doc = res.html();
-            if (!isValidDetailDoc(doc)) doc = null;
-        } catch (e) {}
-    }
+    var doc = fetchBrowser(fullUrl, 15000);
 
-    if (!doc) {
-        try {
-            doc = fetchBrowser(fullUrl, 12000);
-            if (!isValidDetailDoc(doc)) doc = null;
-        } catch (e2) {}
-    }
-
-    if (!doc) {
+    if (!doc || !isValidDetailDoc(doc)) {
         return Response.error("Khong tai duoc thong tin truyen");
     }
 
