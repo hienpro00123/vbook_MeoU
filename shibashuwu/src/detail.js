@@ -79,7 +79,7 @@ function execute(url) {
             }
 
             return Response.success({
-                name: cleanText(title),
+                name: adultName(title),
                 cover: extractCover(doc),
                 host: HOST,
                 author: author,
@@ -109,7 +109,7 @@ function execute(url) {
         var catTitle = catTitleEl ? cleanText(catTitleEl.text()) : "";
         if (catTitle && catTitle.indexOf("404") < 0) {
             return Response.success({
-                name: cleanText(catTitle),
+                name: adultName(catTitle),
                 cover: DEFAULT_COVER,
                 host: HOST,
                 author: "Unknown",

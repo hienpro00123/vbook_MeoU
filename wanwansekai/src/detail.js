@@ -30,7 +30,7 @@ function execute(url) {
     var authorEl = selFirst(doc, ".author-content a[href], .summary-content a[href*='/manga-author/']");
     var descEl = selFirst(doc, ".summary__content, .description-summary");
 
-    var name = titleEl ? titleEl.text().trim() : "";
+    var name = titleEl ? adultName(titleEl.text()) : "";
     var cover = "";
     if (coverEl) {
         cover = coverEl.attr("data-src") || coverEl.attr("data-lazy-src") || coverEl.attr("data-lazy") || coverEl.attr("src") || "";
