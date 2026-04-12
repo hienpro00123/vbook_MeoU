@@ -75,11 +75,13 @@ function execute(url) {
             }
         }
 
-        // Genres — find genre links or text after "Thể loại:"
-        var genreLinks = doc.select("a[href*='theloai=']");
-        if (genreLinks.size() > 0) {
-            for (var gi = 0; gi < genreLinks.size(); gi++) {
-                var gn = genreLinks.get(gi).text().trim();
+        // Genres — text-based first (scoped to story info), link-based fallback
+        var bodyText = doc.text();
+        var genreMatch = /Thể loại[:\s]+(.+?)(?=\s*(?:Tình trạng|Lượt đọc|Đánh giá|Giới thiệu|Mục lục|Chương\s*\d))/i.exec(bodyText);
+        if (genreMatch) {
+            var genreNames = genreMatch[1].split(/[,，\s]+/);
+            for (var gi = 0; gi < genreNames.length; gi++) {
+                var gn = genreNames[gi].trim();
                 if (gn && gn.length > 1) {
                     genres.push({
                         title: gn,
@@ -87,22 +89,21 @@ function execute(url) {
                         script: "genrecontent.js"
                     });
                 }
+                if (genres.length >= 10) break;
             }
         }
         if (genres.length === 0) {
-            var bodyText = doc.text();
-            var genreMatch = /Thể loại:\s*([^\n]+)/i.exec(bodyText);
-            if (genreMatch) {
-                var genreNames = genreMatch[1].split(/[,，]\s*/);
-                for (var gj = 0; gj < genreNames.length; gj++) {
-                    var gn2 = genreNames[gj].trim();
-                    if (gn2 && gn2.length > 1) {
-                        genres.push({
-                            title: gn2,
-                            input: gn2,
-                            script: "genrecontent.js"
-                        });
-                    }
+            // Fallback: genre links, but only if reasonable count (<=10)
+            var genreLinks = doc.select("a[href*='theloai=']");
+            var maxG = genreLinks.size() > 10 ? 10 : genreLinks.size();
+            for (var gj = 0; gj < maxG; gj++) {
+                var gn2 = genreLinks.get(gj).text().trim();
+                if (gn2 && gn2.length > 1) {
+                    genres.push({
+                        title: gn2,
+                        input: gn2,
+                        script: "genrecontent.js"
+                    });
                 }
             }
         }
