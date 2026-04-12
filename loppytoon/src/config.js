@@ -46,5 +46,5 @@ function resolveCover(src) {
 
 function isAdult(name) {
     var v = (name || "");
-    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0;
+    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0 || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0;
 }
