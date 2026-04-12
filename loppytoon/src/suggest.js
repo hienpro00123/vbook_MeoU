@@ -31,7 +31,7 @@ function execute(input, page) {
 
         items.push({
             name: adultName(name),
-            cover: cover,
+            cover: isAdult(name) ? "" : cover,
             link: BASE_URL + "/truyen/" + slug,
             host: HOST
         });
