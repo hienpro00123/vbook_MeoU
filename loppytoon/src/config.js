@@ -44,4 +44,15 @@ function resolveCover(src) {
     return BASE_URL + "/storage/" + src;
 }
 
+function isAdult(name) {
+    var v = (name || "");
+    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0 || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0;
+}
 
+function adultName(name) {
+    var v = (name || "").trim();
+    if (!v) return "";
+    if (!isAdult(v)) return v;
+    v = v.replace(/\[18\+\]/g, "").replace(/\(18\+\)/g, "").replace(/\[19\+\]/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
+    return "18+ " + v;
+}
