@@ -30,12 +30,6 @@ function stripHost(href) {
     return href;
 }
 
-function adultName(name) {
-    var value = (name || "").trim();
-    if (!value) return "";
-    return value.indexOf("18+ ") === 0 ? value : "18+ " + value;
-}
-
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
     if (!res) return res;
@@ -74,7 +68,7 @@ function parseList(doc) {
 
         var name = titleA.text().trim();
         if (!name) continue;
-        name = adultName(name);
+
 
         var description = "";
         var latestA = selFirst(card, ".chapter-item a[href], .post-on a[href], .latest-chap a[href]");

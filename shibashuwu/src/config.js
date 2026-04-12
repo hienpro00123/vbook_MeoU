@@ -39,12 +39,6 @@ function cleanText(text) {
     return (text || "").replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function adultName(name) {
-    var value = cleanText(name);
-    if (!value) return "";
-    return value.indexOf("18+ ") === 0 ? value : "18+ " + value;
-}
-
 function resolveUrl(url) {
     if (!url) return BASE_URL;
     if (url.indexOf("http") === 0) return url;
@@ -130,7 +124,7 @@ function pushItem(result, seen, name, href, cover, description) {
     seen[link] = true;
 
     result.push({
-        name: adultName(name),
+        name: cleanText(name),
         link: link,
         host: HOST,
         cover: cover || DEFAULT_COVER,
@@ -272,7 +266,7 @@ function collectSuggests(doc, currentUrl) {
         seen[key] = true;
 
         result.push({
-            name: adultName(name),
+            name: cleanText(name),
             link: key,
             host: HOST
         });

@@ -15,7 +15,7 @@ function execute(url) {
     var authorEl = selFirst(doc, "a[href*='/tac-gia']");
     var descEl = selFirst(doc, ".manga-description");
 
-    var name = titleEl ? adultName(titleEl.text()) : "";
+    var name = titleEl ? titleEl.text().trim() : "";
     var cover = coverEl ? resolveCover(coverEl.attr("src") || "") : "";
     var author = authorEl ? authorEl.text().trim() : "";
 

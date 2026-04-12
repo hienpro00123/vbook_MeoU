@@ -30,7 +30,7 @@ function execute(input, page) {
         if (!name) continue;
 
         items.push({
-            name: adultName(name),
+            name: name,
             cover: cover,
             link: BASE_URL + "/truyen/" + slug,
             host: HOST
