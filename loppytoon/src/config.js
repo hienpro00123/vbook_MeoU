@@ -47,5 +47,6 @@ function resolveCover(src) {
 function adultName(name) {
     var v = (name || "").trim();
     if (!v) return "";
+    v = v.replace(/\[18\+\]\s*/g, "").replace(/\(18\+\)\s*/g, "").trim();
     return v.indexOf("18+ ") === 0 ? v : "18+ " + v;
 }
