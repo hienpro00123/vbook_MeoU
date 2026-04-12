@@ -2,17 +2,31 @@ load("config.js");
 
 function execute(url) {
     var fullUrl = resolveUrl(url);
+
+    var doc = null;
     var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) {
-        var code = res ? String(res.status) : "null";
-        return Response.error("[v6] Loi tai trang: " + code + " | " + fullUrl);
+    if (res && res.ok) {
+        doc = res.html();
     }
 
-    var doc = res.html();
+    if (!doc) {
+        var browser = Engine.newBrowser();
+        try {
+            doc = browser.launch(fullUrl, 15000);
+        } catch (e) {
+            doc = null;
+        }
+        try { browser.close(); } catch (e2) {}
+    }
+
+    if (!doc) {
+        return Response.error("[v7] Khong tai duoc trang");
+    }
+
     var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");
     var title = titleEl ? cleanText(titleEl.text()) : "";
     if (!title) {
-        return Response.error("[v6] Khong tim thay ten truyen | " + fullUrl);
+        return Response.error("[v7] Khong tim thay ten truyen");
     }
 
     var authorA = selFirst(doc, "a[href*='/writer/']");
