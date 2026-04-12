@@ -195,12 +195,26 @@ function executeCategory(input, page) {
     var pageNum = parseInt(page || "1", 10);
     if (!pageNum || pageNum < 1) pageNum = 1;
 
-    var res = fetchRetry(buildCategoryUrl(input, pageNum));
-    if (!res || !res.ok) {
+    var catUrl = buildCategoryUrl(input, pageNum);
+    var doc = null;
+
+    var browser = Engine.newBrowser();
+    try {
+        doc = browser.launch(catUrl, 12000);
+    } catch (e) {
+        doc = null;
+    }
+    try { browser.close(); } catch (e2) {}
+
+    if (!doc) {
+        var res = fetchRetry(catUrl);
+        if (res && res.ok) doc = res.html();
+    }
+
+    if (!doc) {
         return Response.error("Khong tai duoc danh sach truyen");
     }
 
-    var doc = res.html();
     return Response.success(parseCategoryItems(doc), getCategoryNextPage(doc, pageNum));
 }
 
