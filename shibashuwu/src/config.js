@@ -133,7 +133,7 @@ function pushItem(result, seen, name, href, cover, description) {
         name: adultName(name),
         link: link,
         host: HOST,
-        cover: cover || DEFAULT_COVER,
+        cover: "",
         description: cleanText(description)
     });
 }
@@ -274,7 +274,8 @@ function collectSuggests(doc, currentUrl) {
         result.push({
             name: adultName(name),
             link: key,
-            host: HOST
+            host: HOST,
+            cover: ""
         });
 
         if (result.length >= 12) break;
