@@ -30,7 +30,11 @@ function execute(url) {
     var authorEl = selFirst(doc, ".author-content a[href], .summary-content a[href*='/manga-author/']");
     var descEl = selFirst(doc, ".summary__content, .description-summary");
 
-    var name = titleEl ? adultName(titleEl.text()) : "";
+    var name = titleEl ? titleEl.text().trim() : "";
+
+    var adult = false;
+    var adultBadge = selFirst(doc, ".manga-title-badges.adult");
+    if (adultBadge) adult = true;
     var cover = "";
     if (coverEl) {
         cover = coverEl.attr("data-src") || coverEl.attr("data-lazy-src") || coverEl.attr("data-lazy") || coverEl.attr("src") || "";
@@ -95,7 +99,7 @@ function execute(url) {
     }
 
     return Response.success({
-        name: name,
+        name: adult ? "18+ " + name : name,
         cover: cover,
         host: HOST,
         author: author,

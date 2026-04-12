@@ -30,17 +30,9 @@ function stripHost(href) {
     return href;
 }
 
-function isAdult(name) {
-    var v = (name || "");
-    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0 || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0;
-}
-
-function adultName(name) {
-    var v = (name || "").trim();
-    if (!v) return "";
-    if (!isAdult(v)) return v;
-    v = v.replace(/\[18\+\]/g, "").replace(/\(18\+\)/g, "").replace(/\[19\+\]/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
-    return "18+ " + v;
+function hasAdultBadge(card) {
+    var badge = selFirst(card, ".manga-title-badges.adult");
+    return badge != null;
 }
 
 function fetchRetry(url) {
@@ -82,16 +74,17 @@ function parseList(doc) {
         var name = titleA.text().trim();
         if (!name) continue;
 
+        var adult = hasAdultBadge(card);
 
         var description = "";
         var latestA = selFirst(card, ".chapter-item a[href], .post-on a[href], .latest-chap a[href]");
         if (latestA) description = latestA.text().trim();
 
         result.push({
-            name: adultName(name),
+            name: adult ? "18+ " + name : name,
             link: link,
             host: HOST,
-            cover: extractCover(card),
+            cover: adult ? "" : extractCover(card),
             description: description
         });
     }

@@ -39,19 +39,6 @@ function cleanText(text) {
     return (text || "").replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function isAdult(name) {
-    var v = (name || "");
-    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0 || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0;
-}
-
-function adultName(name) {
-    var v = cleanText(name);
-    if (!v) return "";
-    if (!isAdult(v)) return v;
-    v = v.replace(/\[18\+\]/g, "").replace(/\(18\+\)/g, "").replace(/\[19\+\]/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
-    return "18+ " + v;
-}
-
 function resolveUrl(url) {
     if (!url) return BASE_URL;
     if (url.indexOf("http") === 0) return url;
@@ -137,7 +124,7 @@ function pushItem(result, seen, name, href, cover, description) {
     seen[link] = true;
 
     result.push({
-        name: adultName(name),
+        name: cleanText(name),
         link: link,
         host: HOST,
         cover: cover || DEFAULT_COVER,
@@ -279,7 +266,7 @@ function collectSuggests(doc, currentUrl) {
         seen[key] = true;
 
         result.push({
-            name: adultName(name),
+            name: cleanText(name),
             link: key,
             host: HOST
         });
