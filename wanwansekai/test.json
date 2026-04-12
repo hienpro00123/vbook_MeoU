@@ -1,4 +1,5 @@
 {
   "url": "http://192.168.1.40:8080",
-  "plugin": "wanwansekai"
+  "plugin": "wanwansekai",
+  "appIP": "http://192.168.1.40:8080"
 }

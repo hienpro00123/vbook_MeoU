@@ -22,7 +22,7 @@ function execute(url) {
         var name = nameEl ? nameEl.text().trim() : a.text().trim().replace(/\s+/g, " ");
         if (!name) continue;
 
-        chapters.push({ name: name, url: href, host: HOST });
+        chapters.push({ name: adultName(name), url: href, host: HOST });
     }
 
     if (chapters.length === 0) return Response.error("Khong tim thay danh sach chuong");

@@ -7,7 +7,7 @@
     "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
     "description": "LoppyToon - Tủ truyện hay đọc là mê ngay 18+",
     "locale": "vi_VN",
-    "tag": "18+",
+    "tag": "NSFW",
     "type": "comic"
   },
   "script": {
