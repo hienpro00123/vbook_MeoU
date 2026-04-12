@@ -76,7 +76,7 @@ function execute(url) {
         }
 
         // Genres — text nodes after "Thể loại: "
-        var bodyText = doc.body().text();
+        var bodyText = doc.text();
         var genreMatch = /Thể loại:\s*(.+?)(?:Tác Phẩm|Tình trạng|Chương|$)/i.exec(bodyText);
         if (genreMatch) {
             var genreText = genreMatch[1].trim();

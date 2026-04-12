@@ -88,7 +88,7 @@ function execute(url) {
 
             // Also check text content for chapter count number
             if (totalChapters === 0) {
-                var bodyText = doc.body().text();
+                var bodyText = doc.text();
                 var chapCountMatch = /Chương\s*(\d[\d,.]*)/i.exec(bodyText);
                 if (chapCountMatch) {
                     var parsed = parseInt(chapCountMatch[1].replace(/[,.]/g, ""), 10);
