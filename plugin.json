@@ -121,7 +121,7 @@
       "source": "https://wanwansekai.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/icon.png",
       "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
-      "tag": "nsfw",
+      "tag": "18+",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -134,7 +134,7 @@
       "source": "https://www.shibashuwu.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/shibashuwu/icon.png",
       "description": "ShiBaShuWu - Truyện chữ Trung Quốc 18+",
-      "tag": "nsfw",
+      "tag": "18+",
       "type": "chinese_novel",
       "locale": "zh_CN"
     },

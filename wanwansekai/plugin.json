@@ -7,7 +7,7 @@
     "regexp": "wanwansekai\\.com\\/novel\\/[^\\/]+\\/?$",
     "description": "WanwanSekai - Doc web novel tieng Viet 18+",
     "locale": "vi_VN",
-    "tag": "nsfw",
+    "tag": "18+",
     "type": "novel"
   },
   "script": {

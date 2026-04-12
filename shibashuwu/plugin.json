@@ -7,7 +7,7 @@
     "regexp": "(?:www\\.)?shibashuwu\\.net\\/book\\/\\d+\\/?$",
     "description": "ShiBaShuWu - Doc truyen chu Trung Quoc 18+",
     "locale": "zh_CN",
-    "tag": "nsfw",
+    "tag": "18+",
     "type": "chinese_novel"
   },
   "script": {
