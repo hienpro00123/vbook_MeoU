@@ -1,12 +1,28 @@
 load("config.js");
 
 function execute(url) {
-    var res = fetchRetry(resolveUrl(url));
-    if (!res || !res.ok) {
+    var fullUrl = resolveUrl(url);
+    var doc = null;
+
+    var browser = Engine.newBrowser();
+    try {
+        doc = browser.launch(fullUrl, 12000);
+    } catch (e) {
+        doc = null;
+    }
+    try { browser.close(); } catch (e2) {}
+
+    if (!doc) {
+        var res = fetchRetry(fullUrl);
+        if (res && res.ok) {
+            doc = res.html();
+        }
+    }
+
+    if (!doc) {
         return Response.error("Khong tai duoc noi dung chuong");
     }
 
-    var doc = res.html();
     var content = selFirst(doc, "#C0NTENT, .RBGsectionThree-content");
     if (!content) {
         return Response.error("Khong tim thay noi dung chuong");

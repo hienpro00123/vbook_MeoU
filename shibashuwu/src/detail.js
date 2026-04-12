@@ -4,23 +4,23 @@ function execute(url) {
     var fullUrl = resolveUrl(url);
 
     var doc = null;
-    var res = fetchRetry(fullUrl);
-    if (res && res.ok) {
-        doc = res.html();
+    var browser = Engine.newBrowser();
+    try {
+        doc = browser.launch(fullUrl, 12000);
+    } catch (e) {
+        doc = null;
     }
+    try { browser.close(); } catch (e2) {}
 
     if (!doc) {
-        var browser = Engine.newBrowser();
-        try {
-            doc = browser.launch(fullUrl, 15000);
-        } catch (e) {
-            doc = null;
+        var res = fetchRetry(fullUrl);
+        if (res && res.ok) {
+            doc = res.html();
         }
-        try { browser.close(); } catch (e2) {}
     }
 
     if (!doc) {
-        return Response.error("[v7] Khong tai duoc trang");
+        return Response.error("Khong tai duoc trang");
     }
 
     var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");

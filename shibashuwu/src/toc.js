@@ -23,12 +23,27 @@ function execute(url) {
     var storyUrl = resolveUrl(url);
     if (storyUrl.charAt(storyUrl.length - 1) !== "/") storyUrl += "/";
 
-    var firstRes = fetchRetry(storyUrl + "catalog/");
-    if (!firstRes || !firstRes.ok) {
-        return Response.error("Khong tai duoc muc luc");
+    var catalogUrl = storyUrl + "catalog/";
+    var firstDoc = null;
+
+    var browser = Engine.newBrowser();
+    try {
+        firstDoc = browser.launch(catalogUrl, 12000);
+    } catch (e) {
+        firstDoc = null;
+    }
+    try { browser.close(); } catch (e2) {}
+
+    if (!firstDoc) {
+        var firstRes = fetchRetry(catalogUrl);
+        if (firstRes && firstRes.ok) {
+            firstDoc = firstRes.html();
+        }
     }
 
-    var firstDoc = firstRes.html();
+    if (!firstDoc) {
+        return Response.error("Khong tai duoc muc luc");
+    }
     var chapters = [];
     var seen = {};
     parsePage(firstDoc, chapters, seen);
@@ -42,9 +57,21 @@ function execute(url) {
     }
 
     for (var page = 2; page <= lastPage; page++) {
-        var res = fetchRetry(storyUrl + "catalog/" + page + ".html");
-        if (!res || !res.ok) break;
-        parsePage(res.html(), chapters, seen);
+        var pageUrl = storyUrl + "catalog/" + page + ".html";
+        var pageDoc = null;
+        var br = Engine.newBrowser();
+        try {
+            pageDoc = br.launch(pageUrl, 10000);
+        } catch (ep) {
+            pageDoc = null;
+        }
+        try { br.close(); } catch (ep2) {}
+        if (!pageDoc) {
+            var res = fetchRetry(pageUrl);
+            if (res && res.ok) pageDoc = res.html();
+        }
+        if (!pageDoc) break;
+        parsePage(pageDoc, chapters, seen);
     }
 
     return Response.success(chapters);
