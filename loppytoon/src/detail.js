@@ -15,12 +15,11 @@ function execute(url) {
     var authorEl = selFirst(doc, "a[href*='/tac-gia']");
     var descEl = selFirst(doc, ".manga-description");
 
-    var rawName = titleEl ? titleEl.text().trim() : "";
+    var name = titleEl ? titleEl.text().trim() : "";
     var cover = coverEl ? resolveCover(coverEl.attr("src") || "") : "";
     var author = authorEl ? authorEl.text().trim() : "";
 
     var genres = [];
-    var adult = false;
     var infoEl = selFirst(doc, ".manga-info");
     if (infoEl) {
         var genreLinks = infoEl.select("a[href*='/the-loai/']");
@@ -32,16 +31,7 @@ function execute(url) {
             if (gMatch && gName) {
                 genres.push({ title: gName, input: gMatch[1], script: "genrecontent.js" });
             }
-            if (gName === "18+" || gName === "19+" || gName === "21+") {
-                adult = true;
-            }
         }
-    }
-
-    var name = rawName;
-    if (adult) {
-        name = name.replace(/\[18\+\]/g, "").replace(/\[19\+\]/g, "").replace(/\[21\+\]/g, "").replace(/\u301a18\+\u301b/g, "").replace(/\u301a19\+\u301b/g, "").replace(/\(18\+\)/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
-        name = "18+ " + name;
     }
 
     var descParts = [];

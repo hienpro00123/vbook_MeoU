@@ -1,24 +1,24 @@
-{
-  "metadata": {
-    "name": "LoppyToon -18+",
-    "author": "Meo",
-    "version": 3,
-    "source": "https://loppytoon.com",
-    "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
-    "description": "LoppyToon - Tủ truyện hay đọc là mê ngay 18+",
-    "locale": "vi_VN",
-    "tag": "NSFW",
-    "type": "comic"
-  },
-  "script": {
-    "home": "home.js",
-    "homecontent": "homecontent.js",
-    "genre": "genre.js",
-    "genrecontent": "genrecontent.js",
-    "detail": "detail.js",
-    "search": "search.js",
-    "toc": "toc.js",
-    "chap": "chap.js",
-    "suggest": "suggest.js"
-  }
+﻿{
+    "metadata":  {
+                     "name":  "LoppyToon -18+",
+                     "author":  "Meo",
+                     "version":  4,
+                     "source":  "https://loppytoon.com",
+                     "regexp":  "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
+                     "description":  "LoppyToon - Tá»§ truyá»‡n hay Ä‘á»c lÃ  mÃª ngay 18+",
+                     "locale":  "vi_VN",
+                     "tag":  "NSFW",
+                     "type":  "comic"
+                 },
+    "script":  {
+                   "home":  "home.js",
+                   "homecontent":  "homecontent.js",
+                   "genre":  "genre.js",
+                   "genrecontent":  "genrecontent.js",
+                   "detail":  "detail.js",
+                   "search":  "search.js",
+                   "toc":  "toc.js",
+                   "chap":  "chap.js",
+                   "suggest":  "suggest.js"
+               }
 }
