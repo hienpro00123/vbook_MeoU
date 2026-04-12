@@ -1,12 +1,13 @@
 var BASE_URL = "https://truyendex.cc";
-var API_URL = "https://api.mangadex.org";
+var API_URL = "https://api-proxy.truyendex.cc/mangadex";
+var API_FALLBACK = "https://api.mangadex.org";
 var COVER_BASE = "https://uploads.mangadex.org/covers";
 var IMAGE_CDN = "https://uploads.mangadex.org";
 var PROXY_URL = "https://services.f-ck.me/v1/image/";
 var LANGUAGE = "vi";
 var CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive";
-var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&" + CONTENT_RATING;
-// List views dùng cùng MANGA_PARAMS — không dùng excludedFields (MangaDex có thể trả 400)
+var FEED_CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic";
+var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&hasAvailableChapters=true&" + CONTENT_RATING;
 var MANGA_LIST_PARAMS = MANGA_PARAMS;
 
 // BASE64_CHARS cache — không tạo lại mỗi lần toÀn Base64 được gọi (32+/lần trang)
@@ -139,11 +140,18 @@ var FAIL_RESP = { ok: false, status: 0 };
 
 function fetchRetry(url, options) {
   var r = options ? fetch(url, options) : fetch(url);
-  if (!r) return FAIL_RESP;
-  if (r.ok) return r;
-  // Không retry lỗi client (4xx) — chỉ retry lỗi mạng / server
-  if (r.status >= 400 && r.status < 500) return r;
-  return (options ? fetch(url, options) : fetch(url)) || FAIL_RESP;
+  if (r && r.ok) return r;
+  // Proxy fail → thử gọi trực tiếp MangaDex API
+  if (url.indexOf(API_URL) === 0) {
+    var directUrl = API_FALLBACK + url.substring(API_URL.length);
+    var r2 = options ? fetch(directUrl, options) : fetch(directUrl);
+    if (r2 && r2.ok) return r2;
+  }
+  // Retry lần cuối (server error)
+  if (!r || r.status >= 500) {
+    return (options ? fetch(url, options) : fetch(url)) || FAIL_RESP;
+  }
+  return r || FAIL_RESP;
 }
 
 function getAuthorId(relationships) {
