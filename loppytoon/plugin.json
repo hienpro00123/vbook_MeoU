@@ -1,11 +1,11 @@
-﻿{
+{
     "metadata":  {
                      "name":  "LoppyToon -18+",
                      "author":  "Meo",
                      "version":  3,
                      "source":  "https://loppytoon.com",
                      "regexp":  "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
-                     "description":  "LoppyToon - Tá»§ truyá»‡n hay Ä‘á»c lÃ  mÃª ngay 18+",
+                     "description":  "LoppyToon - Tu truyen hay doc la me ngay 18+",
                      "locale":  "vi_VN",
                      "tag":  "NSFW",
                      "type":  "comic"
