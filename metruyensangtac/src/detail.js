@@ -75,16 +75,22 @@ function execute(url) {
             }
         }
 
-        // Genres — link-based, skip site navigation genres, cap at 5
-        var NAV_GENRES = "Dã Sử,Cạnh Kỹ,Học Đường,Tu Tiên,Đô Thị,Kinh Doanh,Huyền Huyễn,Quân Sự";
+        // Genres — link-based, extract ID from href, cap at 5
         var genreLinks = doc.select("a[href*='theloai=']");
+        var seenGid = {};
         for (var gi = 0; gi < genreLinks.size(); gi++) {
-            var gn = genreLinks.get(gi).text().trim();
+            var ga = genreLinks.get(gi);
+            var gHref = ga.attr("href") || "";
+            var gIdMatch = /theloai=(\d+)/.exec(gHref);
+            if (!gIdMatch) continue;
+            var gId = gIdMatch[1];
+            if (seenGid[gId]) continue;
+            seenGid[gId] = true;
+            var gn = ga.text().trim();
             if (!gn || gn.length < 2) continue;
-            if (NAV_GENRES.indexOf(gn) !== -1) continue;
             genres.push({
                 title: gn,
-                input: gn,
+                input: gId,
                 script: "genrecontent.js"
             });
             if (genres.length >= 5) break;
