@@ -4,8 +4,8 @@
     "author": "Meo",
     "version": 13,
     "source": "https://www.shibashuwu.net",
-    "regexp": "(?:www\\.)?shibashuwu\\.net\\/book\\/\\d+\\/?$",
-    "description": "ShiBaShuWu - Doc truyen chu Trung Quoc 18+",
+    "regexp": "(?:www\\\\.)?shibashuwu\\\\.net\\\\/book\\\\/\\\\d+\\\\/?$",
+    "description": "ShiBaShuWu - Truyện chữ Trung Quốc 18+",
     "locale": "zh_CN",
     "tag": "18+",
     "type": "chinese_novel"
