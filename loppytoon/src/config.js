@@ -43,3 +43,8 @@ function resolveCover(src) {
     if (src.charAt(0) === "/") return BASE_URL + src;
     return BASE_URL + "/storage/" + src;
 }
+
+function isAdult(name) {
+    var v = (name || "");
+    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0;
+}
