@@ -33,7 +33,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v1 | Novel | vi_VN |
+| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v2 | Novel | vi_VN |
 | Biquge | [biquge.tw](https://www.biquge.tw) | v1 | Chinese Novel | zh_CN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
@@ -47,3 +47,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 | NovelCooksTW | [novel.cooks.tw](https://novel.cooks.tw) | v9 | Chinese Novel | zh_TW |
 | TrichTinhLau | [trichtinhlau.com](https://trichtinhlau.com) | v3 | Novel | vi_VN |
 | LN Kuro | [lnkuro.top](https://lnkuro.top) | v14 | Novel | vi_VN |
+| MeTruyenSangTac | [metruyensangtac.com](https://metruyensangtac.com) | v3 | Novel | vi_VN |
+| LoppyToon 🔞 | [loppytoon.com](https://loppytoon.com) | v3 | Comic | vi_VN |
+| WanwanSekai 🔞 | [wanwansekai.com](https://wanwansekai.com) | v9 | Novel | vi_VN |
+| ShiBaShuWu 🔞 | [shibashuwu.net](https://www.shibashuwu.net) | v13 | Chinese Novel | zh_CN |
