@@ -37,7 +37,7 @@ Sau khi có phiên bản mới được push lên GitHub:
 | Biquge | [biquge.tw](https://www.biquge.tw) | v1 | Chinese Novel | zh_CN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v27 | Comic | vi_VN |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v28 | Comic | vi_VN |
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
 | Bixiange | [m.bixiange.me](https://m.bixiange.me) | v9 | Chinese Novel | zh_CN |
