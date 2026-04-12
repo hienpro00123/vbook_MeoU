@@ -44,6 +44,11 @@ function resolveCover(src) {
     return BASE_URL + "/storage/" + src;
 }
 
+function isAdult(name) {
+    var v = (name || "");
+    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0;
+}
+
 function adultName(name) {
     var v = (name || "").trim();
     if (!v) return "";
