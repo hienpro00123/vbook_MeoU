@@ -37,13 +37,7 @@ function execute(url, page) {
         }
         if (cover && cover.charAt(0) === "/") cover = BASE_URL + cover;
 
-        // Try to get author from nearby element
-        var desc = "";
-        var parent = a.parent();
-        if (parent) {
-            var authorEl = selFirst(parent, "span, small, .author");
-            if (authorEl) desc = authorEl.text().trim();
-        }
+        var desc = ""
 
         items.push({
             name: name,

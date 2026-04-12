@@ -62,20 +62,16 @@ function execute(url) {
         }
         if (!description) {
             // Try from rendered page
-            var descHeading = doc.select("h2:matchesOwn(Giới thiệu)");
-            if (descHeading.size() > 0) {
-                var descParent = descHeading.get(0).parent();
-                if (descParent) {
-                    var ps = descParent.select("p, span, div");
-                    var parts = [];
-                    for (var di = 0; di < ps.size(); di++) {
-                        var t = ps.get(di).text().trim();
-                        if (t && t.indexOf("Giới thiệu") === -1 && t !== "Xem thêm") {
-                            parts.push(t);
-                        }
+            var descEls = doc.select("h2:matchesOwn(Giới thiệu) ~ p, h2:matchesOwn(Giới thiệu) ~ div");
+            if (descEls.size() > 0) {
+                var parts = [];
+                for (var di = 0; di < descEls.size(); di++) {
+                    var t = descEls.get(di).text().trim();
+                    if (t && t !== "Xem thêm") {
+                        parts.push(t);
                     }
-                    description = parts.join("\n");
                 }
+                description = parts.join("\n");
             }
         }
 

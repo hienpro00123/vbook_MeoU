@@ -30,13 +30,7 @@ function parseStoryCards(doc) {
         }
         if (cover && cover.charAt(0) === "/") cover = BASE_URL + cover;
 
-        // Try get description from nearby text
-        var desc = "";
-        var parent = a.parent();
-        if (parent) {
-            var descEl = selFirst(parent, "p");
-            if (descEl) desc = descEl.text().trim();
-        }
+        var desc = ""
 
         result.push({
             name: name,
