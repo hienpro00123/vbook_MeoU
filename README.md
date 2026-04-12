@@ -1,9 +1,24 @@
 
+<div align="center">
+
 # vBook Extensions Repository
 
-Kho extension đọc truyện cho VBook, phát hành qua GitHub Repository để cài đặt và cập nhật thuận tiện hơn.
+Kho extension đọc truyện cho VBook, cài đặt nhanh và cập nhật trực tiếp qua GitHub Repository.
 
-## Thêm nhanh
+![Extensions](https://img.shields.io/badge/extensions-18-blue)
+![Platform](https://img.shields.io/badge/platform-VBook-green)
+![Update](https://img.shields.io/badge/update-GitHub%20Repository-orange)
+
+</div>
+
+## Điểm nổi bật
+
+- 18 extension trong một repository duy nhất
+- 4 comic, 10 novel, 4 chinese novel
+- Cài mới và cập nhật trực tiếp trong app VBook
+- Có sẵn QR ủng hộ tác giả ngay trong README
+
+## Bắt đầu trong 30 giây
 
 Repository URL:
 
@@ -11,7 +26,12 @@ Repository URL:
 https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json
 ```
 
-> Nên thêm repository bằng URL này nếu muốn nhận cập nhật nhanh và ổn định.
+1. Mở VBook app
+2. Vào **Extensions** / **Kho tiện ích**
+3. Dán repository URL ở trên
+4. Chọn extension muốn dùng và cài đặt
+
+> Đây là cách nên dùng nếu muốn nhận cập nhật nhanh và ổn định.
 
 ## Ủng hộ tác giả
 
@@ -23,15 +43,7 @@ Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR 
 
 ## Cài đặt
 
-### Cách 1: Thêm qua GitHub Repository
-1. Mở VBook app
-2. Vào phần **Extensions** / **Kho tiện ích**
-3. Dán repository URL ở trên
-4. Extension sẽ xuất hiện trong danh sách, nhấn cài đặt
-
-> Khuyến nghị: dùng cách này để cài mới và nhận cập nhật.
-
-### Cách 2: Cài thủ công
+### Cài thủ công bằng ZIP
 1. Tải file `plugin.zip` trong thư mục tương ứng
 2. Import vào VBook app
 
@@ -56,6 +68,8 @@ Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR 
 ## Extensions
 
 Danh sách extension hiện có trong repository:
+
+> Gồm comic, novel, chinese novel và một số extension NSFW.
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
