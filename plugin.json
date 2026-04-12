@@ -196,6 +196,18 @@
       "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
       "type": "novel",
       "locale": "vi_VN"
+    },
+    {
+      "name": "MeTruyenSangTac",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/plugin.json",
+      "version": 1,
+      "source": "https://metruyensangtac.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/icon.png",
+      "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
+      "type": "novel",
+      "locale": "vi_VN"
     }
   ]
 }
