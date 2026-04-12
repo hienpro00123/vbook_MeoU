@@ -50,10 +50,10 @@ function execute(url) {
     var status = "";
     var altName = "";
     var metaLabels = doc.select(".meta-label");
+    var metaValues = doc.select(".meta-value");
     for (var mi = 0; mi < metaLabels.size(); mi++) {
         var label = metaLabels.get(mi).text().trim();
-        var valueEl = metaLabels.get(mi).nextElementSibling();
-        var value = valueEl ? valueEl.text().trim() : "";
+        var value = mi < metaValues.size() ? metaValues.get(mi).text().trim() : "";
         if (label.indexOf("Tình trạng") >= 0) status = value;
         if (label.indexOf("Tên khác") >= 0) altName = value;
     }
