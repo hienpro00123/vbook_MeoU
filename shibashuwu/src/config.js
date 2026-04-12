@@ -77,28 +77,6 @@ function fetchRetry(url, options) {
     return res;
 }
 
-function fetchBrowser(url, timeout) {
-    var browser = Engine.newBrowser();
-    try {
-        return browser.launch(url, timeout || 12000);
-    } finally {
-        try {
-            browser.close();
-        } catch (e) {}
-    }
-}
-
-function isValidDetailDoc(doc) {
-    if (!doc) return false;
-
-    var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");
-    var title = titleEl ? cleanText(titleEl.text()) : "";
-    if (!title) return false;
-
-    var lowerTitle = title.toLowerCase();
-    return lowerTitle.indexOf("404") === -1 && lowerTitle.indexOf("not found") === -1;
-}
-
 function buildPostOptions(body) {
     var headers = cloneHeaders();
     headers["Content-Type"] = "application/x-www-form-urlencoded";
