@@ -208,6 +208,19 @@
       "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
       "type": "novel",
       "locale": "vi_VN"
+    },
+    {
+      "name": "LoppyToon -18+",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.json",
+      "version": 1,
+      "source": "https://loppytoon.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/icon.png",
+      "description": "LoppyToon - Tủ truyện hay đọc là mê ngay 18+",
+      "tag": "18+",
+      "type": "comic",
+      "locale": "vi_VN"
     }
   ]
 }
