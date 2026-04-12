@@ -4,14 +4,15 @@ function execute(url) {
     var fullUrl = resolveUrl(url);
     var res = fetchRetry(fullUrl);
     if (!res || !res.ok) {
-        return Response.error("Khong tai duoc thong tin truyen");
+        var code = res ? String(res.status) : "null";
+        return Response.error("[v6] Loi tai trang: " + code + " | " + fullUrl);
     }
 
     var doc = res.html();
     var titleEl = selFirst(doc, "h1 a[href*='/book/'], h1");
     var title = titleEl ? cleanText(titleEl.text()) : "";
     if (!title) {
-        return Response.error("Khong tim thay ten truyen");
+        return Response.error("[v6] Khong tim thay ten truyen | " + fullUrl);
     }
 
     var authorA = selFirst(doc, "a[href*='/writer/']");
