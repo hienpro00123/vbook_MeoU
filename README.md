@@ -24,7 +24,7 @@ Kho extension đọc truyện cho VBook, cài đặt nhanh và cập nhật tr�
 Repository URL:
 
 ```text
-[https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json](https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json)
+https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/plugin.json
 ```
 
 
