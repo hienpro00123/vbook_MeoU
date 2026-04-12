@@ -84,7 +84,7 @@ function parseList(doc) {
             name: name,
             link: link,
             host: HOST,
-            cover: "",
+            cover: extractCover(card),
             description: description
         });
     }
