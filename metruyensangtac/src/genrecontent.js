@@ -1,5 +1,33 @@
 load("config.js");
 
+function buildCoverMap(doc) {
+    var map = {};
+    var all = doc.select("a[href*='/truyen/'], img[src*='/uploads/']");
+    var lastSlug = "";
+    var lastImg = "";
+    for (var i = 0; i < all.size(); i++) {
+        var el = all.get(i);
+        var href = el.attr("href") || "";
+        var src = el.attr("src") || "";
+        if (href.indexOf("/truyen/") !== -1 && href.indexOf("/truyen/index.php") === -1) {
+            var s = extractSlug(href);
+            if (s) {
+                lastSlug = s;
+                if (lastImg && !map[s]) map[s] = lastImg;
+                lastImg = "";
+            }
+        } else if (src.indexOf("/uploads/") !== -1) {
+            var imgUrl = el.attr("data-src") || el.attr("data-original") || src;
+            if (imgUrl.indexOf("logo") === -1 && imgUrl.indexOf("banner") === -1) {
+                if (imgUrl.charAt(0) === "/") imgUrl = BASE_URL + imgUrl;
+                if (lastSlug && !map[lastSlug]) map[lastSlug] = imgUrl;
+                lastImg = imgUrl;
+            }
+        }
+    }
+    return map;
+}
+
 function execute(url, page) {
     var p = page ? parseInt(page) : 1;
     var fetchUrl = BASE_URL + "/index.php?quanly=truyen&theloai=" + url;
@@ -12,8 +40,8 @@ function execute(url, page) {
 
     var items = [];
     var seen = {};
+    var coverMap = buildCoverMap(doc);
 
-    // Parse story cards from genre listing
     var storyLinks = doc.select("a[href*='/truyen/']");
     for (var i = 0; i < storyLinks.size(); i++) {
         var a = storyLinks.get(i);
@@ -35,23 +63,21 @@ function execute(url, page) {
             cover = img.attr("data-src") || img.attr("data-original") || img.attr("src") || "";
             if (cover.indexOf("logo") !== -1) cover = "";
         }
+        if (!cover && coverMap[slug]) cover = coverMap[slug];
         if (cover && cover.charAt(0) === "/") cover = BASE_URL + cover;
-
-        var desc = ""
 
         items.push({
             name: name,
             link: "/truyen/" + slug,
             host: HOST,
             cover: cover,
-            description: desc
+            description: ""
         });
         if (items.length >= 30) break;
     }
 
     if (!items || items.length === 0) return Response.success([], null);
 
-    // Next page
     var next = null;
     var nextLink = selFirst(doc, "a:matchesOwn(Next), a:matchesOwn(next), a:matchesOwn(»)");
     if (nextLink) next = String(p + 1);
