@@ -15,6 +15,7 @@ function execute(keyword, page) {
     for (var i = 0; i < json.length; i++) {
         var s = json[i];
         if (!s.slug || !s.title) continue;
+        if (s.slug.indexOf("novel-") < 0) continue;
         var cover = "";
         if (s.cover) {
             if (s.cover.indexOf("http") === 0) {
