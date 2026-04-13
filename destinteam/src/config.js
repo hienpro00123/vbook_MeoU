@@ -152,3 +152,25 @@ function getNextPage(doc, currentPage) {
     if (nextLink) return String(currentPage + 1);
     return null;
 }
+
+function fetchMangaApi(params, page) {
+    var currentPage = page || 1;
+    var apiUrl = BASE_URL + "/wp-json/wp/v2/manga?per_page=20&page=" + currentPage + "&_embed=wp:featuredmedia";
+    if (params) apiUrl += "&" + params;
+    var data = fetchJson(apiUrl);
+    if (!data || !data.length) return { items: [], next: null };
+    var items = [];
+    for (var i = 0; i < data.length; i++) {
+        var m = data[i];
+        var title = (m.title && m.title.rendered) ? m.title.rendered : "";
+        if (!title) continue;
+        var link = toRelativeUrl(m.link || "");
+        if (!link) continue;
+        var cover = "";
+        var featured = m._embedded && m._embedded["wp:featuredmedia"];
+        if (featured && featured.length > 0) cover = featured[0].source_url || "";
+        items.push({ name: title, link: link, host: HOST, cover: cover });
+    }
+    var next = (data.length >= 20) ? String(currentPage + 1) : null;
+    return { items: items, next: next };
+}

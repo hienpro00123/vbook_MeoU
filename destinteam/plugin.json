@@ -2,7 +2,7 @@
   "metadata": {
     "name": "DestinTeam",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://destinteam.com",
     "regexp": "destinteam\\.com/truyen/[^/]+/?$",
     "description": "Destin Translation Team - Đọc truyện tranh BL/Manhwa tiếng Việt",

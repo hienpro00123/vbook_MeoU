@@ -9,9 +9,8 @@ function execute(url) {
     var name = nameEl ? normalizeSpace(nameEl.text()) : "";
     var cover = getCoverFromDoc(doc);
 
-    var jsonUrl = getDetailJsonUrl(doc);
-    var jsonData = jsonUrl ? fetchJson(jsonUrl) : null;
-    var description = jsonData && jsonData.content ? stripHtml(jsonData.content.rendered) : "";
+    var descEl = selFirst(doc, "#manga-description");
+    var description = descEl ? stripHtml(descEl.html()) : "";
 
     var authorEl = selFirst(doc, "a[href*='/nhom/'], a[href*='/team/'], a[href*='/tac-gia/'], a[href*='/author_tax/']");
     var author = authorEl ? normalizeSpace(authorEl.text()) : "";
