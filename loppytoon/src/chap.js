@@ -9,9 +9,7 @@ function execute(url) {
 
     var imgs = doc.select(".chapter-content .manga-images-container img, .chapter-content img.manga-image");
     if (imgs.size() === 0) {
-        var contentEl = selFirst(doc, ".chapter-content");
-        if (!contentEl) return Response.error("Khong tim thay noi dung chuong");
-        return Response.success(contentEl.html());
+        return Response.error("Day la truyen chu (Novel). Bam 'Xem trang nguon' de doc");
     }
 
     var data = [];
