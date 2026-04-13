@@ -13,6 +13,21 @@ var TITLE_SKIP_RE = /^(Đọc|Từ đầu|Truyện mới|Trang trước|Trang sa
 var DETAIL_PATH_RE = /\/truyen\/[^\/?#]+\/?$/i;
 var CHAPTER_PATH_RE = /\/truyen\/[^\/?#]+\/chapter-[^\/?#]+\/?$/i;
 
+function decodeEntities(text) {
+    if (!text) return "";
+    return text
+        .replace(/&#8220;|&#8221;/g, '"')
+        .replace(/&#8216;|&#8217;/g, "'")
+        .replace(/&#8211;/g, "\u2013")
+        .replace(/&#8212;/g, "\u2014")
+        .replace(/&#8230;/g, "...")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
+}
+
 function fetchDoc(url) {
     var res = fetch(url, FETCH_OPTIONS);
     if (!res || !res.ok) return null;
@@ -162,7 +177,7 @@ function fetchMangaApi(params, page) {
     var items = [];
     for (var i = 0; i < data.length; i++) {
         var m = data[i];
-        var title = (m.title && m.title.rendered) ? m.title.rendered : "";
+        var title = (m.title && m.title.rendered) ? decodeEntities(m.title.rendered) : "";
         if (!title) continue;
         var link = toRelativeUrl(m.link || "");
         if (!link) continue;
