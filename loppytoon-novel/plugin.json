@@ -2,7 +2,7 @@
   "metadata": {
     "name": "LoppyToon Novel -18+",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://loppytoon.com",
     "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
     "description": "LoppyToon - Truyen chu (Novel) 18+",
