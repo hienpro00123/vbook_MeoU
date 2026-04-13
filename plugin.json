@@ -5,6 +5,18 @@
   },
   "data": [
     {
+      "name": "DestinTeam",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/destinteam/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/destinteam/plugin.json",
+      "version": 1,
+      "source": "https://destinteam.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/destinteam/icon.png",
+      "description": "Destin Translation Team - Truyen tranh BL/Manhwa tieng Viet",
+      "type": "comic",
+      "locale": "vi_VN"
+    },
+    {
       "name": "dualeotruyenfull",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dualeo/plugin.zip",

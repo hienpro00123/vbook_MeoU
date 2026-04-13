@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "DestinTeam",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://destinteam.com",
+    "regexp": "destinteam\\.com/truyen/[^/]+/?$",
+    "description": "Destin Translation Team - Đọc truyện tranh BL/Manhwa tiếng Việt",
+    "locale": "vi_VN",
+    "tag": "NSFW",
+    "type": "comic"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}
