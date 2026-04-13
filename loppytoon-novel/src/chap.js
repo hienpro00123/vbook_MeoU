@@ -12,16 +12,7 @@ function execute(url) {
 
     contentEl.select("script, style, noscript, iframe, .ads, .adsbygoogle").remove();
 
-    var ps = contentEl.select("p");
-    var parts = [];
-    for (var i = 0; i < ps.size(); i++) {
-        var t = ps.get(i).text().trim();
-        if (t && t !== "\u00a0") parts.push(t);
-    }
-    if (parts.length === 0) {
-        var raw = contentEl.text().trim();
-        if (!raw) return Response.error("Chuong khong co noi dung");
-        return Response.success(raw);
-    }
-    return Response.success("<p>" + parts.join("</p><p>") + "</p>");
+    var html = contentEl.html();
+    if (!html || html.trim().length === 0) return Response.error("Chuong khong co noi dung");
+    return Response.success(html);
 }

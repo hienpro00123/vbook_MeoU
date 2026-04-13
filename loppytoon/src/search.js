@@ -1,5 +1,13 @@
 load("config.js");
 
+function isNovel(s) {
+    var t = (s.title || "").toUpperCase();
+    if (t.indexOf("[NOVEL]") >= 0 || t.indexOf("[FULL] [NOVEL]") >= 0) return true;
+    var sl = s.slug || "";
+    if (sl.indexOf("novel-") >= 0 || sl.indexOf("full-novel-") >= 0) return true;
+    return false;
+}
+
 function execute(keyword, page) {
     var q = encodeURIComponent(keyword);
     var fetchUrl = BASE_URL + "/api/search-story?keyword=" + q;
@@ -15,7 +23,7 @@ function execute(keyword, page) {
     for (var i = 0; i < json.length; i++) {
         var s = json[i];
         if (!s.slug || !s.title) continue;
-        if (s.slug.indexOf("novel-") >= 0) continue;
+        if (isNovel(s)) continue;
         var cover = "";
         if (s.cover) {
             if (s.cover.indexOf("http") === 0) {
