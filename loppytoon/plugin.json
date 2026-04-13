@@ -2,7 +2,7 @@
   "metadata": {
     "name": "LoppyToon -18+",
     "author": "Meo",
-    "version": 3,
+    "version": 4,
     "source": "https://loppytoon.com",
     "regexp": "loppytoon\\\\.com\\\\/truyen\\\\/[^\\\\/]+\\\\/?$",
     "description": "LoppyToon - Tủ truyện hay đọc là mê ngay 18+",

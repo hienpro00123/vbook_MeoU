@@ -8,7 +8,11 @@ function execute(url) {
     if (!doc) return Response.error("Khong doc duoc noi dung chuong");
 
     var imgs = doc.select(".chapter-content .manga-images-container img, .chapter-content img.manga-image");
-    if (imgs.size() === 0) return Response.error("Khong tim thay anh chuong");
+    if (imgs.size() === 0) {
+        var contentEl = selFirst(doc, ".chapter-content");
+        if (!contentEl) return Response.error("Khong tim thay noi dung chuong");
+        return Response.success(contentEl.html());
+    }
 
     var data = [];
     for (var i = 0; i < imgs.size(); i++) {
