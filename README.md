@@ -74,7 +74,7 @@ Danh sách extension hiện có trong repository:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v3 | Novel | vi_VN |
+| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v4 | Novel | vi_VN |
 | Biquge | [biquge.tw](https://www.biquge.tw) | v1 | Chinese Novel | zh_CN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
