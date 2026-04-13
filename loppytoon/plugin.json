@@ -8,7 +8,7 @@
     "description": "LoppyToon - Tủ truyện hay đọc là mê ngay 18+",
     "locale": "vi_VN",
     "tag": "NSFW",
-    "type": "comic"
+    "type": "novel"
   },
   "script": {
     "home": "home.js",
