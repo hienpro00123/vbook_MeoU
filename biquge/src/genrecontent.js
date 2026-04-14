@@ -6,7 +6,7 @@ function execute(url, page) {
     if (p <= 1) {
         fetchUrl = BASE_URL + "/sort/" + url + "/";
     } else {
-        fetchUrl = BASE_URL + "/sort/" + url + "/" + p + "/";
+        fetchUrl = BASE_URL + "/sort/" + url + "/" + p + ".html";
     }
     var doc = fetchBrowserFast(fetchUrl);
     if (!doc) return Response.error("");
