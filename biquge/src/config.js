@@ -45,6 +45,30 @@ function parseList(doc) {
     }
 
     var allLinks = doc.select("a[href*='/book/']");
+    var descMap = {};
+    for (var mi = 0; mi < allLinks.size(); mi++) {
+        var ml = allLinks.get(mi);
+        var mh = ml.attr("href") || "";
+        if (!BOOK_RE.test(mh) || descMap[mh]) continue;
+        var el = ml.parent();
+        var depth = 0;
+        while (el && depth < 5) {
+            var txt = el.text() || "";
+            if (txt.length > 800) break;
+            if (txt.match(/\d+万?字/) || txt.match(/全本|连载/)) {
+                var parts = [];
+                var wc = txt.match(/(\d+万?字)/);
+                if (wc) parts.push(wc[1]);
+                var st = txt.match(/(全本|连载|完本|完结)/);
+                if (st) parts.push((st[1] === "全本" || st[1] === "完本" || st[1] === "完结") ? "Hoàn thành" : "Đang ra");
+                descMap[mh] = parts.join(" · ");
+                break;
+            }
+            el = el.parent();
+            depth++;
+        }
+    }
+
     for (var i = 0; i < allLinks.size(); i++) {
         var a = allLinks.get(i);
         var href = a.attr("href") || "";
@@ -58,7 +82,7 @@ function parseList(doc) {
             link: href,
             host: HOST,
             cover: coverMap[href] || "",
-            description: ""
+            description: descMap[href] || ""
         });
         if (result.length >= 30) break;
     }
