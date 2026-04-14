@@ -87,14 +87,12 @@ function parseItems(items) {
             cover = img.attr("data-src") || img.attr("src") || "";
             if (cover.indexOf("nocover") !== -1) cover = "";
         }
-        var moreEl = selFirst(item, "dd.more span");
-        var desc = moreEl ? moreEl.text().trim() : "";
         result.push({
             name: name,
             link: href,
             host: HOST,
             cover: cover,
-            description: desc
+            description: ""
         });
         if (result.length >= 30) break;
     }
