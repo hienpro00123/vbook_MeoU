@@ -1,4 +1,14 @@
 {
   "appIP": "http://192.168.1.40:8080",
-  "home.js": ""
+  "home.js": "",
+  "homecontent.js": "index-1",
+  "homecontent.js#ranking": "allvisit",
+  "genre.js": "",
+  "genrecontent.js": "xuanhuan",
+  "genrecontent.js#page2": "xuanhuan|2",
+  "detail.js": "/book/9002.html",
+  "toc.js": "/book/9002.html",
+  "chap.js": "https://www.biquge.tw/book/9002/3438689.html",
+  "search.js": "龙神",
+  "suggest.js": "/book/9002.html"
 }
