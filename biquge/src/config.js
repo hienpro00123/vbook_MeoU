@@ -28,6 +28,9 @@ function fetchBrowserFast(url) {
 }
 
 function parseList(doc) {
+    var items = doc.select("div.item");
+    if (items.size() > 0) return parseItems(items);
+
     var result = [];
     var seen = {};
     var coverMap = {};
@@ -60,6 +63,38 @@ function parseList(doc) {
             host: HOST,
             cover: coverMap[href] || "",
             description: ""
+        });
+        if (result.length >= 30) break;
+    }
+    return result;
+}
+
+function parseItems(items) {
+    var result = [];
+    var seen = {};
+    for (var i = 0; i < items.size(); i++) {
+        var item = items.get(i);
+        var link = selFirst(item, "dt a[href], a[href*='/book/']");
+        if (!link) continue;
+        var href = link.attr("href") || "";
+        if (!BOOK_RE.test(href) || seen[href]) continue;
+        seen[href] = true;
+        var name = link.attr("title") || link.text().trim();
+        if (!name || name.length < 2) continue;
+        var img = selFirst(item, "img");
+        var cover = "";
+        if (img) {
+            cover = img.attr("data-src") || img.attr("src") || "";
+            if (cover.indexOf("nocover") !== -1) cover = "";
+        }
+        var moreEl = selFirst(item, "dd.more span");
+        var desc = moreEl ? moreEl.text().trim() : "";
+        result.push({
+            name: name,
+            link: href,
+            host: HOST,
+            cover: cover,
+            description: desc
         });
         if (result.length >= 30) break;
     }
