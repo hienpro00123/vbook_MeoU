@@ -6,12 +6,13 @@ function execute(url) {
     if (!doc) return Response.success([]);
 
     var items = parseList(doc);
+    var m = url.match(/\/book\/(\d+)/);
+    var bookId = m ? m[1] : "";
     var result = [];
     for (var i = 0; i < items.length; i++) {
         var link = items[i].link;
-        if (link !== url && link !== bookUrl) {
-            result.push(items[i]);
-        }
+        if (bookId && link.indexOf("/book/" + bookId) !== -1) continue;
+        result.push(items[i]);
     }
     return Response.success(result);
 }
