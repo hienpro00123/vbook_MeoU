@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Biquge",
     "author": "Meo",
-    "version": 8,
+    "version": 7,
     "source": "https://www.biquge.tw",
     "regexp": "(www\\.)?biquge\\.tw/book/\\d+(\\.html)?/?$",
     "description": "笔趣阁 - Truyện chữ Tiếng Trung",
