@@ -247,6 +247,19 @@
       "tag": "NSFW",
       "type": "novel",
       "locale": "vi_VN"
+    },
+    {
+      "name": "SayHentai -18+",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/plugin.json",
+      "version": 1,
+      "source": "https://sayhentai.vc",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/icon.png",
+      "description": "SayHentai - truyen hentai, manhwa 18+ tieng Viet",
+      "tag": "NSFW",
+      "type": "comic",
+      "locale": "vi_VN"
     }
   ]
 }
