@@ -1,4 +1,4 @@
-{
+﻿{
   "metadata": {
     "author": "Meo",
     "description": "VBook Extensions Repository"
@@ -263,11 +263,11 @@
       "locale": "vi_VN"
     },
     {
-      "name": "SayHentai Baby -18+",
+      "name": "SayHentaiBaby -18+",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.json",
-      "version": 1,
+      "version": 2,
       "source": "https://sayhentai.baby",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/icon.png",
       "description": "SayHentai Baby - \u0110\u1ecdc truy\u1ec7n hentai -18+ online",
