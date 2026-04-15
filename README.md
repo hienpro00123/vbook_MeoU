@@ -82,7 +82,7 @@ Danh sách extension hiện có trong repository:
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v28 | Comic | vi_VN |
 | Wattpad | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
-| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v9 | Chinese Novel | zh_CN |
+| Bixiange | [m.bixiange.me](https://m.bixiange.me) | v10 | Chinese Novel | zh_CN |
 | TruyenChu | [truyenchu.net](https://truyenchu.net) | v8 | Novel | vi_VN |
 | nettruyen.work | [nettruyen.work](https://nettruyen.work) | v3 | Comic | vi_VN |
 | Valvrareteam | [valvrareteam.net](https://valvrareteam.net) | v10 | Novel | vi_VN |

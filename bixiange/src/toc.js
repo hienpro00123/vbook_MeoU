@@ -10,17 +10,14 @@ var SKIP_NAME_RE = /^在线阅读$|^目录$|^上一章$|^下一章$|^上一页$|
 
 // Trích link chương từ 1 trang doc — push vào chapters/seen, trả về số chương đã thêm
 function extractChaps(doc, storyPath, chapters, seen) {
-    var chapLinks = doc.select(
-        "a[href*='" + storyPath + "/index/'], " +
-        "a[href='" + storyPath + "/'], " +
-        "a[href='" + storyPath + "']"
-    );
+    var chapLinks = doc.select("a[href*='" + storyPath + "/']");
     var added = 0;
     for (var i = 0; i < chapLinks.size(); i++) {
         var a = chapLinks.get(i);
-        var href = a.attr("href") || "";
-        if (!href) continue;
-        if (href.indexOf("http") !== 0) href = BASE_URL + href;
+        var chapInfo = getChapterHrefInfo(a.attr("href") || "", storyPath);
+        if (!chapInfo || chapInfo.part !== 1) continue;
+
+        var href = resolveUrl(chapInfo.path);
 
         var chapName = a.text().trim();
         if (!chapName || UI_TOGGLE_RE.test(chapName)) {
@@ -32,21 +29,18 @@ function extractChaps(doc, storyPath, chapters, seen) {
         if (seen[href]) continue;
 
         seen[href] = true;
-        var idx = chapters.length + 1;
-        chapters.push({ name: "Chương " + idx + ": " + chapName, url: href, host: HOST });
+        chapters.push({ number: chapInfo.number, title: chapName, url: href, host: HOST });
         added++;
     }
     return added;
 }
 
 function execute(url) {
-    var storyUrl = resolveUrl(url);
-    var doc = fetchBrowserFast(storyUrl); // trang mục lục đơn giản — 5000ms đủ
+    var storyUrl = ensureStoryUrl(url);
+    var doc = fetchBrowser(storyUrl, 7000);
     if (!doc) return Response.error("Lỗi tải mục lục");
 
-    // storyUrl = "https://m.bixiange.me/wxxz/20921"
-    // storyPath = "/wxxz/20921"
-    var storyPath = storyUrl.replace(BASE_URL, "").replace(/\.html$/, "");
+    var storyPath = storyPathFromUrl(storyUrl);
 
     var chapters = [];
     var seen = {};
@@ -55,7 +49,6 @@ function execute(url) {
     extractChaps(doc, storyPath, chapters, seen);
 
     // Phát hiện phân trang TOC — bixiange DedeCMS dùng /storyPath/index_N.html
-    // Phân biệt với URL chương: chương dùng /index/N.html (có dấu "/index/")
     var maxPage = 1;
     var pageLinks = doc.select("a[href*='" + storyPath + "/index_']");
     for (var pi = 0; pi < pageLinks.size(); pi++) {
@@ -67,15 +60,27 @@ function execute(url) {
         }
     }
 
-    // Fetch các trang TOC tiếp theo (tối đa 10 trang — ~500 chương)
-    // Timeout 3000ms: subpages đơn giản hơn trang chính (ít JS, chỉ list chương)
-    for (var p = 2; p <= maxPage && p <= 10; p++) {
+    for (var p = 2; p <= maxPage && p <= 50; p++) {
         var pageUrl = BASE_URL + storyPath + "/index_" + p + ".html";
-        var pageDoc = fetchBrowser(pageUrl, 3000);
+        var pageDoc = fetchBrowser(pageUrl, 7000);
         if (!pageDoc) break;
         extractChaps(pageDoc, storyPath, chapters, seen);
     }
 
     if (chapters.length === 0) return Response.error("Không tìm thấy danh sách chương");
-    return Response.success(chapters);
+
+    chapters.sort(function(a, b) {
+        return a.number - b.number;
+    });
+
+    var result = [];
+    for (var i = 0; i < chapters.length; i++) {
+        result.push({
+            name: "Chương " + chapters[i].number + ": " + chapters[i].title,
+            url: chapters[i].url,
+            host: HOST
+        });
+    }
+
+    return Response.success(result);
 }

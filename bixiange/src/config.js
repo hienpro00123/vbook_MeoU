@@ -8,9 +8,12 @@ var FETCH_HEADERS = {
     "Referer": "https://m.bixiange.me/"
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
+var LATEST_CHAPTER_CACHE = {};
+var LATEST_FETCH_LIMIT = 10;
 
 // Story URL regex: /{category-slug}/{id} — 12 known category slugs
 var STORY_URL_RE = /^\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\/\d+/;
+var LIST_SKIP_NAME_RE = /^在线阅读$|^目录$|^上一章$|^下一章$|^上一页$|^下一页$/;
 
 // selectFirst helper — vBook chỉ hỗ trợ selectFirst trên Document, không hỗ trợ trên Element
 function selFirst(el, css) {
@@ -32,7 +35,107 @@ function normalizeHref(href) {
         if (href.indexOf("bixiange.me") === -1) return "";
         href = href.replace(/https?:\/\/[^\/]+/, "");
     }
-    return href.replace(/\.html$/, "");
+    return href.replace(/\/$/, "");
+}
+
+function escapeRegExp(text) {
+    return (text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function storyPathFromUrl(url) {
+    var v = url || "";
+    if (v.indexOf("http") === 0) v = v.replace(/https?:\/\/[^\/]+/, "");
+    return v.replace(/\.html$/, "").replace(/\/$/, "");
+}
+
+function ensureStoryUrl(url) {
+    var storyUrl = resolveUrl(url);
+    var storyPath = storyPathFromUrl(storyUrl);
+    if (!/\.html$/i.test(storyUrl) && STORY_URL_RE.test(storyPath)) {
+        storyUrl += ".html";
+    }
+    return storyUrl;
+}
+
+function getChapterHrefInfo(href, storyPath) {
+    if (!href) return null;
+    if (href.indexOf("http") === 0) {
+        if (href.indexOf("bixiange.me") === -1) return null;
+        href = href.replace(/https?:\/\/[^\/]+/, "");
+    }
+    href = href.replace(/\/$/, "");
+
+    var storyBase = storyPathFromUrl(storyPath);
+    var chapRe = new RegExp("^" + escapeRegExp(storyBase) + "\/(?:(?:index\/)?)(\\d+)(?:_(\\d+))?\\.html$");
+    var match = chapRe.exec(href);
+    if (!match) return null;
+
+    return {
+        path: href,
+        number: parseInt(match[1], 10),
+        part: match[2] ? parseInt(match[2], 10) : 1
+    };
+}
+
+function extractLatestChapterLabel(doc, storyPath) {
+    var links = doc.select("a[href*='" + storyPath + "/']");
+    var latestNumber = -1;
+
+    for (var i = 0; i < links.size(); i++) {
+        var a = links.get(i);
+        var info = getChapterHrefInfo(a.attr("href") || "", storyPath);
+        if (!info || info.part !== 1) continue;
+
+        if (info.number > latestNumber) {
+            latestNumber = info.number;
+        }
+    }
+
+    return latestNumber > 0 ? "Chương " + latestNumber : "";
+}
+
+function extractLatestChapterLabelFromText(rawHtml, storyPath) {
+    if (!rawHtml) return "";
+
+    var storyBase = storyPathFromUrl(storyPath);
+    var chapterRe = new RegExp(escapeRegExp(storyBase) + "\\/(?:(?:index\\/)?)?(\\d+)(?:_(\\d+))?\\.html", "g");
+    var latestNumber = -1;
+    var match;
+
+    while ((match = chapterRe.exec(rawHtml)) !== null) {
+        var chapterNumber = parseInt(match[1], 10);
+        var chapterPart = match[2] ? parseInt(match[2], 10) : 1;
+        if (chapterPart !== 1) continue;
+        if (chapterNumber > latestNumber) latestNumber = chapterNumber;
+    }
+
+    return latestNumber > 0 ? "Chương " + latestNumber : "";
+}
+
+function getLatestChapter(href) {
+    var storyUrl = ensureStoryUrl(href);
+    if (LATEST_CHAPTER_CACHE.hasOwnProperty(storyUrl)) return LATEST_CHAPTER_CACHE[storyUrl];
+
+    var res = fetch(storyUrl, FETCH_OPTIONS);
+    if (!res || !res.ok) {
+        LATEST_CHAPTER_CACHE[storyUrl] = "";
+        return "";
+    }
+
+    var latest = "";
+    try {
+        latest = extractLatestChapterLabelFromText(res.text(), storyPathFromUrl(storyUrl));
+    } catch (e) {}
+
+    if (!latest) {
+        try {
+            var doc = res.html();
+            if (doc) latest = extractLatestChapterLabel(doc, storyPathFromUrl(storyUrl));
+        } catch (e2) {}
+    }
+
+    LATEST_CHAPTER_CACHE[storyUrl] = latest;
+    return latest;
 }
 
 // Build paginated URL — Bixiange pattern:
@@ -79,6 +182,8 @@ function parseList(doc) {
     var result = [];
     var seen = {};
     var coverMap = {};
+    var canFetch = -1;
+    var latestFetchCount = 0;
 
     // Pass 1: build cover map từ a:has(img) có story URL
     var imgLinks = doc.select("a[href]:has(img)");
@@ -103,12 +208,25 @@ function parseList(doc) {
         var name = a.text().trim();
         if (!name || name.length < 2 || name.length > 100) continue;
         seen[href] = true;
+
+        var description = "";
+        if (canFetch !== 0 && latestFetchCount < LATEST_FETCH_LIMIT) {
+            latestFetchCount++;
+            var latestChapter = getLatestChapter(href);
+            if (latestChapter) {
+                description = latestChapter;
+                canFetch = 1;
+            } else if (canFetch === -1) {
+                canFetch = 0;
+            }
+        }
+
         result.push({
             name: name,
             link: href,
             host: HOST,
             cover: coverMap[href] || "",
-            description: ""
+            description: description
         });
         if (result.length >= 30) break;
     }
