@@ -248,6 +248,19 @@
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
+    },
+    {
+      "name": "HentaiCube -18+",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/hentaicube/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/hentaicube/plugin.json",
+      "version": 1,
+      "source": "https://hentaicube.xyz",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/hentaicube/icon.png",
+      "description": "HentaiCube - Truy\u1ec7n Hentai Online 18+",
+      "tag": "NSFW",
+      "type": "comic",
+      "locale": "vi_VN"
     }
   ]
 }

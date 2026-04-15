@@ -92,3 +92,4 @@ Danh sách extension hiện có trong repository:
 | LoppyToon 🔞 | [loppytoon.com](https://loppytoon.com) | v3 | Comic | vi_VN |
 | WanwanSekai 🔞 | [wanwansekai.com](https://wanwansekai.com) | v9 | Novel | vi_VN |
 | ShiBaShuWu 🔞 | [shibashuwu.net](https://www.shibashuwu.net) | v13 | Chinese Novel | zh_CN |
+| HentaiCube 🔞 | [hentaicube.xyz](https://hentaicube.xyz) | v1 | Comic | vi_VN |
