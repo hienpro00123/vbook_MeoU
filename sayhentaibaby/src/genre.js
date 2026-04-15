@@ -7,13 +7,16 @@ function execute(input) {
     if (!doc) return Response.error("Khong doc duoc noi dung");
 
     var result = [];
-    var links = doc.select("ul.dropdown-menu a[href*='/the-loai/']");
+    var seen = {};
+    var links = doc.select("a[href*='/the-loai/'][title]");
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href");
-        if (!href) continue;
-        var name = a.text().replace(/^-\s*/, "").trim();
-        if (!name) name = a.attr("title") || "";
+        if (!href || seen[href]) continue;
+        seen[href] = true;
+        var title = a.attr("title") || "";
+        var name = title.indexOf("Thể loại") === 0 ? title.substring(8).trim() : title.trim();
+        if (!name) name = a.text().replace(/^-\s*/, "").trim();
         if (!name) continue;
         result.push({ name: name, input: resolveUrl(href) + "?order_by=update_time&sort=desc", script: "genrecontent.js" });
     }
