@@ -2,13 +2,13 @@
   "metadata": {
     "name": "SayHentaiBaby -18+",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://sayhentai.baby",
     "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?$",
-    "description": "SayHentai Baby - Đọc truyện hentai -18+ online",
+    "description": "SayHentai Baby - Doc truyen hentai -18+ online",
     "locale": "vi_VN",
-    "type": "comic",
-    "nsfw": true
+    "tag": "nsfw",
+    "type": "comic"
   },
   "script": {
     "home": "home.js",
