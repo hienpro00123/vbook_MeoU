@@ -74,7 +74,6 @@ Danh sách extension hiện có trong repository:
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| DestinTeam 🔞 | [destinteam.com](https://destinteam.com) | v1 | Comic | vi_VN |
 | dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v4 | Novel | vi_VN |
 | Biquge | [biquge.tw](https://www.biquge.tw) | v8 | Chinese Novel | zh_CN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
