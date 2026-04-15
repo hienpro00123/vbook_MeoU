@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "name": "SayHentaiBaby -18+",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://sayhentai.baby",
+    "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?$",
+    "description": "SayHentai Baby - Đọc truyện hentai -18+ online",
+    "locale": "vi_VN",
+    "type": "comic",
+    "nsfw": true
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}
