@@ -65,7 +65,7 @@ function execute(url) {
         host: HOST,
         description: description,
         detail: status,
-        ongoing: status.indexOf("ang c") < 0,
+        ongoing: status.indexOf("ho\u00e0n") < 0,
         genres: genres
     });
 }
