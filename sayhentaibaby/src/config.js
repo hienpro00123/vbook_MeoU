@@ -2,10 +2,7 @@ var BASE_URL = "https://sayhentai.baby";
 var HOST = BASE_URL;
 
 var FETCH_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
-    "Referer": BASE_URL + "/"
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
 
@@ -48,10 +45,14 @@ function parseList(doc) {
         if (!name) continue;
         var imgEl = selFirst(card, "img.lazyload, img[data-src], img");
         var cover = imgEl ? (imgEl.attr("data-src") || imgEl.attr("src") || "") : "";
-        cover = resolveUrl(cover);
         var chapEl = selFirst(card, "span.episode");
         var description = chapEl ? chapEl.text().trim() : "";
-        result.push({ name: name, link: resolveUrl(href), cover: cover, description: description });
+        result.push({
+            name: name,
+            link: href.indexOf("http") === 0 ? href : resolveUrl(href),
+            cover: cover.indexOf("http") === 0 ? cover : resolveUrl(cover),
+            description: description
+        });
     }
     return result;
 }
