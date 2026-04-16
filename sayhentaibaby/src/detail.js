@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute(url) {
-    var detailUrl = resolveUrl(url);
+    var detailUrl = url.indexOf("http") === 0 ? url : resolveUrl(url);
     var res = fetchRetry(detailUrl);
     if (!res || !res.ok) return Response.error("Khong tai duoc trang truyen");
     var doc = res.html();
@@ -15,10 +15,10 @@ function execute(url) {
     var coverMeta = selFirst(doc, "meta[property='og:image']");
     var cover = coverMeta ? coverMeta.attr("content") : "";
     if (!cover) {
-        var coverImg = selFirst(doc, "img.lazyload[data-src], img[data-src]");
+        var coverImg = selFirst(doc, "img[data-src]");
         cover = coverImg ? (coverImg.attr("data-src") || "") : "";
+        if (cover && cover.indexOf("http") !== 0) cover = resolveUrl(cover);
     }
-    if (cover) cover = resolveUrl(cover);
 
     // Genres - a[rel='category tag'] trong div.thong-tin
     var genreEls = doc.select("div.thong-tin a[rel='category tag']");
