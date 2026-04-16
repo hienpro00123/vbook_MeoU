@@ -3,7 +3,7 @@ load("config.js");
 function execute(url, page) {
     var p = page ? parseInt(page) : 1;
     var baseUrl = (url || "").split("&page=")[0].split("?page=")[0];
-    var pageUrl = baseUrl + (baseUrl.indexOf("?") >= 0 ? "&" : "?") + "page=" + p;
+    var pageUrl = baseUrl + "&page=" + p;
 
     var res = fetchRetry(pageUrl);
     if (!res || !res.ok) return Response.error("Khong tai duoc trang " + p);

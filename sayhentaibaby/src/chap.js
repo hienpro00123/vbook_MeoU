@@ -1,7 +1,7 @@
 load("config.js");
 
 function execute(url) {
-    var chapUrl = resolveUrl(url);
+    var chapUrl = url.indexOf("http") === 0 ? url : resolveUrl(url);
     var res = fetchRetry(chapUrl);
     if (!res || !res.ok) return Response.error("Khong tai duoc chuong");
     var doc = res.html();

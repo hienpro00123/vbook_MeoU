@@ -32,7 +32,7 @@ function parseList(doc) {
     var cards = doc.select("article.thumb");
     for (var i = 0; i < cards.size(); i++) {
         var card = cards.get(i);
-        var linkEl = selFirst(card, "a.halim-thumb[href]");
+        var linkEl = selFirst(card, "a.halim-thumb");
         if (!linkEl) linkEl = selFirst(card, "a[href*='/truyen/']");
         if (!linkEl) continue;
         var href = linkEl.attr("href");
@@ -43,7 +43,7 @@ function parseList(doc) {
             name = titleEl ? titleEl.text().trim() : "";
         }
         if (!name) continue;
-        var imgEl = selFirst(card, "img.lazyload, img[data-src], img");
+        var imgEl = selFirst(card, "img");
         var cover = imgEl ? (imgEl.attr("data-src") || imgEl.attr("src") || "") : "";
         var chapEl = selFirst(card, "span.episode");
         var description = chapEl ? chapEl.text().trim() : "";
