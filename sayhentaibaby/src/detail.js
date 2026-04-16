@@ -62,8 +62,10 @@ function execute(url) {
     return Response.success({
         name: name,
         cover: cover,
-        genres: genres,
-        status: status,
-        description: description
+        host: HOST,
+        description: description,
+        detail: status,
+        ongoing: status.indexOf("ang c") < 0,
+        genres: genres
     });
 }

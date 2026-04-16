@@ -18,7 +18,7 @@ function execute(url) {
         if (!href || href.indexOf("/doc-truyen/") < 0) continue;
         var chapName = selFirst(a, "span.chap-name");
         var title = chapName ? chapName.text().trim() : (a.attr("title") || "").trim();
-        chapters.push({ title: title, link: resolveUrl(href) });
+        chapters.push({ name: title, url: resolveUrl(href), host: HOST });
     }
 
     if (chapters.length === 0) return Response.error("Khong co chuong hop le");
