@@ -28,6 +28,9 @@ function execute(url) {
         return Response.error("Khong tim thay noi dung chuong");
     }
 
+    // Xoa img thay the ky tu bi kiem duyet (wzbodyimg) -> tranh [OBJ]
+    content.select("img[src*='/wzbodyimg/']").remove();
+
     var paragraphs = content.select("p");
     for (var i = 0; i < paragraphs.size(); i++) {
         var text = cleanText(paragraphs.get(i).text());
