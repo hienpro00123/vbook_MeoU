@@ -7,7 +7,7 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Khong doc duoc noi dung");
 
-    // ul#list-chap chứa chapters, mới nhất trước → đảo ngược
+    // ul#list-chap > li.chapter > a[href]
     var chapLinks = doc.select("ul#list-chap li.chapter a[href]");
     if (chapLinks.size() === 0) return Response.error("Khong co chuong nao");
 
@@ -17,11 +17,13 @@ function execute(url) {
         var href = a.attr("href");
         if (!href || href.indexOf("/doc-truyen/") < 0) continue;
         var chapName = selFirst(a, "span.chap-name");
-        var title = chapName ? chapName.text().trim() : a.attr("title") || "";
+        var title = chapName ? chapName.text().trim() : (a.attr("title") || "").trim();
         chapters.push({ title: title, link: resolveUrl(href) });
     }
 
-    // Đảo ngược: cũ nhất trước
+    if (chapters.length === 0) return Response.error("Khong co chuong hop le");
+
+    // Moi nhat truoc → dao nguoc
     chapters.reverse();
     return Response.success(chapters);
 }

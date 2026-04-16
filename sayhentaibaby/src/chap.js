@@ -7,17 +7,23 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Khong doc duoc noi dung chuong");
 
+    // div.contentimg > div.imageload > img.simg[src]
     var imgs = doc.select("div.contentimg img.simg");
+    if (imgs.size() === 0) {
+        // fallback: all img trong contentimg
+        imgs = doc.select("div.contentimg img");
+    }
     if (imgs.size() === 0) return Response.error("Khong co anh trong chuong");
 
     var data = [];
     for (var i = 0; i < imgs.size(); i++) {
         var img = imgs.get(i);
-        var src = img.attr("src") || img.attr("data-sv1") || img.attr("data-src") || "";
-        if (!src) continue;
+        // src trực tiếp, data-sv1 là backup cùng CDN
+        var src = img.attr("src") || img.attr("data-sv1") || "";
+        if (!src || src.indexOf("data:image") === 0) continue;
         data.push({ link: src });
     }
 
-    if (data.length === 0) return Response.error("Khong co anh trong chuong");
+    if (data.length === 0) return Response.error("Khong co anh hop le trong chuong");
     return Response.success(data);
 }

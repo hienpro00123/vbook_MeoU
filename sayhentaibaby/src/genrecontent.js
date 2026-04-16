@@ -2,7 +2,8 @@ load("config.js");
 
 function execute(url, page) {
     var p = page ? parseInt(page) : 1;
-    var baseUrl = (url || "").split("&page=")[0].split("?page=")[0];
+    // URL dạng: https://sayhentai.baby/the-loai/ntr?order_by=update_time&sort=desc
+    var baseUrl = (url || "").split("&page=")[0];
     var pageUrl = baseUrl + "&page=" + p;
 
     var res = fetchRetry(pageUrl);
@@ -12,8 +13,8 @@ function execute(url, page) {
 
     var items = parseList(doc);
 
+    // Pagination: a[href*='page=N'] trong ul.pagination
     var nextEl = selFirst(doc, "ul.pagination a[href*='page=" + (p + 1) + "']");
-    var hasNext = nextEl !== null;
 
-    return Response.success(items, hasNext ? p + 1 : -1);
+    return Response.success(items, nextEl !== null ? p + 1 : -1);
 }

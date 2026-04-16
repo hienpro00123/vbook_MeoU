@@ -11,34 +11,43 @@ function execute(url) {
     var titleEl = selFirst(doc, "h1.entry-title");
     var name = titleEl ? titleEl.text().trim() : "";
 
-    // Cover — ưu tiên og:image
+    // Cover
     var coverMeta = selFirst(doc, "meta[property='og:image']");
     var cover = coverMeta ? coverMeta.attr("content") : "";
     if (!cover) {
-        var coverImg = selFirst(doc, ".film-poster img, .thumb-comic img");
-        cover = coverImg ? (coverImg.attr("src") || "") : "";
+        var coverImg = selFirst(doc, "img.lazyload[data-src], img[data-src]");
+        cover = coverImg ? (coverImg.attr("data-src") || "") : "";
     }
-    cover = resolveUrl(cover);
+    if (cover) cover = resolveUrl(cover);
 
-    // Genres
-    var genreEls = doc.select("a[href*='/the-loai/'][rel='category tag'], .thong-tin a[href*='/the-loai/']");
+    // Genres - a[rel='category tag'] trong div.thong-tin
+    var genreEls = doc.select("div.thong-tin a[rel='category tag']");
     var genres = [];
+    var seenG = {};
     for (var i = 0; i < genreEls.size(); i++) {
         var g = genreEls.get(i).text().trim();
-        if (g) genres.push(g);
+        if (g && !seenG[g]) { genres.push(g); seenG[g] = true; }
     }
 
-    // Status
+    // Status - span sau span có text 'Tr'
     var status = "";
-    var thongTin = selFirst(doc, "div.thong-tin, div.movie-detail");
+    var thongTin = selFirst(doc, "div.thong-tin");
     if (thongTin) {
-        var allText = thongTin.text();
-        var stMatch = /Trạng Thái\s*[:\uff1a]?\s*([^\n\r]+)/.exec(allText);
-        if (stMatch) status = stMatch[1].trim().split("\n")[0].trim();
+        var spans = thongTin.select("span");
+        for (var j = 0; j < spans.size(); j++) {
+            var spanText = spans.get(j).text();
+            if (spanText.indexOf("Tr\u1ea1ng Th\u00e1i") >= 0) {
+                // span tiếp theo chứa giá trị
+                if (j + 1 < spans.size()) {
+                    status = spans.get(j + 1).text().trim();
+                }
+                break;
+            }
+        }
     }
 
-    // Description
-    var descEl = selFirst(doc, "article.item-content p, div.item-content p, .entry-content-single p");
+    // Description - p trong article.item-content
+    var descEl = selFirst(doc, "article.item-content p, div.item-content p");
     var description = descEl ? descEl.text().trim() : "";
 
     return Response.success({
