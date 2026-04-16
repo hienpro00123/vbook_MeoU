@@ -16,9 +16,13 @@ function execute(url) {
         var a = chapLinks.get(i);
         var href = a.attr("href");
         if (!href || href.indexOf("/doc-truyen/") < 0) continue;
-        var chapName = selFirst(a, "span.chap-name");
-        var title = chapName ? chapName.text().trim() : (a.attr("title") || "").trim();
-        chapters.push({ name: title, url: resolveUrl(href), host: HOST });
+        var title = (a.attr("title") || "").trim();
+        if (!title) {
+            var chapName = selFirst(a, "span.chap-name");
+            title = chapName ? chapName.text().trim() : "";
+        }
+        var chapUrl = href.indexOf("http") === 0 ? href : resolveUrl(href);
+        chapters.push({ name: title, url: chapUrl, host: HOST });
     }
 
     if (chapters.length === 0) return Response.error("Khong co chuong hop le");
