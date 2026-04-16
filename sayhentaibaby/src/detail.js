@@ -25,8 +25,17 @@ function execute(url) {
     var genres = [];
     var seenG = {};
     for (var i = 0; i < genreEls.size(); i++) {
-        var g = genreEls.get(i).text().trim();
-        if (g && !seenG[g]) { genres.push(g); seenG[g] = true; }
+        var gEl = genreEls.get(i);
+        var g = gEl.text().trim();
+        var gHref = gEl.attr("href") || "";
+        // Lấy slug từ URL: /the-loai/{slug}
+        var gSlug = "";
+        var slashIdx = gHref.lastIndexOf("/the-loai/");
+        if (slashIdx >= 0) gSlug = gHref.substring(slashIdx + 10);
+        if (g && !seenG[g]) {
+            genres.push({ title: g, input: resolveUrl(gHref) + "?order_by=update_time&sort=desc", script: "genrecontent.js" });
+            seenG[g] = true;
+        }
     }
 
     // Status - span sau span có text 'Tr'

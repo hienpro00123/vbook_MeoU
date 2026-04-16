@@ -8,7 +8,8 @@ function execute(input) {
 
     var result = [];
     var seen = {};
-    var links = doc.select("a[href*='/the-loai/'][title]");
+    // Chỉ lấy từ navbar ul#menu-header, tránh lấy từ story cards
+    var links = doc.select("ul#menu-header a[href*='/the-loai/']");
     for (var i = 0; i < links.size(); i++) {
         var a = links.get(i);
         var href = a.attr("href");
