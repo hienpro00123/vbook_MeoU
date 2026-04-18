@@ -20,7 +20,7 @@ function execute(url) {
     var author = authorEl ? authorEl.text().trim() : "";
 
     var genres = [];
-    var adult = false;
+    var adult = isAdult(rawName);
     var infoEl = selFirst(doc, ".manga-info");
     if (infoEl) {
         var genreLinks = infoEl.select("a[href*='/the-loai/']");
@@ -38,11 +38,7 @@ function execute(url) {
         }
     }
 
-    var name = rawName;
-    if (adult) {
-        name = name.replace(/\[18\+\]/g, "").replace(/\[19\+\]/g, "").replace(/\[21\+\]/g, "").replace(/\u301a18\+\u301b/g, "").replace(/\u301a19\+\u301b/g, "").replace(/\(18\+\)/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
-        name = "18+ " + name;
-    }
+    var name = isAdult(rawName) ? adultName(rawName) : (adult ? "18+ " + rawName : rawName);
 
     var descParts = [];
     if (descEl) {
@@ -77,7 +73,7 @@ function execute(url) {
     var detailParts = [];
     if (status) detailParts.push("Tinh trang: " + status);
     if (altName) detailParts.push("Ten khac: " + altName);
-    detailParts.push("Noi dung: 18+");
+    if (adult) detailParts.push("Noi dung: 18+");
 
     var suggests = [];
     if (authorEl) {
