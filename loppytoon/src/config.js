@@ -46,13 +46,18 @@ function resolveCover(src) {
 
 function isAdult(name) {
     var v = (name || "");
-    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0 || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0;
+    return v.indexOf("[18+]") >= 0 || v.indexOf("(18+)") >= 0
+        || v.indexOf("[19+]") >= 0 || v.indexOf("(19+)") >= 0
+        || v.indexOf("\u301A18+\u301B") >= 0 || v.indexOf("\u301A19+\u301B") >= 0;
 }
 
 function adultName(name) {
     var v = (name || "").trim();
     if (!v) return "";
     if (!isAdult(v)) return v;
-    v = v.replace(/\[18\+\]/g, "").replace(/\(18\+\)/g, "").replace(/\[19\+\]/g, "").replace(/\(19\+\)/g, "").replace(/\s+/g, " ").trim();
+    v = v.replace(/\[18\+\]/g, "").replace(/\(18\+\)/g, "")
+         .replace(/\[19\+\]/g, "").replace(/\(19\+\)/g, "")
+         .replace(/\u301A18\+\u301B/g, "").replace(/\u301A19\+\u301B/g, "")
+         .replace(/\s+/g, " ").trim();
     return "18+ " + v;
 }
