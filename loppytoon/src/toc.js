@@ -30,9 +30,9 @@ function execute(url) {
     var chapters = [];
     var seen = {};
 
-    for (var offset = 0; offset < 2000; offset += 20) {
+    for (var offset = 0; offset < 20000; offset += 1000) {
         var apiUrl = BASE_URL + "/load-more-chapters?slug=" + slug
-            + "&offset=" + offset + "&sortByPosition=desc";
+            + "&offset=" + offset + "&limit=1000&sortByPosition=desc";
         var res = fetch(apiUrl, FETCH_OPTIONS);
         if (!res || !res.ok) break;
         var data;
