@@ -2,9 +2,9 @@
   "metadata": {
     "name": "ShiBaShuWu -18+",
     "author": "Meo",
-    "version": 17,
+    "version": 19,
     "source": "https://www.shibashuwu.net",
-    "regexp": "(?:www\\\\.)?shibashuwu\\\\.net\\\\/book\\\\/\\\\d+\\\\/?$",
+    "regexp": "https?:\\/\\/(?:www\\.)?shibashuwu\\.net\\/book\\/\\d+(?:\\/|\\/\\d+(?:_\\d+)?\\.html)?$",
     "description": "ShiBaShuWu - Truyện chữ Trung Quốc 18+",
     "locale": "zh_CN",
     "tag": "18+",

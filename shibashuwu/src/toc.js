@@ -5,15 +5,16 @@ function parsePage(doc, chapters, seen) {
     for (var i = 0; i < links.size(); i++) {
         var link = links.get(i);
         var href = resolveUrl(link.attr("href") || "");
-        if (!CHAPTER_RE.test(href) || seen[href]) continue;
+        var cleanHref = stripUrlDecoration(href);
+        if (!CHAPTER_RE.test(cleanHref) || seen[cleanHref]) continue;
 
         var name = cleanText(link.text());
         if (!name) continue;
 
-        seen[href] = true;
+        seen[cleanHref] = true;
         chapters.push({
             name: name,
-            url: href,
+            url: addChapterCacheBust(cleanHref),
             host: HOST
         });
     }
