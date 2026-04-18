@@ -1,4 +1,4 @@
-﻿{
+{
   "metadata": {
     "author": "Meo",
     "description": "VBook Extensions Repository"
@@ -12,7 +12,7 @@
       "version": 4,
       "source": "https://dualeotruyenfull.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dualeo/icon.png",
-      "description": "D\u01b0a Leo Truy\u1ec7n Full - \u0110\u1ecdc truy\u1ec7n ch\u1eef online",
+      "description": "<font color='#FF3B30'>D</font><font color='#FF9500'>ư</font><font color='#FFCC00'>a</font> <font color='#30D158'>L</font><font color='#0A84FF'>e</font><font color='#BF5AF2'>o</font> <font color='#FF3B30'>T</font><font color='#FF9500'>r</font><font color='#FFCC00'>u</font><font color='#30D158'>y</font><font color='#0A84FF'>ệ</font><font color='#BF5AF2'>n</font> <font color='#FF3B30'>F</font><font color='#FF9500'>u</font><font color='#FFCC00'>l</font><font color='#30D158'>l</font> - Đọc truyện chữ online",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -24,7 +24,7 @@
       "version": 8,
       "source": "https://www.biquge.tw",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/biquge/icon.png",
-      "description": "\u7b14\u8da3\u9601 - Truy\u1ec7n ch\u1eef Ti\u1ebfng Trung",
+      "description": "<font color='#FF3B30'>笔</font><font color='#FF9500'>趣</font><font color='#FFCC00'>阁</font> - Truyện chữ Tiếng Trung",
       "type": "chinese_novel",
       "locale": "zh_CN"
     },
@@ -36,7 +36,7 @@
       "version": 1,
       "source": "https://storya.click",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/storya/icon.png",
-      "description": "Storya - \u0110\u1ecdc truy\u1ec7n ch\u1eef online mi\u1ec5n ph\u00ed",
+      "description": "<font color='#FF3B30'>S</font><font color='#FF9500'>t</font><font color='#FFCC00'>o</font><font color='#30D158'>r</font><font color='#0A84FF'>y</font><font color='#BF5AF2'>a</font> - Đọc truyện chữ online miễn phí",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -48,7 +48,7 @@
       "version": 24,
       "source": "https://otruyen.cc",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/otruyen/icon.png",
-      "description": "\u0110\u1ecdc truy\u1ec7n tranh t\u1eeb OTruyen.CC",
+      "description": "Đọc truyện tranh từ OTruyen.CC",
       "type": "comic",
       "locale": "vi_VN"
     },
@@ -60,19 +60,19 @@
       "version": 28,
       "source": "https://truyendex.cc/nettrom",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyendex/icon.png",
-      "description": "\u0110\u1ecdc truy\u1ec7n tranh t\u1eeb TruyenDex (MangaDex Ti\u1ebfng Vi\u1ec7t)",
+      "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
       "type": "comic",
       "locale": "vi_VN"
     },
     {
-      "name": "Wattpad - Ti\u1ebfng Vi\u1ec7t",
+      "name": "Wattpad - Tiếng Việt",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wattpad/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wattpad/plugin.json",
       "version": 21,
       "source": "https://www.wattpad.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wattpad/icon.png",
-      "description": "\u0110\u1ecdc truy\u1ec7n ti\u1ebfng Vi\u1ec7t tr\u00ean Wattpad",
+      "description": "Đọc truyện tiếng Việt trên Wattpad",
       "type": "novel",
       "locale": "vi"
     },
@@ -84,7 +84,7 @@
       "version": 17,
       "source": "https://metruyenchu.com.vn",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyenchu/icon.png",
-      "description": "MeTruyenChu - \u0110\u1ecdc truy\u1ec7n ch\u1eef online mi\u1ec5n ph\u00ed, kh\u00f4ng qu\u1ea3ng c\u00e1o",
+      "description": "<font color='#FF3B30'>M</font><font color='#FF9500'>e</font><font color='#FFCC00'>T</font><font color='#30D158'>r</font><font color='#0A84FF'>u</font><font color='#BF5AF2'>y</font><font color='#FF3B30'>e</font><font color='#FF9500'>n</font><font color='#FFCC00'>C</font><font color='#30D158'>h</font><font color='#0A84FF'>u</font> - Đọc truyện chữ online miễn phí, không quảng cáo",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -96,7 +96,7 @@
       "version": 10,
       "source": "https://m.bixiange.me",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bixiange/icon.png",
-      "description": "\u7b14\u4ed9\u9601 - Truy\u1ec7n ch\u1eef Ti\u1ebfng Trung online",
+      "description": "<font color='#FF3B30'>笔</font><font color='#FF9500'>仙</font><font color='#FFCC00'>阁</font> - Truyện chữ Tiếng Trung online",
       "type": "chinese_novel",
       "locale": "zh_CN"
     },
@@ -108,7 +108,7 @@
       "version": 8,
       "source": "https://truyenchu.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/truyenchu/icon.png",
-      "description": "TruyenChu - \u0110\u1ecdc truy\u1ec7n ch\u1eef online mi\u1ec5n ph\u00ed",
+      "description": "<font color='#FF3B30'>T</font><font color='#FF9500'>r</font><font color='#FFCC00'>u</font><font color='#30D158'>y</font><font color='#0A84FF'>e</font><font color='#BF5AF2'>n</font><font color='#FF3B30'>C</font><font color='#FF9500'>h</font><font color='#FFCC00'>u</font> - Đọc truyện chữ online miễn phí",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -120,7 +120,7 @@
       "version": 9,
       "source": "https://wanwansekai.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/wanwansekai/icon.png",
-      "description": "WanwanSekai - \u0110\u1ecdc web novel ti\u1ebfng Vi\u1ec7t 18+",
+      "description": "<font color='#FF3B30'>W</font><font color='#FF9500'>a</font><font color='#FFCC00'>n</font><font color='#30D158'>w</font><font color='#0A84FF'>a</font><font color='#BF5AF2'>n</font><font color='#FF3B30'>S</font><font color='#FF9500'>e</font><font color='#FFCC00'>k</font><font color='#30D158'>a</font><font color='#0A84FF'>i</font> - Đọc web novel tiếng Việt <font color='#FF0000'>18+</font>",
       "tag": "18+",
       "type": "novel",
       "locale": "vi_VN"
@@ -133,7 +133,7 @@
       "version": 19,
       "source": "https://www.shibashuwu.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/shibashuwu/icon.png",
-      "description": "ShiBaShuWu - Truy\u1ec7n ch\u1eef Trung Qu\u1ed1c 18+",
+      "description": "<font color='#FF3B30'>S</font><font color='#FF9500'>h</font><font color='#FFCC00'>i</font><font color='#30D158'>B</font><font color='#0A84FF'>a</font><font color='#BF5AF2'>S</font><font color='#FF3B30'>h</font><font color='#FF9500'>u</font><font color='#FFCC00'>W</font><font color='#30D158'>u</font> - Truyện chữ Trung Quốc <font color='#FF0000'>18+</font>",
       "tag": "18+",
       "type": "chinese_novel",
       "locale": "zh_CN"
@@ -146,7 +146,7 @@
       "version": 3,
       "source": "https://nettruyen.work",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/nettruyen/icon.png",
-      "description": "\u0110\u1ecdc truy\u1ec7n tranh t\u1eeb NetTruyen",
+      "description": "Đọc truyện tranh từ NetTruyen",
       "type": "comic",
       "locale": "vi_VN"
     },
@@ -158,7 +158,7 @@
       "version": 10,
       "source": "https://valvrareteam.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/valvrareteam/icon.png",
-      "description": "Valvrareteam - Đọc Light Novel Vietsub tiếng Việt",
+      "description": "<font color='#FF3B30'>V</font><font color='#FF9500'>a</font><font color='#FFCC00'>l</font><font color='#30D158'>v</font><font color='#0A84FF'>r</font><font color='#BF5AF2'>a</font><font color='#FF3B30'>r</font><font color='#FF9500'>e</font><font color='#FFCC00'>t</font><font color='#30D158'>e</font><font color='#0A84FF'>a</font><font color='#BF5AF2'>m</font> - Đọc Light Novel Vietsub tiếng Việt",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -170,7 +170,7 @@
       "version": 9,
       "source": "https://novel.cooks.tw",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/icon.png",
-      "description": "novel.cooks.tw - \u0110\u1ecdc truy\u1ec7n ch\u1eef Trung Qu\u1ed1c online",
+      "description": "<font color='#FF3B30'>n</font><font color='#FF9500'>o</font><font color='#FFCC00'>v</font><font color='#30D158'>e</font><font color='#0A84FF'>l</font><font color='#BF5AF2'>.</font><font color='#FF3B30'>c</font><font color='#FF9500'>o</font><font color='#FFCC00'>o</font><font color='#30D158'>k</font><font color='#0A84FF'>s</font><font color='#BF5AF2'>.</font><font color='#FF3B30'>t</font><font color='#FF9500'>w</font> - Đọc truyện chữ Trung Quốc online",
       "type": "chinese_novel",
       "locale": "zh_TW"
     },
@@ -182,7 +182,7 @@
       "version": 3,
       "source": "https://trichtinhlau.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/trichtinhlau/icon.png",
-      "description": "Tr\u00edch Tinh L\u00e2u - \u0110\u1ecdc truy\u1ec7n ch\u1eef online mi\u1ec5n ph\u00ed",
+      "description": "<font color='#FF3B30'>T</font><font color='#FF9500'>r</font><font color='#FFCC00'>í</font><font color='#30D158'>c</font><font color='#0A84FF'>h</font> <font color='#BF5AF2'>T</font><font color='#FF3B30'>i</font><font color='#FF9500'>n</font><font color='#FFCC00'>h</font> <font color='#30D158'>L</font><font color='#0A84FF'>â</font><font color='#BF5AF2'>u</font> - Đọc truyện chữ online miễn phí",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -194,7 +194,7 @@
       "version": 14,
       "source": "https://lnkuro.top",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/icon.png",
-      "description": "LN Kuro - \u0110\u1ecdc Light Novel H\u00e0n Qu\u1ed1c d\u1ecbch ti\u1ebfng Vi\u1ec7t",
+      "description": "<font color='#FF3B30'>L</font><font color='#FF9500'>N</font> <font color='#FFCC00'>K</font><font color='#30D158'>u</font><font color='#0A84FF'>r</font><font color='#BF5AF2'>o</font> - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -206,7 +206,7 @@
       "version": 3,
       "source": "https://metruyensangtac.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/icon.png",
-      "description": "MeTruyenSangTac - N\u1ec1n t\u1ea3ng \u0111\u1ecdc truy\u1ec7n s\u00e1ng t\u00e1c mi\u1ec5n ph\u00ed",
+      "description": "<font color='#FF3B30'>M</font><font color='#FF9500'>e</font><font color='#FFCC00'>T</font><font color='#30D158'>r</font><font color='#0A84FF'>u</font><font color='#BF5AF2'>y</font><font color='#FF3B30'>e</font><font color='#FF9500'>n</font><font color='#FFCC00'>S</font><font color='#30D158'>a</font><font color='#0A84FF'>n</font><font color='#BF5AF2'>g</font><font color='#FF3B30'>T</font><font color='#FF9500'>a</font><font color='#FFCC00'>c</font> - Nền tảng đọc truyện sáng tác miễn phí",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -216,9 +216,8 @@
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.json",
       "version": 13,
-      "source": "https://loppytoon.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/icon.png",
-      "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
+      "description": "<font color='#FF3B30'>L</font><font color='#FF9500'>o</font><font color='#FFCC00'>p</font><font color='#30D158'>p</font><font color='#0A84FF'>y</font><font color='#BF5AF2'>T</font><font color='#FF3B30'>o</font><font color='#FF9500'>o</font><font color='#FFCC00'>n</font> - Truyện tranh & tiểu thuyết <font color='#FF0000'>18+</font>",
       "tag": "NSFW",
       "type": "comic,novel",
       "locale": "vi_VN"
@@ -231,7 +230,7 @@
       "version": 1,
       "source": "https://sayhentai.vc",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/icon.png",
-      "description": "SayHentai - Truyện hentai, manhwa 18+ tiếng Việt",
+      "description": "<font color='#FF3B30'>S</font><font color='#FF9500'>a</font><font color='#FFCC00'>y</font><font color='#30D158'>H</font><font color='#0A84FF'>e</font><font color='#BF5AF2'>n</font><font color='#FF3B30'>t</font><font color='#FF9500'>a</font><font color='#FFCC00'>i</font> - Truyện hentai, manhwa <font color='#FF0000'>18+</font> tiếng Việt",
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
@@ -244,24 +243,10 @@
       "version": 1,
       "source": "https://hentaicube.xyz",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/hentaicube/icon.png",
-      "description": "HentaiCube - Truy\u1ec7n Hentai Online 18+",
-      "tag": "NSFW",
-      "type": "comic",
-      "locale": "vi_VN"
-    },
-    {
-      "name": "SayHentaiBaby -18+",
-      "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.zip",
-      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.json",
-      "version": 10,
-      "source": "https://sayhentai.baby",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/icon.png",
-      "description": "SayHentai Baby - \u0110\u1ecdc truy\u1ec7n hentai -18+ online",
+      "description": "<font color='#FF3B30'>H</font><font color='#FF9500'>e</font><font color='#FFCC00'>n</font><font color='#30D158'>t</font><font color='#0A84FF'>a</font><font color='#BF5AF2'>i</font><font color='#FF3B30'>C</font><font color='#FF9500'>u</font><font color='#FFCC00'>b</font><font color='#30D158'>e</font> - Truyện Hentai Online <font color='#FF0000'>18+</font>",
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
     }
   ]
 }
-
