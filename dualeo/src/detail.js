@@ -3,7 +3,7 @@ load("config.js");
 function execute(url) {
     var detailUrl = resolveUrl(url);
     var doc = fetchDoc(detailUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("Không tải được thông tin truyện");
 
     // Title
     var nameEl = selFirst(doc, "#manga-title, h1");

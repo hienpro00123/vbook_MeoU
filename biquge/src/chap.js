@@ -56,10 +56,10 @@ function shouldAppendPart(baseTitle, part, extraDoc, extraText, seenTexts) {
 function execute(url) {
     var chapUrl = resolveUrl(url);
     var doc = fetchBrowserFast(chapUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("无法加载章节内容");
 
     var html = getChapterHtml(doc);
-    if (!html) return Response.error("");
+    if (!html) return Response.error("章节内容为空");
 
     var partInfo = parseChapterPartInfo(doc);
     var baseTitle = getChapterTitle(doc);

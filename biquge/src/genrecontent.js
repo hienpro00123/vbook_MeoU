@@ -9,7 +9,7 @@ function execute(url, page) {
         fetchUrl = BASE_URL + "/sort/" + url + "/" + p + ".html";
     }
     var doc = fetchBrowserFast(fetchUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("无法加载分类列表");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
     var nextLink = selFirst(doc, "a:contains(下一页)");

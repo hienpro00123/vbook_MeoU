@@ -10,7 +10,7 @@ function execute(url, page) {
     var p = page ? parseInt(page) : 1;
     if (p <= 1) {
         var doc = fetchBrowserFast(BASE_URL + "/");
-        if (!doc) return Response.error("");
+        if (!doc) return Response.error("无法加载首页列表");
         var css = ".list-" + url;
         var section = selFirst(doc, css);
         var source = section || doc;

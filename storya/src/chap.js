@@ -8,7 +8,7 @@ function execute(url) {
     if (m) { story = m[1]; chap = m[2]; }
     else {
         var parts = url.replace(/^\/+/, "").split("/");
-        if (parts.length < 2) return Response.error("");
+        if (parts.length < 2) return Response.error("URL chương không hợp lệ");
         story = parts[parts.length - 2]; chap = parts[parts.length - 1];
     }
 
@@ -31,5 +31,5 @@ function execute(url) {
             }
         }
     } catch (e) {} finally { try { browser.close(); } catch (e2) {} }
-    return Response.error("");
+    return Response.error("Không tải được nội dung chương");
 }

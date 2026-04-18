@@ -127,7 +127,7 @@ function getMaxChapterPage(doc) {
 function execute(url) {
     var detailUrl = resolveUrl(url);
     var doc = fetchDoc(detailUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("Không tải được danh sách chương");
 
     var mangaId = getMangaId(doc);
     var apiChapters = collectApiChapters(detailUrl, mangaId);
@@ -156,6 +156,6 @@ function execute(url) {
         sorted.push(chapters[j]);
     }
 
-    if (sorted.length === 0) return Response.error("");
+    if (sorted.length === 0) return Response.error("Không tìm thấy chương nào");
     return Response.success(sorted);
 }

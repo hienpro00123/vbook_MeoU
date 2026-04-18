@@ -5,7 +5,7 @@ function execute(key, page) {
     var searchUrl = BASE_URL + "/search/?searchkey=" + encodeURIComponent(key);
     if (p > 1) searchUrl += "&page=" + p;
     var doc = fetchBrowserFast(searchUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("无法加载搜索结果");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
     var nextLink = selFirst(doc, "a:contains(下一页)");

@@ -5,7 +5,7 @@ var AUTHOR_RE = /\u4f5c\u8005[\uff1a:]\s*(.+)/;
 function execute(url) {
     var bookUrl = resolveUrl(url);
     var doc = fetchBrowser(bookUrl, 8000);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("无法加载书籍详情");
 
     // Title
     var nameEl = selFirst(doc, ".book h1, h1");

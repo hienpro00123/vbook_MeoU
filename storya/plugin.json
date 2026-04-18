@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Storya",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://storya.click",
     "regexp": "storya\\.click\\/truyen\\/[^\\/]+\\/?$",
     "description": "Storya - Đọc truyện chữ online miễn phí",

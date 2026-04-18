@@ -39,10 +39,10 @@ function execute(url) {
     // Fallback to detail page if full page failed
     if (chapters.length === 0) {
         var doc = fetchBrowser(bookUrl, 10000);
-        if (!doc) return Response.error("");
+        if (!doc) return Response.error("无法加载章节列表");
         chapters = extractChaps(doc, bookId);
     }
 
-    if (chapters.length === 0) return Response.error("");
+    if (chapters.length === 0) return Response.error("未找到章节");
     return Response.success(chapters);
 }

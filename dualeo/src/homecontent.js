@@ -5,7 +5,7 @@ function execute(url, page) {
     var fetchUrl = BASE_URL + "/" + url + "/";
     if (p > 1) fetchUrl = BASE_URL + "/" + url + "/page/" + p + "/";
     var doc = fetchDoc(fetchUrl);
-    if (!doc) return Response.error("");
+    if (!doc) return Response.error("Không tải được danh sách truyện");
     var items = parseList(doc);
     if (!items || items.length === 0) return Response.success([], null);
     var nextLink = selFirst(doc, ".uk-pagination a[rel='next'], a.next");

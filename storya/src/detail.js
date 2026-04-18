@@ -2,7 +2,7 @@ load("config.js");
 
 function execute(url) {
     var json = apiJson("/stories/" + extractSlug(url));
-    if (!json || !json.data) return Response.error("");
+    if (!json || !json.data) return Response.error("Không tải được thông tin truyện");
     var s = json.data;
     var genres = [];
     if (s.genres) {
