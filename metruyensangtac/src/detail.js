@@ -1,22 +1,25 @@
 load("config.js");
 
 function loadDoc(pageUrl) {
-    var doc = null;
+    var res = fetchRetry(pageUrl);
+    if (res && res.ok) {
+        var doc = res.html();
+        if (doc) return doc;
+    }
     var browser = Engine.newBrowser();
     try {
-        doc = browser.launch(pageUrl, 15000);
+        return browser.launch(pageUrl, 15000);
     } catch (e) {
-        doc = null;
+        return null;
+    } finally {
+        try { browser.close(); } catch (e2) {}
     }
-    try { browser.close(); } catch (e2) {}
-    return doc;
 }
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
     var slug = extractSlug(storyUrl);
 
-    // Detail page is CSR — need browser to render
     var doc = loadDoc(storyUrl);
 
     var name = "";

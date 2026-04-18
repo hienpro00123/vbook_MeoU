@@ -817,17 +817,17 @@ function executeCategory(input, page) {
     var catUrl = buildCategoryUrl(input, pageNum);
     var doc = null;
 
-    var browser = Engine.newBrowser();
-    try {
-        doc = browser.launch(catUrl, 12000);
-    } catch (e) {
-        doc = null;
-    }
-    try { browser.close(); } catch (e2) {}
+    var res = fetchRetry(catUrl);
+    if (res && res.ok) doc = res.html();
 
     if (!doc) {
-        var res = fetchRetry(catUrl);
-        if (res && res.ok) doc = res.html();
+        var browser = Engine.newBrowser();
+        try {
+            doc = browser.launch(catUrl, 12000);
+        } catch (e) {
+            doc = null;
+        }
+        try { browser.close(); } catch (e2) {}
     }
 
     if (!doc) {

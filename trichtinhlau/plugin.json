@@ -2,7 +2,7 @@
   "metadata": {
     "name": "TrichTinhLau",
     "author": "Meo",
-    "version": 3,
+    "version": 4,
     "source": "https://trichtinhlau.com",
     "regexp": "trichtinhlau\\.com\\/doc-truyen\\/[^\\/]+\\/[^\\/]+",
     "description": "Trích Tinh Lâu - Đọc truyện chữ online miễn phí",

@@ -4,15 +4,19 @@ function execute(input, page) {
     var storyUrl = resolveUrl(input);
     var currentSlug = extractSlug(storyUrl);
 
-    // Load detail page to get related stories
-    var browser = Engine.newBrowser();
     var doc = null;
-    try {
-        doc = browser.launch(storyUrl, 15000);
-    } catch (e) {
-        doc = null;
+    var res = fetchRetry(storyUrl);
+    if (res && res.ok) doc = res.html();
+
+    if (!doc) {
+        var browser = Engine.newBrowser();
+        try {
+            doc = browser.launch(storyUrl, 15000);
+        } catch (e) {
+            doc = null;
+        }
+        try { browser.close(); } catch (e2) {}
     }
-    try { browser.close(); } catch (e2) {}
 
     if (!doc) return Response.success([], null);
 

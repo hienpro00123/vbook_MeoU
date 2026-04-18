@@ -27,19 +27,19 @@ function execute(url) {
     var catalogUrl = storyUrl + "catalog/";
     var firstDoc = null;
 
-    var browser = Engine.newBrowser();
-    try {
-        firstDoc = browser.launch(catalogUrl, 12000);
-    } catch (e) {
-        firstDoc = null;
+    var firstRes = fetchRetry(catalogUrl);
+    if (firstRes && firstRes.ok) {
+        firstDoc = firstRes.html();
     }
-    try { browser.close(); } catch (e2) {}
 
     if (!firstDoc) {
-        var firstRes = fetchRetry(catalogUrl);
-        if (firstRes && firstRes.ok) {
-            firstDoc = firstRes.html();
+        var browser = Engine.newBrowser();
+        try {
+            firstDoc = browser.launch(catalogUrl, 12000);
+        } catch (e) {
+            firstDoc = null;
         }
+        try { browser.close(); } catch (e2) {}
     }
 
     if (!firstDoc) {
@@ -60,16 +60,16 @@ function execute(url) {
     for (var page = 2; page <= lastPage; page++) {
         var pageUrl = storyUrl + "catalog/" + page + ".html";
         var pageDoc = null;
-        var br = Engine.newBrowser();
-        try {
-            pageDoc = br.launch(pageUrl, 10000);
-        } catch (ep) {
-            pageDoc = null;
-        }
-        try { br.close(); } catch (ep2) {}
+        var res = fetchRetry(pageUrl);
+        if (res && res.ok) pageDoc = res.html();
         if (!pageDoc) {
-            var res = fetchRetry(pageUrl);
-            if (res && res.ok) pageDoc = res.html();
+            var br = Engine.newBrowser();
+            try {
+                pageDoc = br.launch(pageUrl, 10000);
+            } catch (ep) {
+                pageDoc = null;
+            }
+            try { br.close(); } catch (ep2) {}
         }
         if (!pageDoc) break;
         parsePage(pageDoc, chapters, seen);

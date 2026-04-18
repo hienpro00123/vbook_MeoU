@@ -2,7 +2,10 @@ load("config.js");
 
 function execute(url) {
     var chapUrl = resolveUrl(url);
-    var doc = fetchBrowser(chapUrl, 15000);
+    var doc = null;
+    var res = fetchRetry(chapUrl);
+    if (res && res.ok) doc = res.html();
+    if (!doc) doc = fetchBrowser(chapUrl, 15000);
     if (!doc) return Response.error("Không tải được nội dung chương");
 
     var el = selFirst(doc, ".entry-content.chapter-c");
