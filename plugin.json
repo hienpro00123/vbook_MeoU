@@ -158,7 +158,7 @@
       "version": 10,
       "source": "https://valvrareteam.net",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/valvrareteam/icon.png",
-      "description": "Light Novel Vietsub - Valvrareteam",
+      "description": "Valvrareteam - Đọc Light Novel Vietsub tiếng Việt",
       "type": "novel",
       "locale": "vi_VN"
     },
@@ -231,7 +231,7 @@
       "version": 1,
       "source": "https://sayhentai.vc",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/icon.png",
-      "description": "SayHentai - truyen hentai, manhwa 18+ tieng Viet",
+      "description": "SayHentai - Truyện hentai, manhwa 18+ tiếng Việt",
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
