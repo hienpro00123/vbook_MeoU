@@ -215,25 +215,12 @@
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.json",
-      "version": 9,
+      "version": 10,
       "source": "https://loppytoon.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/icon.png",
-      "description": "LoppyToon - T\u1ee7 truy\u1ec7n hay \u0111\u1ecdc l\u00e0 m\u00ea ngay 18+",
+      "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
       "tag": "NSFW",
-      "type": "comic",
-      "locale": "vi_VN"
-    },
-    {
-      "name": "LoppyToon Novel -18+",
-      "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon-novel/plugin.zip",
-      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon-novel/plugin.json",
-      "version": 4,
-      "source": "https://loppytoon.com",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon-novel/icon.png",
-      "description": "LoppyToon - Truyen chu (Novel) 18+",
-      "tag": "NSFW",
-      "type": "novel",
+      "type": "comic,novel",
       "locale": "vi_VN"
     },
     {

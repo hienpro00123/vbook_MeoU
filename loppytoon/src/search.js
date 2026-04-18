@@ -23,7 +23,6 @@ function execute(keyword, page) {
     for (var i = 0; i < json.length; i++) {
         var s = json[i];
         if (!s.slug || !s.title) continue;
-        if (isNovel(s)) continue;
         var cover = "";
         if (s.cover) {
             if (s.cover.indexOf("http") === 0) {
@@ -32,10 +31,13 @@ function execute(keyword, page) {
                 cover = BASE_URL + "/storage/" + s.cover;
             }
         }
+        var name = s.title;
+        var desc = isNovel(s) ? "[Novel]" : "";
         items.push({
-            name: adultName(s.title),
-            cover: isAdult(s.title) ? "" : cover,
+            name: adultName(name),
+            cover: isAdult(name) ? "" : cover,
             link: BASE_URL + "/truyen/" + s.slug,
+            description: desc,
             host: HOST
         });
     }
