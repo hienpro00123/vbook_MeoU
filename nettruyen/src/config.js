@@ -1,9 +1,9 @@
-var BASE_URL = "https://nettruyen.work";
-var HOST = "https://nettruyen.work";
+var BASE_URL = "https://nettruyenviet.monster";
+var HOST = "https://nettruyenviet.monster";
 
 var FETCH_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
-    "Referer": "https://nettruyen.work/"
+    "Referer": "https://nettruyenviet.monster/"
 };
 var FETCH_OPTIONS = { headers: FETCH_HEADERS };
 

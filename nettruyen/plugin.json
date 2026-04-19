@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "name": "nettruyen.work",
+    "name": "nettruyenviet.monster",
     "author": "Meo",
-    "version": 3,
-    "source": "https://nettruyen.work",
-    "regexp": "nettruyen\\.work\\/truyen-tranh\\/[^\\/]+\\/?$",
+    "version": 4,
+    "source": "https://nettruyenviet.monster",
+    "regexp": "nettruyenviet\\.monster\\/truyen-tranh\\/[^\\/]+\\/?$",
     "description": "Đọc truyện tranh từ NetTruyen",
     "locale": "vi_VN",
     "type": "comic"
