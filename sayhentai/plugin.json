@@ -2,9 +2,9 @@
   "metadata": {
     "name": "SayHentai -18+",
     "author": "Meo",
-    "version": 1,
-    "source": "https://sayhentai.vc",
-    "regexp": "sayhentai\\.vc\\/truyen-[^\\/]+(?:\\.html)?\\/?$",
+    "version": 2,
+    "source": "https://sayhentai.sh",
+    "regexp": "sayhentai\\.sh\\/truyen-[^\/]+(?:\\.html)?\\/?$",
     "description": "SayHentai - truyen hentai, manhwa 18+ tieng Viet",
     "locale": "vi_VN",
     "tag": "NSFW",
