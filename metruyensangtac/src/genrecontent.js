@@ -34,8 +34,13 @@ function execute(url, page) {
     if (p > 1) fetchUrl += "&page=" + p;
 
     var res = fetchRetry(fetchUrl);
-    if (!res || !res.ok) return Response.error("Không tải được thể loại");
-    var doc = res.html();
+    var doc = null;
+    if (res && res.ok) doc = res.html();
+    if (!doc) {
+        var browser = Engine.newBrowser();
+        try { doc = browser.launch(fetchUrl, 20000); } catch (e) { doc = null; }
+        try { browser.close(); } catch (e2) {}
+    }
     if (!doc) return Response.success([], null);
 
     var items = [];

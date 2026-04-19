@@ -2,7 +2,7 @@
   "metadata": {
     "name": "MeTruyenSangTac",
     "author": "Meo",
-    "version": 4,
+    "version": 5,
     "source": "https://metruyensangtac.com",
     "regexp": "metruyensangtac\\.com\\/truyen\\/[^\\/]+\\/?$",
     "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",

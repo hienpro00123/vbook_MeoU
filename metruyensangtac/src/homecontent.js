@@ -86,9 +86,14 @@ function execute(url, page) {
     }
 
     var res = fetchRetry(fetchUrl);
-    if (!res || !res.ok) return Response.error("Không tải được trang");
-    var doc = res.html();
-    if (!doc) return Response.success([], null);
+    var doc = null;
+    if (res && res.ok) doc = res.html();
+    if (!doc) {
+        var browser = Engine.newBrowser();
+        try { doc = browser.launch(fetchUrl, 20000); } catch (e) { doc = null; }
+        try { browser.close(); } catch (e2) {}
+    }
+    if (!doc) return Response.error("Không tải được trang");
 
     var items = parseStoryCards(doc);
     if (!items || items.length === 0) return Response.success([], null);
