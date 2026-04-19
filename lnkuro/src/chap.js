@@ -2,10 +2,8 @@ load("config.js");
 
 function execute(url) {
     var chapUrl = resolveUrl(url);
-    var res = fetchRetry(chapUrl);
-    if (!res || !res.ok) return Response.error("Không tải được chương");
-    var doc = res.html();
-    if (!doc) return Response.error("Không đọc được nội dung");
+    var doc = loadDoc(chapUrl);
+    if (!doc) return Response.error("Không tải được chương");
 
     var el = selFirst(doc, ".entry-content.single-page");
     if (!el) el = selFirst(doc, ".entry-content");

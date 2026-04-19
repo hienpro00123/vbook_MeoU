@@ -29,6 +29,13 @@ function fetchRetry(url) {
     return res;
 }
 
+function loadDoc(pageUrl) {
+    var res = fetchRetry(pageUrl);
+    if (res && res.ok) { var doc = res.html(); if (doc) return doc; }
+    var browser = Engine.newBrowser();
+    try { return browser.launch(pageUrl, 15000); } catch(e) { return null; } finally { try { browser.close(); } catch(e2) {} }
+}
+
 function extractCover(el) {
     var imgEl = selFirst(el, "img[data-src], img[data-lazy-src], img[src]");
     if (imgEl) {
@@ -45,9 +52,7 @@ var _cachedNonce = "";
 
 function getNonce() {
     if (_cachedNonce) return _cachedNonce;
-    var res = fetchRetry(BASE_URL + "/truyen-han-quoc/");
-    if (!res || !res.ok) return "";
-    var doc = res.html();
+    var doc = loadDoc(BASE_URL + "/truyen-han-quoc/");
     if (!doc) return "";
     var el = selFirst(doc, "input[name=kr_nonce]");
     _cachedNonce = el ? el.attr("value") : "";

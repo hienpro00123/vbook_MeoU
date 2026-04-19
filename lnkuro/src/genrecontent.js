@@ -4,10 +4,8 @@ function execute(url, page) {
     var p = parseInt(page) || 1;
     var fullUrl = BASE_URL + "/the-loai/" + url + "/" + (p > 1 ? "?krp=" + p : "");
 
-    var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
-
-    var doc = res.html();
+    var doc = loadDoc(fullUrl);
+    if (!doc) return Response.error("Fetch error: " + fullUrl);
     var items = parseCards(doc);
 
     if (items.length === 0) return Response.success([]);

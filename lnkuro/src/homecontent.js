@@ -14,10 +14,8 @@ function execute(input, page) {
         url = BASE_URL + "/truyen-han-quoc/" + (p > 1 ? "?krp=" + p : "");
     }
 
-    var res = fetchRetry(url);
-    if (!res || !res.ok) return Response.error("Fetch error: " + url);
-
-    var doc = res.html();
+    var doc = loadDoc(url);
+    if (!doc) return Response.error("Fetch error: " + url);
     var items = parseCards(doc);
 
     if (items.length === 0) return Response.success([]);

@@ -2,10 +2,8 @@ load("config.js");
 
 function execute(url) {
     var storyUrl = resolveUrl(url);
-    var res = fetchRetry(storyUrl);
-    if (!res || !res.ok) return Response.error("Không tải được trang truyện");
-    var doc = res.html();
-    if (!doc) return Response.error("Không đọc được trang truyện");
+    var doc = loadDoc(storyUrl);
+    if (!doc) return Response.error("Không tải được trang truyện");
 
     var chapters = [];
     var seen = {};

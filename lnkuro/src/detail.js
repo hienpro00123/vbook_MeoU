@@ -5,10 +5,8 @@ var GENRE_SLUG_RE = /\/the-loai\/([^\/]+)\/?/;
 function execute(url) {
     var fullUrl = resolveUrl(url);
 
-    var res = fetchRetry(fullUrl);
-    if (!res || !res.ok) return Response.error("Fetch error: " + fullUrl);
-
-    var doc = res.html();
+    var doc = loadDoc(fullUrl);
+    if (!doc) return Response.error("Fetch error: " + fullUrl);
 
     // Title
     var title = "";
