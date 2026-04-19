@@ -28,8 +28,8 @@ function execute(url) {
         }
     }
 
-    // Path 2: WebView render — JS đã decode vào #chapterContentDecoded
-    if (!doc) doc = fetchBrowser(chapUrl, 15000);
+    // Path 2: WebView render — luôn gọi để bypass Cloudflare challenge (fetchRetry có thể trả 200 challenge page)
+    doc = fetchBrowser(chapUrl, 20000);
     if (!doc) return Response.error("Không tải được nội dung chương");
 
     var contentEl = selFirst(doc, "#chapterContentDecoded");
