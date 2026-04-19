@@ -1,3 +1,9 @@
 {
-  "appIP": "http://192.168.1.40:8080"
+  "appIP": "http://192.168.1.40:8080",
+  "home.js": "",
+  "genre.js": "",
+  "detail.js": "https://trichtinhlau.com/xem-truyen/dong-mien",
+  "toc.js": "https://trichtinhlau.com/xem-truyen/dong-mien",
+  "chap.js": "https://trichtinhlau.com/doc-truyen/dong-mien/chuong-1",
+  "search.js": "trích tinh lâu"
 }
