@@ -1,7 +1,9 @@
 {
-  "detail": "https://loppytoon.com/truyen/chua-tung-cham-toi-em",
-  "home": "",
-  "genre": "",
-  "search": "hang",
+  "detail.js": "https://loppytoon.com/truyen/hang-kien",
+  "home.js": "",
+  "genre.js": "",
+  "toc.js": "https://loppytoon.com/truyen/hang-kien",
+  "chap.js": "https://loppytoon.com/truyen/hang-kien/chap-1",
+  "search.js": "hang",
   "appIP": "http://192.168.1.40:8080"
 }

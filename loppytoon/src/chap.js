@@ -13,12 +13,7 @@ function execute(url) {
     if (!doc) return Response.error("Khong doc duoc noi dung chuong");
 
     if (isNovelUrl(url)) {
-        var contentEl = selFirst(doc, ".chapter-content");
-        if (!contentEl) return Response.error("Khong tim thay noi dung chuong");
-        contentEl.select("script, style, noscript, iframe, .ads, .adsbygoogle").remove();
-        var html = contentEl.html();
-        if (!html || html.trim().length === 0) return Response.error("Chuong khong co noi dung");
-        return Response.success(html);
+        return Response.error("Truyen chu - Bam 'Xem trang nguon' de doc");
     }
 
     var imgs = doc.select(".chapter-content .manga-images-container img, .chapter-content img.manga-image");
