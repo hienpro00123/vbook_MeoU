@@ -2,7 +2,7 @@
   "metadata": {
     "name": "SayHentaiBaby -18+",
     "author": "Meo",
-    "version": 10,
+    "version": 11,
     "source": "https://sayhentai.baby",
     "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?$",
     "description": "SayHentai Baby - Doc truyen hentai -18+ online",
