@@ -222,6 +222,19 @@
       "locale": "vi_VN"
     },
     {
+      "name": "SayHentaiBaby -18+",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/plugin.json",
+      "version": 11,
+      "source": "https://sayhentai.baby",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentaibaby/icon.png",
+      "description": "SayHentaiBaby - Truyện hentai, manhwa 18+ tiếng Việt",
+      "tag": "NSFW",
+      "type": "comic",
+      "locale": "vi_VN"
+    },
+    {
       "name": "SayHentai -18+",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/sayhentai/plugin.zip",
