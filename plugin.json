@@ -259,6 +259,17 @@
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
+    },
+    {
+      "name": "Meo Translate",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/plugin.json",
+      "version": 1,
+      "source": "https://github.com/hienpro00123/vbook_MeoU",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/icon.png",
+      "description": "Dịch truyện chữ Trung bằng từ điển Vietphrase của Meo",
+      "type": "translate"
     }
   ]
 }
