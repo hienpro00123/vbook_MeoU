@@ -26,10 +26,27 @@ function execute(text, from, to, apiKey) {
 function normalizeLanguageId(languageId) {
     if (!languageId) return "";
     var normalized = String(languageId).toLowerCase();
-    if (normalized === "zh" || normalized === "zh-hans" || normalized === "zh-cn" || normalized === "zh_sg") {
+    if (
+        normalized === "zh" ||
+        normalized === "zh-hans" ||
+        normalized === "zh_hans" ||
+        normalized === "zh-cn" ||
+        normalized === "zh_cn" ||
+        normalized === "zh-sg" ||
+        normalized === "zh_sg"
+    ) {
         return "zh";
     }
-    if (normalized === "zh-hant" || normalized === "zh-tw" || normalized === "zh-hk" || normalized === "zh-mo") {
+    if (
+        normalized === "zh-hant" ||
+        normalized === "zh_hant" ||
+        normalized === "zh-tw" ||
+        normalized === "zh_tw" ||
+        normalized === "zh-hk" ||
+        normalized === "zh_hk" ||
+        normalized === "zh-mo" ||
+        normalized === "zh_mo"
+    ) {
         return "zh-Hant";
     }
     if (normalized === "vi" || normalized === "vi-vn" || normalized === "vi_vn") {
