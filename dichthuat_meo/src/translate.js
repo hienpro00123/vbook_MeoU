@@ -13,10 +13,29 @@ var UUHOADICH_DICT_INDEX = buildDictIndex(uuhoadichDict);
 var VIETPHRASE_DICT_INDEX = buildDictIndex(vietphraseDict);
 
 function execute(text, from, to, apiKey) {
-    if (from === "zh-Hant") return Response.error("zh-Hant is not supported yet");
+    var sourceLanguage = normalizeLanguageId(from);
+    var targetLanguage = normalizeLanguageId(to);
+    if (sourceLanguage === "zh-Hant") return Response.error("zh-Hant is not supported yet");
+    if (sourceLanguage !== "" && sourceLanguage !== "zh") return Response.error("Only Chinese source text is supported");
+    if (targetLanguage !== "" && targetLanguage !== "vi") return Response.error("Only Vietnamese output is supported");
     if (!text || text.length === 0) return Response.success("");
     var result = applyAll(text);
     return Response.success(result);
+}
+
+function normalizeLanguageId(languageId) {
+    if (!languageId) return "";
+    var normalized = String(languageId).toLowerCase();
+    if (normalized === "zh" || normalized === "zh-hans" || normalized === "zh-cn" || normalized === "zh_sg") {
+        return "zh";
+    }
+    if (normalized === "zh-hant" || normalized === "zh-tw" || normalized === "zh-hk" || normalized === "zh-mo") {
+        return "zh-Hant";
+    }
+    if (normalized === "vi" || normalized === "vi-vn" || normalized === "vi_vn") {
+        return "vi";
+    }
+    return normalized;
 }
 
 // ap dung ca 3 tu dien theo thu tu: ten rieng -> cum tu -> tu don
