@@ -27,6 +27,14 @@ function normalizeLanguageId(languageId) {
     if (!languageId) return "";
     var normalized = String(languageId).toLowerCase();
     if (
+        normalized === "auto" ||
+        normalized === "auto-detect" ||
+        normalized === "auto_detect" ||
+        normalized === "detect"
+    ) {
+        return "";
+    }
+    if (
         normalized === "zh" ||
         normalized === "zh-hans" ||
         normalized === "zh_hans" ||
