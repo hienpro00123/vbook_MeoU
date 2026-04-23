@@ -8,6 +8,9 @@ load("name_dict.js");
 load("uuhoadich_dict.js");
 load("vietphrase_dict.js");
 
+var EDGE_AUTH_CACHE_KEY = "meo_translate_edge_auth";
+var EDGE_AUTH_CACHE_TTL_MS = 5 * 60 * 1000;
+
 var NAME_DICT_INDEX = buildDictIndex(nameDict);
 var UUHOADICH_DICT_INDEX = buildDictIndex(uuhoadichDict);
 var VIETPHRASE_DICT_INDEX = buildDictIndex(vietphraseDict);
@@ -20,6 +23,12 @@ function execute(text, from, to, apiKey) {
     if (targetLanguage !== "" && targetLanguage !== "vi") return Response.error("Only Vietnamese output is supported");
     if (!text || text.length === 0) return Response.success("");
     var result = applyAll(text);
+    if (result === text && hasCjkChar(text)) {
+        var machineResult = translateWithEdge(text, sourceLanguage, targetLanguage, 0);
+        if (machineResult && machineResult.length > 0) {
+            result = machineResult;
+        }
+    }
     return Response.success(result);
 }
 
@@ -150,4 +159,136 @@ function isAsciiChar(ch) {
 // thay the toan bo (khong dung regex de tranh loi ky tu dac biet)
 function replaceAll(str, find, replace) {
     return str.split(find).join(replace);
+}
+
+function translateWithEdge(text, from, to, retryCount) {
+    if (retryCount > 1) {
+        return "";
+    }
+    var token = getEdgeAuthToken();
+    if (!token) {
+        return "";
+    }
+    var queries = {
+        "to": to === "vi" ? "vi" : to,
+        "api-version": "3.0"
+    };
+    if (from === "zh") {
+        queries["from"] = "zh-Hans";
+    }
+    var response = fetch("https://api-edge.cognitive.microsofttranslator.com/translate", {
+        method: "POST",
+        queries: queries,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: buildEdgeRequestBody(text)
+    });
+    if (!response || !response.ok) {
+        clearEdgeAuthToken();
+        return translateWithEdge(text, from, to, retryCount + 1);
+    }
+    var translated = parseEdgeResponse(response.text());
+    if (translated && translated.length > 0) {
+        return translated;
+    }
+    clearEdgeAuthToken();
+    return translateWithEdge(text, from, to, retryCount + 1);
+}
+
+function buildEdgeRequestBody(text) {
+    var lines = String(text).split("\n");
+    var payload = [];
+    for (var i = 0; i < lines.length; i++) {
+        payload.push({ "Text": lines[i] });
+    }
+    return JSON.stringify(payload);
+}
+
+function parseEdgeResponse(rawText) {
+    if (!rawText || rawText.length === 0) {
+        return "";
+    }
+    var parsed;
+    try {
+        parsed = JSON.parse(rawText);
+    } catch (error) {
+        return "";
+    }
+    var lines = [];
+    for (var i = 0; i < parsed.length; i++) {
+        var item = parsed[i];
+        if (item && item.translations && item.translations.length > 0) {
+            lines.push(item.translations[0].text);
+        }
+    }
+    return lines.join("\n");
+}
+
+function getEdgeAuthToken() {
+    var cached = readEdgeAuthToken();
+    if (cached) {
+        return cached;
+    }
+    var response = fetch("https://edge.microsoft.com/translate/auth", {
+        headers: {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
+        }
+    });
+    if (!response || !response.ok) {
+        return "";
+    }
+    var token = response.text();
+    if (!token || token.length === 0) {
+        return "";
+    }
+    saveEdgeAuthToken(token);
+    return token;
+}
+
+function readEdgeAuthToken() {
+    try {
+        if (!localStorage) {
+            return "";
+        }
+        var raw = localStorage.getItem(EDGE_AUTH_CACHE_KEY);
+        if (!raw) {
+            return "";
+        }
+        var parsed = JSON.parse(raw);
+        if (!parsed || !parsed.token || !parsed.expiresAt) {
+            return "";
+        }
+        if (parsed.expiresAt <= new Date().getTime()) {
+            localStorage.removeItem(EDGE_AUTH_CACHE_KEY);
+            return "";
+        }
+        return parsed.token;
+    } catch (error) {
+        return "";
+    }
+}
+
+function saveEdgeAuthToken(token) {
+    try {
+        if (!localStorage) {
+            return;
+        }
+        localStorage.setItem(EDGE_AUTH_CACHE_KEY, JSON.stringify({
+            token: token,
+            expiresAt: new Date().getTime() + EDGE_AUTH_CACHE_TTL_MS
+        }));
+    } catch (error) {
+    }
+}
+
+function clearEdgeAuthToken() {
+    try {
+        if (!localStorage) {
+            return;
+        }
+        localStorage.removeItem(EDGE_AUTH_CACHE_KEY);
+    } catch (error) {
+    }
 }
