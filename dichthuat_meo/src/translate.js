@@ -23,7 +23,7 @@ function execute(text, from, to, apiKey) {
     if (targetLanguage !== "" && targetLanguage !== "vi") return Response.error("Only Vietnamese output is supported");
     if (!text || text.length === 0) return Response.success("");
     var result = applyAll(text);
-    if (result === text && hasCjkChar(text)) {
+    if (hasCjkChar(text) && hasCjkChar(result)) {
         var machineResult = translateWithEdge(text, sourceLanguage, targetLanguage, 0);
         if (machineResult && machineResult.length > 0) {
             result = machineResult;

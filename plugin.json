@@ -263,9 +263,9 @@
     {
       "name": "Meo Translate",
       "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/plugin.zip",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/plugin.zip?v=9",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/plugin.json",
-      "version": 8,
+      "version": 9,
       "source": "https://github.com/hienpro00123/vbook_MeoU",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/icon.png",
       "description": "Dịch truyện chữ Trung bằng từ điển Vietphrase của Meo",
