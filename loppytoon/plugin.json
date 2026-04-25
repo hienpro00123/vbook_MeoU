@@ -2,13 +2,13 @@
   "metadata": {
     "name": "LoppyToon -18+",
     "author": "Meo",
-    "version": 17,
+    "version": 18,
     "source": "https://loppytoon.com",
     "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
     "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
     "locale": "vi_VN",
     "tag": "NSFW",
-    "type": "comic,novel"
+    "type": "novel,comic"
   },
   "script": {
     "home": "home.js",
