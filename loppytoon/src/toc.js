@@ -24,24 +24,50 @@ function parseAjaxChapters(html, seen, result) {
 }
 
 function execute(url) {
-    var slug = extractSlug(url);
-    if (!slug) return Response.error("Khong xac dinh duoc truyen");
+    var storyUrl = resolveUrl(url);
+    var res = fetchRetry(storyUrl);
+    if (!res || !res.ok) return Response.error("Khong tai duoc danh sach chuong");
+    var doc = res.html();
+    if (!doc) return Response.error("Khong doc duoc trang truyen");
 
     var chapters = [];
     var seen = {};
 
-    for (var offset = 0; offset < 20000; offset += 1000) {
-        var apiUrl = BASE_URL + "/load-more-chapters?slug=" + slug
-            + "&offset=" + offset + "&limit=1000&sortByPosition=desc";
-        var res = fetch(apiUrl, FETCH_OPTIONS);
-        if (!res || !res.ok) break;
-        var data;
-        try { data = res.json(); } catch (e) { break; }
-        if (!data || !data.html) break;
-        var before = chapters.length;
-        parseAjaxChapters(data.html, seen, chapters);
-        if (chapters.length === before) break;
-        if (!data.has_more) break;
+    var links = doc.select("a.chapter-item");
+    for (var i = 0; i < links.size(); i++) {
+        var a = links.get(i);
+        var href = a.attr("href") || "";
+        if (!href) continue;
+        if (href.indexOf("http") !== 0) href = BASE_URL + href;
+        if (seen[href]) continue;
+        seen[href] = true;
+
+        var nameEl = selFirst(a, "h3");
+        var name = nameEl ? nameEl.text().replace(/\s+/g, " ").trim() : "";
+        if (!name) continue;
+        chapters.push({ name: adultName(name), url: href, host: HOST });
+    }
+
+    var renderEl = selFirst(doc, "#chapter-list-render");
+    var slug = renderEl ? renderEl.attr("data-slug") : extractSlug(url);
+    if (!slug && chapters.length > 0) {
+        slug = extractSlug(chapters[0].url);
+    }
+
+    if (slug) {
+        for (var offset = chapters.length > 0 ? chapters.length : 20; offset < 2000; offset += 20) {
+            var apiUrl = BASE_URL + "/load-more-chapters?slug=" + slug
+                + "&offset=" + offset + "&sortByPosition=desc";
+            var ajaxRes = fetch(apiUrl, FETCH_OPTIONS);
+            if (!ajaxRes || !ajaxRes.ok) break;
+            var data;
+            try { data = ajaxRes.json(); } catch (e) { break; }
+            if (!data || !data.html) break;
+            var before = chapters.length;
+            parseAjaxChapters(data.html, seen, chapters);
+            if (chapters.length === before) break;
+            if (!data.has_more) break;
+        }
     }
 
     if (chapters.length === 0) return Response.error("Khong tim thay danh sach chuong");

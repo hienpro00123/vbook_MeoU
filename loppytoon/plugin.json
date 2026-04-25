@@ -8,7 +8,7 @@
     "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
     "locale": "vi_VN",
     "tag": "NSFW",
-    "type": "comic,novel"
+    "type": "novel,comic"
   },
   "script": {
     "home": "home.js",
