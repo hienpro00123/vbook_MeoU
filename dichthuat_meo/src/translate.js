@@ -18,8 +18,7 @@ var VIETPHRASE_DICT_INDEX = buildDictIndex(vietphraseDict);
 function execute(text, from, to, apiKey) {
     var sourceLanguage = normalizeLanguageId(from);
     var targetLanguage = normalizeLanguageId(to);
-    if (sourceLanguage === "zh-Hant") return Response.error("zh-Hant is not supported yet");
-    if (sourceLanguage !== "" && sourceLanguage !== "zh") return Response.error("Only Chinese source text is supported");
+    if (sourceLanguage !== "" && sourceLanguage !== "zh" && sourceLanguage !== "zh-Hant") return Response.error("Only Chinese source text is supported");
     if (targetLanguage !== "" && targetLanguage !== "vi") return Response.error("Only Vietnamese output is supported");
     if (!text || text.length === 0) return Response.success("");
     var result = applyAll(text);
@@ -175,6 +174,8 @@ function translateWithEdge(text, from, to, retryCount) {
     };
     if (from === "zh") {
         queries["from"] = "zh-Hans";
+    } else if (from === "zh-Hant") {
+        queries["from"] = "zh-Hant";
     }
     var response = fetch("https://api-edge.cognitive.microsofttranslator.com/translate", {
         method: "POST",
