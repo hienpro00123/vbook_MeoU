@@ -93,4 +93,4 @@ Danh sách extension hiện có trong repository:
 | SayHentaiBaby 🔞 | [sayhentai.baby](https://sayhentai.baby) | v13 | Comic | vi_VN |
 | SayHentai 🔞 | [sayhentai.sh](https://sayhentai.sh) | v2 | Comic | vi_VN |
 | HentaiCube 🔞 | [hentaicube.xyz](https://hentaicube.xyz) | v1 | Comic | vi_VN |
-| Meo Translate | [vbook_MeoU](https://github.com/hienpro00123/vbook_MeoU) | v8 | Translate | - |
+| Meo Translate | [vbook_MeoU](https://github.com/hienpro00123/vbook_MeoU) | v9 | Translate | - |
