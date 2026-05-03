@@ -270,6 +270,19 @@
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/icon.png",
       "description": "Dịch truyện chữ Trung bằng từ điển Vietphrase của Meo",
       "type": "translate"
+    },
+    {
+      "name": "Foxaholic 18",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/foxaholic/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/foxaholic/plugin.json",
+      "version": 1,
+      "source": "https://18.foxaholic.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/foxaholic/icon.png",
+      "description": "Foxaholic 18 - Đọc web novel 18+ tiếng Anh",
+      "type": "novel",
+      "locale": "en_US",
+      "tag": "NSFW"
     }
   ]
 }
