@@ -28,7 +28,10 @@ function execute(url) {
     var prefix = baseUrl + "/" + quality + "/" + hash + "/";
     var images = [];
     for (var i = 0; i < pages.length; i++) {
-      images.push({ link: prefix + pages[i] });
+        var pageUrl = prefix + pages[i];
+        // SÆ° phá»¥ mangadex nÃ³ Ä‘Ã£ Ä‘á»•i domain load image háº§u háº¿t qua uploads -> proxy lÃ  xong
+        // Proxy áº£nh qua f-ck.me theo thá»§ thuáº­t proxy truyendex.cc hoÆ¡c trÆ°á»›c Ä‘Ã³ proxyImage module config.js
+        images.push({ link: proxyImage(pageUrl) });
     }
     return Response.success(images);
   }
