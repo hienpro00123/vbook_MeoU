@@ -3,7 +3,8 @@ load("config.js");
 function execute(keyword, page) {
     var p = page ? parseInt(page) : 1;
     var data = searchAjax(keyword, p);
-    if (!data || !data.success) return Response.success([], null);
+    if (!data) return Response.error(getLoadError("Không tải được tìm kiếm"));
+    if (!data.success) return Response.success([], null);
 
     var items = [];
     var arr = data.items || [];

@@ -3,7 +3,7 @@ load("config.js");
 function execute(url) {
     var storyUrl = resolveUrl(url);
     var doc = loadDoc(storyUrl);
-    if (!doc) return Response.error("Không tải được trang truyện");
+    if (!doc) return Response.error(getLoadError("Không tải được trang truyện"));
 
     var chapters = [];
     var seen = {};

@@ -5,7 +5,7 @@ function execute(url, page) {
     var fullUrl = BASE_URL + "/the-loai/" + url + "/" + (p > 1 ? "?krp=" + p : "");
 
     var doc = loadDoc(fullUrl);
-    if (!doc) return Response.error("Fetch error: " + fullUrl);
+    if (!doc) return Response.error(getLoadError("Không tải được thể loại: " + fullUrl));
     var items = parseCards(doc);
 
     if (items.length === 0) return Response.success([]);

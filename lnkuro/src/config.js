@@ -1,8 +1,10 @@
 var BASE_URL = "https://lnkuro.top";
 var HOST = "https://lnkuro.top";
+var BROWSER_TIMEOUT = 8000;
+var LAST_LOAD_ERROR = "";
 
 var FETCH_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.5",
     "Referer": BASE_URL + "/"
@@ -20,6 +22,30 @@ function resolveUrl(url) {
     return BASE_URL + (url.charAt(0) === "/" ? url : "/" + url);
 }
 
+function setLoadError(message) {
+    LAST_LOAD_ERROR = message || "";
+    return null;
+}
+
+function getLoadError(defaultMessage) {
+    return LAST_LOAD_ERROR || defaultMessage || "Không tải được dữ liệu";
+}
+
+function isCloudflareBlockedDoc(doc) {
+    if (!doc) return false;
+
+    var titleEl = selFirst(doc, "title");
+    var title = titleEl ? titleEl.text().toLowerCase() : "";
+    if (title.indexOf("attention required") !== -1) return true;
+
+    var bodyText = "";
+    try { bodyText = (doc.text() || "").toLowerCase(); } catch (e) { bodyText = ""; }
+
+    return bodyText.indexOf("sorry, you have been blocked") !== -1
+        || bodyText.indexOf("you are unable to access") !== -1
+        || bodyText.indexOf("cloudflare ray id") !== -1;
+}
+
 function fetchRetry(url) {
     var res = fetch(url, FETCH_OPTIONS);
     if (!res) return res;
@@ -30,10 +56,36 @@ function fetchRetry(url) {
 }
 
 function loadDoc(pageUrl) {
+    LAST_LOAD_ERROR = "";
+    var blockedMessage = "";
+
     var res = fetchRetry(pageUrl);
-    if (res && res.ok) { var doc = res.html(); if (doc) return doc; }
+    if (res && res.ok) {
+        var doc = res.html();
+        if (doc && !isCloudflareBlockedDoc(doc)) return doc;
+        if (doc && isCloudflareBlockedDoc(doc)) {
+            blockedMessage = "Site chặn truy cập bởi Cloudflare: " + pageUrl;
+        }
+    }
+
+    if (res && (res.status === 403 || res.status === 429)) {
+        blockedMessage = "Site chặn truy cập (HTTP " + res.status + "): " + pageUrl;
+    }
+
     var browser = Engine.newBrowser();
-    try { return browser.launch(pageUrl, 15000); } catch(e) { return null; } finally { try { browser.close(); } catch(e2) {} }
+    try {
+        var browserDoc = browser.launch(pageUrl, BROWSER_TIMEOUT);
+        if (browserDoc && !isCloudflareBlockedDoc(browserDoc)) return browserDoc;
+        if (browserDoc && isCloudflareBlockedDoc(browserDoc)) {
+            blockedMessage = "Site chặn truy cập bởi Cloudflare: " + pageUrl;
+        }
+    } catch (e) {
+        if (!blockedMessage) blockedMessage = "Không tải được trang: " + pageUrl;
+    } finally {
+        try { browser.close(); } catch (e2) {}
+    }
+
+    return setLoadError(blockedMessage || "Không tải được trang: " + pageUrl);
 }
 
 function extractCover(el) {
@@ -60,6 +112,7 @@ function getNonce() {
 }
 
 function searchAjax(keyword, page) {
+    LAST_LOAD_ERROR = "";
     var nonce = getNonce();
     if (!nonce) return null;
     var q = java.net.URLEncoder.encode(keyword, "UTF-8");
@@ -89,9 +142,15 @@ function searchAjax(keyword, page) {
             },
             body: body
         });
-        if (!res || !res.ok) return null;
+        if (!res || !res.ok) {
+            setLoadError("Không tải được tìm kiếm: " + BASE_URL + "/wp-admin/admin-ajax.php");
+            return null;
+        }
     }
-    try { return res.json(); } catch(e) { return null; }
+    try { return res.json(); } catch(e) {
+        setLoadError("Dữ liệu tìm kiếm không hợp lệ");
+        return null;
+    }
 }
 
 function parseCards(doc) {

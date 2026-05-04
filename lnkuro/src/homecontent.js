@@ -15,7 +15,7 @@ function execute(input, page) {
     }
 
     var doc = loadDoc(url);
-    if (!doc) return Response.error("Fetch error: " + url);
+    if (!doc) return Response.error(getLoadError("Không tải được danh sách truyện: " + url));
     var items = parseCards(doc);
 
     if (items.length === 0) return Response.success([]);

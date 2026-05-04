@@ -6,7 +6,7 @@ function execute(url) {
     var fullUrl = resolveUrl(url);
 
     var doc = loadDoc(fullUrl);
-    if (!doc) return Response.error("Fetch error: " + fullUrl);
+    if (!doc) return Response.error(getLoadError("Không tải được trang truyện: " + fullUrl));
 
     // Title
     var title = "";

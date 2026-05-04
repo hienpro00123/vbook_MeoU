@@ -4,7 +4,9 @@
     "author": "Meo",
     "version": 10,
     "source": "https://github.com/hienpro00123/vbook_MeoU",
+    "regexp": "github\\.com\\/hienpro00123\\/vbook_MeoU.*",
     "description": "Dịch truyện chữ Trung bằng từ điển Vietphrase của Meo",
+    "locale": "vi_VN",
     "type": "translate"
   },
   "script": {

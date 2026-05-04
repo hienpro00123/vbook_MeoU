@@ -204,6 +204,7 @@
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/plugin.json",
       "version": 5,
+      "source": "https://metruyensangtac.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/metruyensangtac/icon.png",
       "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
       "type": "novel",
@@ -215,6 +216,7 @@
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.zip",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/plugin.json",
       "version": 18,
+      "source": "https://loppytoon.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/loppytoon/icon.png",
       "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
       "tag": "NSFW",
@@ -269,7 +271,8 @@
       "source": "https://github.com/hienpro00123/vbook_MeoU",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dichthuat_meo/icon.png",
       "description": "Dịch truyện chữ Trung bằng từ điển Vietphrase của Meo",
-      "type": "translate"
+      "type": "translate",
+      "locale": "vi_VN"
     },
     {
       "name": "Foxaholic 18",
