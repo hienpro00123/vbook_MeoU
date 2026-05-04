@@ -189,9 +189,9 @@
     {
       "name": "LN Kuro",
       "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.zip",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.zip?v=16",
       "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/plugin.json",
-      "version": 15,
+      "version": 16,
       "source": "https://lnkuro.top",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/lnkuro/icon.png",
       "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",

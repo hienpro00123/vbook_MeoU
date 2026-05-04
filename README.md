@@ -87,7 +87,7 @@ Danh sách extension hiện có trong repository:
 | Valvrareteam | [valvrareteam.net](https://valvrareteam.net) | v10 | Novel | vi_VN |
 | NovelCooksTW | [novel.cooks.tw](https://novel.cooks.tw) | v9 | Chinese Novel | zh_TW |
 | TrichTinhLau | [trichtinhlau.com](https://trichtinhlau.com) | v3 | Novel | vi_VN |
-| LN Kuro | [lnkuro.top](https://lnkuro.top) | v14 | Novel | vi_VN |
+| LN Kuro | [lnkuro.top](https://lnkuro.top) | v16 | Novel | vi_VN |
 | MeTruyenSangTac | [metruyensangtac.com](https://metruyensangtac.com) | v3 | Novel | vi_VN |
 | LoppyToon 🔞 | [loppytoon.com](https://loppytoon.com) | v3 | Comic | vi_VN |
 | WanwanSekai 🔞 | [wanwansekai.com](https://wanwansekai.com) | v9 | Novel | vi_VN |
