@@ -2,14 +2,30 @@ load("config.js");
 
 function execute(url) {
     var detailUrl = url.indexOf("http") === 0 ? url : resolveUrl(url);
+    var doc = null;
     var res = fetchRetry(detailUrl);
-    if (!res || !res.ok) return Response.error("Khong tai duoc trang truyen");
-    var doc = res.html();
+    if (res && res.ok) {
+        doc = res.html();
+    }
+    if (!doc) {
+        var browser = Engine.newBrowser();
+        try {
+            doc = browser.launch(detailUrl, 12000);
+        } catch (e) {
+            doc = null;
+        }
+        try { browser.close(); } catch (e2) {}
+    }
     if (!doc) return Response.error("Khong doc duoc noi dung");
 
     // Title
-    var titleEl = selFirst(doc, "h1.entry-title");
-    var name = titleEl ? titleEl.text().trim() : "";
+    var titleEl = selFirst(doc, "h1.entry-title, h1, .entry-title, .post-title h1");
+    var name = "";
+    if (titleEl) name = titleEl.text().trim();
+    if (!name) {
+        var titleMeta = selFirst(doc, "meta[property='og:title']");
+        name = titleMeta ? (titleMeta.attr("content") || "").trim() : "";
+    }
 
     // Cover
     var coverMeta = selFirst(doc, "meta[property='og:image']");
@@ -19,6 +35,15 @@ function execute(url) {
         cover = coverImg ? (coverImg.attr("data-src") || "") : "";
         if (cover && cover.indexOf("http") !== 0) cover = resolveUrl(cover);
     }
+
+    // Author
+    var authorEl = selFirst(doc, "a[rel='author'], .author-content, .author a, .thong-tin a[href*='author']");
+    var author = authorEl ? authorEl.text().trim() : "";
+    if (!author) {
+        var authorMeta = selFirst(doc, "meta[property='article:author'], meta[name='author']");
+        author = authorMeta ? (authorMeta.attr("content") || "").trim() : "";
+    }
+    if (!author) author = "SayHentaiBaby";
 
     // Genres - a[rel='category tag'] trong div.thong-tin
     var genreEls = doc.select("div.thong-tin a[rel='category tag']");
@@ -60,9 +85,12 @@ function execute(url) {
         name: name,
         cover: cover,
         host: HOST,
+        author: author,
         description: description,
         detail: status,
         ongoing: status.indexOf("ho\u00e0n") < 0,
-        genres: genres
+        genres: genres,
+        suggests: [],
+        comments: []
     });
 }

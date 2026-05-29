@@ -1,10 +1,10 @@
-﻿{
+{
   "metadata": {
     "name": "SayHentaiBaby -18+",
     "author": "Meo",
     "version": 13,
     "source": "https://sayhentai.baby",
-    "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?$",
+    "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?\\/?(?:\\?.*)?$",
     "description": "SayHentai Baby - Doc truyen hentai -18+ online",
     "locale": "vi_VN",
     "tag": "nsfw",
