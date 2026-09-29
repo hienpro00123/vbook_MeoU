@@ -3,9 +3,9 @@
 
 # vBook Extensions Repository
 
-Kho extension đọc truyện cho VBook, cài đặt nhanh và cập nhật trực tiếp qua GitHub Repository.
+Kho extension cho VBook, đọc truyện và xem anime, cài đặt nhanh và cập nhật trực tiếp qua GitHub Repository.
 
-![Extensions](https://img.shields.io/badge/extensions-18-blue)
+![Extensions](https://img.shields.io/badge/extensions-24-blue)
 ![Platform](https://img.shields.io/badge/platform-VBook-green)
 ![Update](https://img.shields.io/badge/update-GitHub%20Repository-orange)
 
@@ -15,8 +15,8 @@ Kho extension đọc truyện cho VBook, cài đặt nhanh và cập nhật tr�
 </p>
 ## Điểm nổi bật
 
-- 18 extension trong một repository duy nhất
-- 4 comic, 10 novel, 4 chinese novel
+- 24 extension trong một repository duy nhất
+- 7 comic, 12 novel, 4 chinese novel, 1 translate và 1 video
 - Cài mới và cập nhật trực tiếp trong app VBook
 
 ## Bắt đầu trong 30 giây
@@ -76,6 +76,7 @@ Danh sách extension hiện có trong repository:
 |-----|-------|-----------|------|----------|
 | dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v4 | Novel | vi_VN |
 | Biquge | [biquge.tw](https://www.biquge.tw) | v8 | Chinese Novel | zh_CN |
+| BiliBili TV Anime | [bilibili.tv](https://www.bilibili.tv/vi/anime) | v1 | Video | vi_VN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v28 | Comic | vi_VN |
