@@ -13,6 +13,47 @@ function resourceUrl(resource) {
   return "";
 }
 
+function subtitleTimestamp(seconds) {
+  var milliseconds = Math.round(parseFloat(seconds) * 1000);
+  var hours = Math.floor(milliseconds / 3600000);
+  var minutes = Math.floor((milliseconds % 3600000) / 60000);
+  var remainder = milliseconds % 60000;
+  var wholeSeconds = Math.floor(remainder / 1000);
+  var fraction = remainder % 1000;
+  return padTime(hours) + ":" + padTime(minutes) + ":" + padTime(wholeSeconds) + "." + padMilliseconds(fraction);
+}
+
+function padTime(value) {
+  return value < 10 ? "0" + value : String(value);
+}
+
+function padMilliseconds(value) {
+  if (value < 10) return "00" + value;
+  if (value < 100) return "0" + value;
+  return String(value);
+}
+
+function subtitleDataUri(subtitleUrl) {
+  var response = fetch(subtitleUrl, FETCH_OPTIONS);
+  if (!response || !response.ok) return "";
+  var payload = response.json();
+  var cues = payload && payload.body ? payload.body : [];
+  if (!cues.length) return "";
+
+  var vtt = "WEBVTT\n\n";
+  for (var i = 0; i < cues.length; i++) {
+    var cue = cues[i];
+    if (cue.from === undefined || cue.to === undefined || !cue.content) continue;
+    vtt += subtitleTimestamp(cue.from) + " --> " + subtitleTimestamp(cue.to) + "\n";
+    vtt += String(cue.content).replace(/\r?\n/g, "\n") + "\n\n";
+  }
+  if (vtt === "WEBVTT\n\n") return "";
+
+  var bytes = new java.lang.String(vtt).getBytes("UTF-8");
+  var encoded = String(java.util.Base64.getEncoder().encodeToString(bytes));
+  return "data:text/vtt;base64," + encoded;
+}
+
 function subtitleTracks(episodeId) {
   var subtitles = [];
   var api = API_URL + "/v2/subtitle?s_locale=vi_VN&platform=web&episode_id=" + episodeId + "&spm_id=bstar-web.pgc-video-detail.0.0&from_spm_id=";
@@ -22,31 +63,26 @@ function subtitleTracks(episodeId) {
   try {
     var payload = response.json();
     var tracks = payload && payload.data ? payload.data.video_subtitle : [];
-    var vietnamese = null;
+    var orderedTracks = [];
     for (var i = 0; i < tracks.length; i++) {
-      if (tracks[i].lang_key === "vi" && tracks[i].ass && tracks[i].ass.url) {
-        vietnamese = tracks[i];
-        break;
-      }
+      if (tracks[i].lang_key === "vi") orderedTracks.push(tracks[i]);
     }
-    if (vietnamese) {
-      subtitles.push({
-        data: vietnamese.ass.url,
-        type: "ass",
-        label: vietnamese.lang,
-        language: vietnamese.lang_key
-      });
-    }
-
     for (var j = 0; j < tracks.length; j++) {
-      var track = tracks[j];
-      if (track.lang_key === "vi" || !track.ass || !track.ass.url) continue;
-      subtitles.push({
-        data: track.ass.url,
-        type: "ass",
-        label: track.lang,
-        language: track.lang_key
-      });
+      if (tracks[j].lang_key !== "vi") orderedTracks.push(tracks[j]);
+    }
+    for (var k = 0; k < orderedTracks.length; k++) {
+      var track = orderedTracks[k];
+      if (!track.srt || !track.srt.url) continue;
+      try {
+        var subtitleData = subtitleDataUri(track.srt.url);
+        if (!subtitleData) continue;
+        subtitles.push({
+          data: subtitleData,
+          type: "vtt",
+          label: track.lang,
+          language: track.lang_key
+        });
+      } catch (subtitleError) {}
     }
   } catch (e) {}
   return subtitles;
