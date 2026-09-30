@@ -5,40 +5,94 @@ function episodeNumber(name) {
   return match ? parseInt(match[1], 10) : 0;
 }
 
-function addVisibleEpisodes(html, seasonId, episodesByNumber) {
-  var pattern = /<a\b[^>]*class="[^"]*\bep-item\b[^"]*"[^>]*>[\s\S]*?<\/a>/g;
-  var match;
-  var maxNumber = 0;
-  while ((match = pattern.exec(html)) !== null) {
-    var hrefMatch = /href="([^"]+)"/.exec(match[0]);
-    var text = match[0].replace(/<[^>]+>/g, " ");
-    var number = episodeNumber(text);
-    if (!hrefMatch || !number || episodesByNumber[number]) continue;
-    episodesByNumber[number] = {
-      name: "Tập " + number,
-      url: absoluteUrl(hrefMatch[1]),
-      host: BASE_URL
-    };
-    if (number > maxNumber) maxNumber = number;
-  }
-  return maxNumber;
+function getEpisodeName(record, number, shortTitle) {
+  var display = /(?:^|,)title_display\s*:\s*"([^"]*)"/.exec(record);
+  if (display && display[1]) return display[1];
+
+  var longTitle = /long_title_display\s*:\s*"([^"]*)"/.exec(record);
+  var title = longTitle ? longTitle[1].trim() : "";
+  var label = /retake/i.test(shortTitle) ? shortTitle.trim() : "Tập " + number;
+  return title ? label + " - " + title : label;
 }
 
-function addEmbeddedEpisodes(html, seasonId, episodesByNumber) {
-  if (!html || !seasonId) return;
-  var pattern = /episode_id\s*:\s*"(\d+)"[\s\S]{0,300}?short_title_display\s*:\s*"([^"]*)"/g;
-  var match;
-  var maxNumber = 0;
-  while ((match = pattern.exec(html)) !== null) {
-    if (/retake/i.test(match[2])) continue;
-    var numberMatch = /(\d+)/.exec(match[2]);
-    var number = numberMatch ? parseInt(numberMatch[1], 10) : 0;
-    if (!number || episodesByNumber[number]) continue;
-    var episodeUrl = BASE_URL + "/vi/play/" + seasonId + "/" + match[1];
-    episodesByNumber[number] = { name: "Tập " + number, url: episodeUrl, host: BASE_URL };
-    if (number > maxNumber) maxNumber = number;
+function makeSection(title) {
+  return { title: title, episodes: [], episodeIds: {} };
+}
+
+function findSection(sections, title) {
+  for (var i = 0; i < sections.length; i++) {
+    if (sections[i].title === title) return sections[i];
   }
-  return maxNumber;
+  return null;
+}
+
+function getSectionForVisibleEpisode(sections, number, isRetake) {
+  for (var i = 0; i < sections.length; i++) {
+    var section = sections[i];
+    if (/retake/i.test(section.title) !== isRetake) continue;
+    var values = section.title.match(/\d+/g);
+    if (!values || values.length < 2) continue;
+    if (number >= parseInt(values[0], 10) && number <= parseInt(values[1], 10)) return section;
+  }
+  return sections.length > 0 ? sections[0] : null;
+}
+
+function addEmbeddedSections(html, seasonId, sections) {
+  var groups = html.split("ep_list_title:");
+  for (var i = 1; i < groups.length; i++) {
+    var titleMatch = /^\s*"([^"]+)"/.exec(groups[i]);
+    if (!titleMatch) continue;
+    var title = titleMatch[1];
+    var section = findSection(sections, title);
+    if (!section) {
+      section = makeSection(title);
+      sections.push(section);
+    }
+
+    var records = groups[i].split("episode_id:");
+    for (var j = 1; j < records.length; j++) {
+      var record = records[j];
+      var idMatch = /^\s*"(\d+)"/.exec(record);
+      if (!idMatch || section.episodeIds[idMatch[1]]) continue;
+      var shortTitleMatch = /short_title_display\s*:\s*"([^"]*)"/.exec(record);
+      if (!shortTitleMatch) continue;
+      var shortTitle = shortTitleMatch[1];
+      var number = episodeNumber(shortTitle);
+      if (!number) continue;
+      section.episodeIds[idMatch[1]] = true;
+      section.episodes.push({
+        name: getEpisodeName(record, number, shortTitle),
+        url: BASE_URL + "/vi/play/" + seasonId + "/" + idMatch[1],
+        host: BASE_URL
+      });
+    }
+  }
+}
+
+function addVisibleEpisodes(html, sections) {
+  var pattern = /<a\b[^>]*class="[^"]*\bep-item\b[^"]*"[^>]*>[\s\S]*?<\/a>/g;
+  var match;
+  while ((match = pattern.exec(html)) !== null) {
+    var hrefMatch = /href="([^"]+)"/.exec(match[0]);
+    if (!hrefMatch) continue;
+    var url = absoluteUrl(hrefMatch[1]);
+    var idMatch = /\/vi\/play\/\d+\/(\d+)/.exec(url);
+    if (!idMatch) continue;
+    var text = match[0].replace(/<[^>]+>/g, " ");
+    var titleMatch = /title="([^"]+)"/.exec(match[0]);
+    var number = episodeNumber(text);
+    if (!number) continue;
+    var isRetake = /retake/i.test(text);
+    var section = getSectionForVisibleEpisode(sections, number, isRetake);
+    if (!section || section.episodeIds[idMatch[1]]) continue;
+    section.episodeIds[idMatch[1]] = true;
+    section.episodes.push({
+      name: titleMatch ? "Tập " + number + " - " + titleMatch[1] : "Tập " + number,
+      url: url,
+      host: BASE_URL,
+      number: number
+    });
+  }
 }
 
 function execute(url) {
@@ -49,14 +103,17 @@ function execute(url) {
 
   var seasonId = extractSeasonId(url);
   if (!seasonId) return Response.error("URL mùa BiliBili không hợp lệ");
-  var episodesByNumber = {};
-  var maxNumber = addEmbeddedEpisodes(html, seasonId, episodesByNumber) || 0;
-  var visibleMax = addVisibleEpisodes(html, seasonId, episodesByNumber);
-  if (visibleMax > maxNumber) maxNumber = visibleMax;
-
+  var sections = [];
+  addEmbeddedSections(html, seasonId, sections);
+  addVisibleEpisodes(html, sections);
   var result = [];
-  for (var number = 1; number <= maxNumber; number++) {
-    if (episodesByNumber[number]) result.push(episodesByNumber[number]);
+  for (var i = 0; i < sections.length; i++) {
+    var section = sections[i];
+    if (section.episodes.length === 0) continue;
+    result.push({ type: "section", name: section.title });
+    for (var j = 0; j < section.episodes.length; j++) {
+      result.push(section.episodes[j]);
+    }
   }
   if (result.length === 0) return Response.error("Không tìm thấy tập trong trang BiliBili");
   return Response.success(result);

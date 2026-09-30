@@ -2,7 +2,7 @@
     "metadata": {
         "name": "BiliBili TV Anime",
         "author": "Meo",
-        "version": 2,
+        "version": 3,
         "source": "https://www.bilibili.tv/vi/anime",
         "regexp": "https?:\\/\\/(?:www\\.)?bilibili\\.tv\\/(?:[a-zA-Z]{2}\\/)?(?:play|media)\\/[0-9]+(?:\\/[0-9]+)?(?:\\?.*)?\\/?$",
         "description": "Xem anime trên BiliBili TV",
