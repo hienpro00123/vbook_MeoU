@@ -17,6 +17,7 @@ function absoluteUrl(url) {
   if (!url) return "";
   if (url.indexOf("//") === 0) return "https:" + url;
   if (url.indexOf("http") === 0) return url;
+  if (url.indexOf("/play/") === 0 || url.indexOf("/media/") === 0) return BASE_URL + "/vi" + url;
   return BASE_URL + (url.charAt(0) === "/" ? url : "/" + url);
 }
 
@@ -34,7 +35,7 @@ function imageSource(image) {
 }
 
 function imageCards(doc) {
-  return doc.select("a.card-image, a.video-card__cover, a.bstar-video-card__cover, a[class*='video-card__cover']");
+  return doc.select("a.card-image, a.video-card__cover, a.bstar-video-card__cover, a[class*='video-card__cover'], .ogv__cover a[href]");
 }
 
 function firstImage(doc, href) {
@@ -65,7 +66,7 @@ function imageAt(doc, index) {
 function parseVideoCards(doc) {
   var items = [];
   var seen = {};
-  var titles = doc.select("a.card-title, a.bstar-video-card__title-text");
+  var titles = doc.select("a.card-title, a.bstar-video-card__title-text, a.ogv__content-title");
   for (var i = 0; i < titles.size(); i++) {
     var title = titles.get(i);
     var href = elementAttr(title, "href");
