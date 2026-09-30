@@ -13,6 +13,45 @@ function resourceUrl(resource) {
   return "";
 }
 
+function subtitleTracks(episodeId) {
+  var subtitles = [];
+  var api = API_URL + "/v2/subtitle?s_locale=vi_VN&platform=web&episode_id=" + episodeId + "&spm_id=bstar-web.pgc-video-detail.0.0&from_spm_id=";
+  var response = fetch(api, FETCH_OPTIONS);
+  if (!response || !response.ok) return subtitles;
+
+  try {
+    var payload = response.json();
+    var tracks = payload && payload.data ? payload.data.video_subtitle : [];
+    var vietnamese = null;
+    for (var i = 0; i < tracks.length; i++) {
+      if (tracks[i].lang_key === "vi" && tracks[i].ass && tracks[i].ass.url) {
+        vietnamese = tracks[i];
+        break;
+      }
+    }
+    if (vietnamese) {
+      subtitles.push({
+        data: vietnamese.ass.url,
+        type: "ass",
+        label: vietnamese.lang,
+        language: vietnamese.lang_key
+      });
+    }
+
+    for (var j = 0; j < tracks.length; j++) {
+      var track = tracks[j];
+      if (track.lang_key === "vi" || !track.ass || !track.ass.url) continue;
+      subtitles.push({
+        data: track.ass.url,
+        type: "ass",
+        label: track.lang,
+        language: track.lang_key
+      });
+    }
+  } catch (e) {}
+  return subtitles;
+}
+
 function execute(data) {
   var episodeId = extractEpisodeId(data);
   if (!episodeId) return Response.error("URL tập BiliBili không hợp lệ");
@@ -60,7 +99,8 @@ function execute(data) {
         "User-Agent": VIDEO_HEADERS["User-Agent"],
         Referer: absoluteUrl(data)
       },
-      audios: audioTracks
+      audios: audioTracks,
+      subtitles: subtitleTracks(episodeId)
     });
   } catch (e) {
     return Response.error("Không thể phân tích luồng phát BiliBili");
