@@ -76,7 +76,7 @@ Danh sách extension hiện có trong repository:
 |-----|-------|-----------|------|----------|
 | dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v4 | Novel | vi_VN |
 | Biquge | [biquge.tw](https://www.biquge.tw) | v8 | Chinese Novel | zh_CN |
-| BiliBili TV Anime | [bilibili.tv](https://www.bilibili.tv/vi/anime) | v6 | Video | vi_VN |
+| BiliBili TV Anime | [bilibili.tv](https://www.bilibili.tv/vi/anime) | v7 | Video | vi_VN |
 | Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
 | TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v28 | Comic | vi_VN |

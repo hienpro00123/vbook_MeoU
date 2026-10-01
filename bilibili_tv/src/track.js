@@ -71,6 +71,12 @@ function subtitleUrl(track) {
   return track.url || track.subtitle_url || track.srt_url || "";
 }
 
+function subtitleType(url) {
+  if (/\.ass(?:\?|$)/i.test(url)) return "ass";
+  if (/\.srt(?:\?|$)/i.test(url)) return "srt";
+  return "vtt";
+}
+
 function subtitleTracks(episodeId) {
   var subtitles = [];
   var api = API_URL + "/v2/subtitle?s_locale=vi_VN&platform=web&episode_id=" + episodeId + "&spm_id=bstar-web.pgc-video-detail.0.0&from_spm_id=";
@@ -80,7 +86,7 @@ function subtitleTracks(episodeId) {
   try {
     var payload = response.json();
     var subtitleData = payload && payload.data ? payload.data : {};
-    var tracks = subtitleData.video_subtitle || subtitleData.subtitles || subtitleData.subtitle || [];
+    var tracks = subtitleData.subtitles || subtitleData.video_subtitle || subtitleData.subtitle || [];
     var orderedTracks = [];
     for (var i = 0; i < tracks.length; i++) {
       if (tracks[i].lang_key === "vi") orderedTracks.push(tracks[i]);
@@ -93,6 +99,16 @@ function subtitleTracks(episodeId) {
       var url = subtitleUrl(track);
       if (!url) continue;
       try {
+        var directType = subtitleType(url);
+        if (directType === "ass" || directType === "srt") {
+          subtitles.push({
+            data: url,
+            type: directType,
+            label: track.lang || track.language || track.lang_key || "Subtitle",
+            language: track.lang_key || track.language || ""
+          });
+          continue;
+        }
         var subtitleDataUriValue = subtitleDataUri(url);
         if (!subtitleDataUriValue) continue;
         subtitles.push({
