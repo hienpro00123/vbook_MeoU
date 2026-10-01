@@ -162,7 +162,8 @@ function execute(data) {
       }
     }
 
-    return Response.success({
+    var subtitles = subtitleTracks(episodeId);
+    var playback = {
       type: "native",
       data: videoUrl,
       mimeType: video.mime_type || "video/mp4",
@@ -171,8 +172,13 @@ function execute(data) {
         Referer: absoluteUrl(data)
       },
       audios: audioTracks,
-      subtitles: subtitleTracks(episodeId)
-    });
+      subtitles: subtitles
+    };
+    if (subtitles.length > 0) {
+      playback.subtitle = subtitles[0].data;
+      playback.subtitleType = subtitles[0].type;
+    }
+    return Response.success(playback);
   } catch (e) {
     return Response.error("Không thể phân tích luồng phát BiliBili");
   }
