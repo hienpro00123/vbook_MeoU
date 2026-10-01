@@ -36,8 +36,14 @@ function padMilliseconds(value) {
 function subtitleDataUri(subtitleUrl) {
   var response = fetch(subtitleUrl, FETCH_OPTIONS);
   if (!response || !response.ok) return "";
-  var payload = response.json();
-  var cues = payload && payload.body ? payload.body : [];
+  var plainText = response.text();
+  if (!plainText) return "";
+  if (plainText.indexOf("WEBVTT") === 0) return encodeVtt(plainText);
+  if (plainText.indexOf("-->") >= 0) return encodeVtt("WEBVTT\n\n" + plainText.replace(/,(\d{3})/g, ".$1"));
+
+  var payload;
+  try { payload = JSON.parse(plainText); } catch (e) { return ""; }
+  var cues = payload && payload.body ? payload.body : (payload && payload.data ? payload.data : []);
   if (!cues.length) return "";
 
   var vtt = "WEBVTT\n\n";
@@ -49,9 +55,20 @@ function subtitleDataUri(subtitleUrl) {
   }
   if (vtt === "WEBVTT\n\n") return "";
 
+  return encodeVtt(vtt);
+}
+
+function encodeVtt(vtt) {
   var bytes = new java.lang.String(vtt).getBytes("UTF-8");
   var encoded = String(java.util.Base64.getEncoder().encodeToString(bytes));
   return "data:text/vtt;base64," + encoded;
+}
+
+function subtitleUrl(track) {
+  if (!track) return "";
+  if (track.srt && track.srt.url) return track.srt.url;
+  if (track.subtitle && track.subtitle.url) return track.subtitle.url;
+  return track.url || track.subtitle_url || track.srt_url || "";
 }
 
 function subtitleTracks(episodeId) {
@@ -62,7 +79,8 @@ function subtitleTracks(episodeId) {
 
   try {
     var payload = response.json();
-    var tracks = payload && payload.data ? payload.data.video_subtitle : [];
+    var subtitleData = payload && payload.data ? payload.data : {};
+    var tracks = subtitleData.video_subtitle || subtitleData.subtitles || subtitleData.subtitle || [];
     var orderedTracks = [];
     for (var i = 0; i < tracks.length; i++) {
       if (tracks[i].lang_key === "vi") orderedTracks.push(tracks[i]);
@@ -72,15 +90,16 @@ function subtitleTracks(episodeId) {
     }
     for (var k = 0; k < orderedTracks.length; k++) {
       var track = orderedTracks[k];
-      if (!track.srt || !track.srt.url) continue;
+      var url = subtitleUrl(track);
+      if (!url) continue;
       try {
-        var subtitleData = subtitleDataUri(track.srt.url);
-        if (!subtitleData) continue;
+        var subtitleDataUriValue = subtitleDataUri(url);
+        if (!subtitleDataUriValue) continue;
         subtitles.push({
-          data: subtitleData,
+          data: subtitleDataUriValue,
           type: "vtt",
-          label: track.lang,
-          language: track.lang_key
+          label: track.lang || track.language || track.lang_key || "Subtitle",
+          language: track.lang_key || track.language || ""
         });
       } catch (subtitleError) {}
     }
