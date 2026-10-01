@@ -290,8 +290,8 @@
     {
       "name": "BiliBili TV Anime",
       "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.zip",
-      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.json",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.zip?v=12",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.json?v=12",
       "version": 12,
       "source": "https://www.bilibili.tv/vi/anime",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/icon.png",
