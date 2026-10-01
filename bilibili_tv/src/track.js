@@ -37,7 +37,10 @@ function subtitleVtt(url) {
     vtt += String(cue.content) + "\n\n";
   }
   if (vtt === "WEBVTT\n\n") return "";
-  return "data:text/vtt;base64," + String(java.util.Base64.getEncoder().encodeToString(new java.lang.String(vtt).getBytes("UTF-8")));
+  var bytes = new java.lang.String(vtt).getBytes("UTF-8");
+  try { return "data:text/vtt;base64," + String(java.util.Base64.getEncoder().encodeToString(bytes)); } catch (e) {}
+  try { return "data:text/vtt;base64," + String(android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)); } catch (e2) {}
+  return "";
 }
 
 function getSubtitles(episodeId) {
