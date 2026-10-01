@@ -80,6 +80,8 @@ function execute(url) {
     name: name,
     cover: cover,
     host: BASE_URL,
+    type: "video",
+    format: "series",
     author: "BiliBili",
     description: description,
     detail: episodeCount > 0 ? episodeCount + " tập" : "Anime",
