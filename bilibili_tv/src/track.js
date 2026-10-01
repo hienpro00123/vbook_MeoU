@@ -67,7 +67,10 @@ function getSubtitles(episodeId) {
       data = track.ass.url;
       type = "ass";
     }
-    if (data) result.push({ data: data, type: type, label: track.lang || track.lang_key || "Subtitle", language: track.lang_key || "" });
+    if (data) {
+      var label = track.lang || track.lang_key || "Subtitle";
+      result.push({ data: data, url: data, type: type, title: label, label: label, language: track.lang_key || "", lang: track.lang_key || "", selected: track.lang_key === "vi", source: "bilibili.subtitle" });
+    }
   }
   return result;
 }
