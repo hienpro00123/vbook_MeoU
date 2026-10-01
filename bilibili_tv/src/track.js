@@ -33,11 +33,38 @@ function padMilliseconds(value) {
   return String(value);
 }
 
+function assTimestamp(value) {
+  var match = /^(\d+):(\d{2}):(\d{2})[.,](\d{2})$/.exec(value.trim());
+  if (!match) return "";
+  return (match[1].length < 2 ? "0" + match[1] : match[1]) + ":" + match[2] + ":" + match[3] + "." + match[4] + "0";
+}
+
+function assToVtt(assText) {
+  var lines = assText.replace(/^\uFEFF/, "").replace(/\r/g, "").split("\n");
+  var vtt = "WEBVTT\n\n";
+  var cueNumber = 1;
+  for (var i = 0; i < lines.length; i++) {
+    if (lines[i].indexOf("Dialogue:") !== 0) continue;
+    var fields = lines[i].substring(9).split(",");
+    if (fields.length < 10) continue;
+    var start = assTimestamp(fields[1]);
+    var end = assTimestamp(fields[2]);
+    if (!start || !end) continue;
+    var text = fields.slice(9).join(",");
+    text = text.replace(/\{[^}]*\}/g, "").replace(/\\N/g, "\n").replace(/\\n/g, "\n").trim();
+    if (!text) continue;
+    vtt += cueNumber + "\n" + start + " --> " + end + "\n" + text + "\n\n";
+    cueNumber++;
+  }
+  return cueNumber === 1 ? "" : encodeVtt(vtt);
+}
+
 function subtitleDataUri(subtitleUrl) {
   var response = fetch(subtitleUrl, FETCH_OPTIONS);
   if (!response || !response.ok) return "";
   var plainText = response.text();
   if (!plainText) return "";
+  if (plainText.indexOf("[Events]") >= 0 || plainText.indexOf("Dialogue:") >= 0) return assToVtt(plainText);
   if (plainText.indexOf("WEBVTT") === 0) return encodeVtt(plainText);
   if (plainText.indexOf("-->") >= 0) return encodeVtt("WEBVTT\n\n" + plainText.replace(/,(\d{3})/g, ".$1"));
 
@@ -100,10 +127,29 @@ function subtitleTracks(episodeId) {
       if (!url) continue;
       try {
         var directType = subtitleType(url);
-        if (directType === "ass" || directType === "srt") {
+        if (directType === "ass") {
+          var convertedAss = subtitleDataUri(url);
+          if (convertedAss) {
+            subtitles.push({
+              data: convertedAss,
+              type: "vtt",
+              label: track.lang || track.language || track.lang_key || "Subtitle",
+              language: track.lang_key || track.language || ""
+            });
+          } else {
+            subtitles.push({
+              data: url,
+              type: "ass",
+              label: track.lang || track.language || track.lang_key || "Subtitle",
+              language: track.lang_key || track.language || ""
+            });
+          }
+          continue;
+        }
+        if (directType === "srt") {
           subtitles.push({
             data: url,
-            type: directType,
+            type: "srt",
             label: track.lang || track.language || track.lang_key || "Subtitle",
             language: track.lang_key || track.language || ""
           });
