@@ -3,7 +3,9 @@ var API_URL = "https://api.bilibili.tv/intl/gateway/web";
 var FETCH_OPTIONS = {
   headers: {
     "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
-    "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.8"
+    "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.8",
+    "Origin": BASE_URL,
+    "Referer": BASE_URL + "/vi/"
   }
 };
 

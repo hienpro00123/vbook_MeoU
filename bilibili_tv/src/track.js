@@ -173,7 +173,7 @@ function execute(data) {
   var episodeId = extractEpisodeId(data);
   if (!episodeId) return Response.error("URL tập BiliBili không hợp lệ");
 
-  var api = API_URL + "/playurl?s_locale=vi_VN&platform=web&ep_id=" + episodeId + "&tk=&qn=32&type=0&device=wap&tf=0";
+  var api = API_URL + "/playurl?s_locale=vi_VN&platform=web&ep_id=" + episodeId + "&tk=&qn=64&type=0&device=wap&tf=0&spm_id=bstar-web.pgc-video-detail.0.0&from_spm_id=";
   var response = fetch(api, FETCH_OPTIONS);
   if (!response || !response.ok) return Response.error("Không thể lấy luồng phát BiliBili");
 
