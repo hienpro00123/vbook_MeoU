@@ -287,17 +287,6 @@
       "locale": "en_US",
       "tag": "NSFW"
     },
-    {
-      "name": "BiliBili TV Anime",
-      "author": "Meo",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.zip",
-      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/plugin.json",
-      "version": 8,
-      "source": "https://www.bilibili.tv/vi/anime",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili_tv/icon.png",
-      "description": "Xem anime trên BiliBili TV",
-      "type": "video",
-      "locale": "vi_VN"
-    }
+    
   ]
 }
