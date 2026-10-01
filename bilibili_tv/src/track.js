@@ -113,6 +113,7 @@ function execute(data) {
     mimeType: video.mime_type || "video/mp4",
     headers: { "User-Agent": MEDIA_HEADERS["User-Agent"], "Referer": absoluteUrl(data) },
     audios: getAudios(playurl),
-    subtitles: subtitles
+    subtitles: subtitles,
+    subtitleTracks: subtitles
   });
 }
