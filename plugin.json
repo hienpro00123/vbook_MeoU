@@ -261,6 +261,18 @@
       "tag": "NSFW",
       "type": "comic",
       "locale": "vi_VN"
+    },
+    {
+      "name": "Bilibili TV",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili/plugin.json",
+      "version": 1,
+      "source": "https://www.bilibili.tv",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/bilibili/icon.png",
+      "description": "Bilibili TV Anime (Vietnam)",
+      "type": "video",
+      "locale": "vi_VN"
     }
   ]
 }

@@ -5,7 +5,7 @@
 
 Kho extension cho VBook, đọc truyện và xem anime, cài đặt nhanh và cập nhật trực tiếp qua GitHub Repository.
 
-![Extensions](https://img.shields.io/badge/extensions-21-blue)
+![Extensions](https://img.shields.io/badge/extensions-22-blue)
 ![Platform](https://img.shields.io/badge/platform-VBook-green)
 ![Update](https://img.shields.io/badge/update-GitHub%20Repository-orange)
 
@@ -15,8 +15,8 @@ Kho extension cho VBook, đọc truyện và xem anime, cài đặt nhanh và c�
 </p>
 ## Điểm nổi bật
 
-- 21 extension trong một repository duy nhất
-- 7 comic, 11 novel và 4 chinese novel
+- 22 extension trong một repository duy nhất
+- 7 comic, 11 novel, 4 chinese novel và 1 video
 - Cài mới và cập nhật trực tiếp trong app VBook
 
 ## Bắt đầu trong 30 giây
@@ -70,26 +70,29 @@ Nếu thấy extension hữu ích, bạn có thể ủng hộ tác giả qua QR 
 
 Danh sách extension hiện có trong repository:
 
-> Gồm comic, novel, chinese novel và một số extension NSFW.
+> Gồm comic, novel, chinese novel, video và một số extension NSFW.
 
 | Tên | Nguồn | Phiên bản | Loại | Ngôn ngữ |
 |-----|-------|-----------|------|----------|
-| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v4 | Novel | vi_VN |
-| Biquge | [biquge.tw](https://www.biquge.tw) | v8 | Chinese Novel | zh_CN |
-| Storya | [storya.click](https://storya.click) | v1 | Novel | vi_VN |
+| dualeotruyenfull | [dualeotruyenfull.net](https://dualeotruyenfull.net) | v5 | Novel | vi_VN |
+| Biquge | [biquge.tw](https://www.biquge.tw) | v9 | Chinese Novel | zh_CN |
+| Storya | [storya.click](https://storya.click) | v5 | Novel | vi_VN |
 | OTruyen | [otruyen.cc](https://otruyen.cc) | v24 | Comic | vi_VN |
-| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v28 | Comic | vi_VN |
-| Wattpad | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
+| TruyenDex | [truyendex.cc](https://truyendex.cc/nettrom) | v29 | Comic | vi_VN |
+| Wattpad - Tiếng Việt | [wattpad.com](https://www.wattpad.com) | v21 | Novel | vi |
 | MeTruyenChu | [metruyenchu.com.vn](https://metruyenchu.com.vn) | v17 | Novel | vi_VN |
 | Bixiange | [m.bixiange.me](https://m.bixiange.me) | v10 | Chinese Novel | zh_CN |
-| TruyenChu | [truyenchu.net](https://truyenchu.net) | v8 | Novel | vi_VN |
-| nettruyen.work | [nettruyen.work](https://nettruyen.work) | v3 | Comic | vi_VN |
+| TruyenChu | [truyenchu.net](https://truyenchu.net) | v9 | Novel | vi_VN |
+| WanwanSekai -18+ | [wanwansekai.com](https://wanwansekai.com) | v9 | Novel | vi_VN |
+| ShiBaShuWu -18+ | [shibashuwu.net](https://www.shibashuwu.net) | v19 | Chinese Novel | zh_CN |
+| nettruyenviet.monster | [nettruyenviet.monster](https://nettruyenviet.monster) | v4 | Comic | vi_VN |
 | Valvrareteam | [valvrareteam.net](https://valvrareteam.net) | v10 | Novel | vi_VN |
 | NovelCooksTW | [novel.cooks.tw](https://novel.cooks.tw) | v9 | Chinese Novel | zh_TW |
-| TrichTinhLau | [trichtinhlau.com](https://trichtinhlau.com) | v3 | Novel | vi_VN |
+| TrichTinhLau | [trichtinhlau.com](https://trichtinhlau.com) | v8 | Novel | vi_VN |
 | LN Kuro | [lnkuro.top](https://lnkuro.top) | v16 | Novel | vi_VN |
-| MeTruyenSangTac | [metruyensangtac.com](https://metruyensangtac.com) | v3 | Novel | vi_VN |
-| LoppyToon 🔞 | [loppytoon.com](https://loppytoon.com) | v3 | Comic | vi_VN |
-| WanwanSekai 🔞 | [wanwansekai.com](https://wanwansekai.com) | v9 | Novel | vi_VN |
-| ShiBaShuWu 🔞 | [shibashuwu.net](https://www.shibashuwu.net) | v19 | Chinese Novel | zh_CN |
-| HentaiCube 🔞 | [hentaicube.xyz](https://hentaicube.xyz) | v1 | Comic | vi_VN |
+| MeTruyenSangTac | [metruyensangtac.com](https://metruyensangtac.com) | v5 | Novel | vi_VN |
+| LoppyToon -18+ | [loppytoon.com](https://loppytoon.com) | v18 | Novel, Comic | vi_VN |
+| SayHentaiBaby -18+ | [sayhentai.baby](https://sayhentai.baby) | v13 | Comic | vi_VN |
+| SayHentai -18+ | [sayhentai.sh](https://sayhentai.sh) | v2 | Comic | vi_VN |
+| HentaiCube -18+ | [hentaicube.xyz](https://hentaicube.xyz) | v2 | Comic | vi_VN |
+| Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v1 | Video | vi_VN |

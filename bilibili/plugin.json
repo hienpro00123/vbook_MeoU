@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "name": "Bilibili TV",
+    "author": "Meo",
+    "version": 1,
+    "source": "https://www.bilibili.tv",
+    "regexp": "bilibili\\.tv",
+    "description": "Bilibili TV Anime (Vietnam)",
+    "locale": "vi_VN",
+    "type": "video",
+    "encrypt": true
+  },
+  "script": {
+    "home": "home.encrypted.js",
+    "detail": "detail.encrypted.js",
+    "toc": "toc.encrypted.js",
+    "chap": "chap.encrypted.js",
+    "track": "track.encrypted.js",
+    "search": "search.encrypted.js"
+  },
+  "config": []
+}
