@@ -95,4 +95,4 @@ Danh sách extension hiện có trong repository:
 | SayHentaiBaby -18+ | [sayhentai.baby](https://sayhentai.baby) | v13 | Comic | vi_VN |
 | SayHentai -18+ | [sayhentai.sh](https://sayhentai.sh) | v2 | Comic | vi_VN |
 | HentaiCube -18+ | [hentaicube.xyz](https://hentaicube.xyz) | v2 | Comic | vi_VN |
-| Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v1 | Video | vi_VN |
+| Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v2 | Video | vi_VN |

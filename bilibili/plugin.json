@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Bilibili TV",
     "author": "Meo",
-    "version": 1,
+    "version": 2,
     "source": "https://www.bilibili.tv",
     "regexp": "bilibili\\.tv",
     "description": "Bilibili TV Anime (Vietnam)",
@@ -18,5 +18,5 @@
     "track": "track.encrypted.js",
     "search": "search.encrypted.js"
   },
-  "config": []
+  "config": {}
 }
