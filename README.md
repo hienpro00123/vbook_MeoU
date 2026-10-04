@@ -93,6 +93,6 @@ Danh sách extension hiện có trong repository:
 | MeTruyenSangTac | [metruyensangtac.com](https://metruyensangtac.com) | v5 | Novel | vi_VN |
 | LoppyToon -18+ | [loppytoon.com](https://loppytoon.com) | v18 | Novel, Comic | vi_VN |
 | SayHentaiBaby -18+ | [sayhentai.baby](https://sayhentai.baby) | v13 | Comic | vi_VN |
-| SayHentai -18+ | [sayhentai.sh](https://sayhentai.sh) | v2 | Comic | vi_VN |
+| SayHentai -18+ | [sayhentai.cx](https://sayhentai.cx) | v3 | Comic | vi_VN |
 | HentaiCube -18+ | [hentaicube.xyz](https://hentaicube.xyz) | v2 | Comic | vi_VN |
 | Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v2 | Video | vi_VN |

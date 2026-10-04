@@ -1,4 +1,4 @@
-var BASE_URL = "https://sayhentai.sh";
+var BASE_URL = "https://sayhentai.cx";
 var HOST = BASE_URL;
 
 var FETCH_HEADERS = {
