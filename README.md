@@ -96,4 +96,4 @@ Danh sách extension hiện có trong repository:
 | SayHentai -18+ | [sayhentai.cx](https://sayhentai.cx) | v3 | Comic | vi_VN |
 | HentaiCube -18+ | [hentaicube.xyz](https://hentaicube.xyz) | v2 | Comic | vi_VN |
 | Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v2 | Video | vi_VN |
-| DeepSeek Translate | [platform.deepseek.com](https://platform.deepseek.com) | v5 | Translate | global |
+| DeepSeek Translate | [platform.deepseek.com](https://platform.deepseek.com) | v6 | Translate | global |
