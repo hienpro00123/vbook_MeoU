@@ -5,7 +5,7 @@
 
 Kho extension cho VBook, đọc truyện và xem anime, cài đặt nhanh và cập nhật trực tiếp qua GitHub Repository.
 
-![Extensions](https://img.shields.io/badge/extensions-22-blue)
+![Extensions](https://img.shields.io/badge/extensions-23-blue)
 ![Platform](https://img.shields.io/badge/platform-VBook-green)
 ![Update](https://img.shields.io/badge/update-GitHub%20Repository-orange)
 
@@ -15,8 +15,8 @@ Kho extension cho VBook, đọc truyện và xem anime, cài đặt nhanh và c�
 </p>
 ## Điểm nổi bật
 
-- 22 extension trong một repository duy nhất
-- 7 comic, 11 novel, 4 chinese novel và 1 video
+- 23 extension trong một repository duy nhất
+- 7 comic, 11 novel, 4 chinese novel, 1 video và 1 translate
 - Cài mới và cập nhật trực tiếp trong app VBook
 
 ## Bắt đầu trong 30 giây
@@ -96,3 +96,4 @@ Danh sách extension hiện có trong repository:
 | SayHentai -18+ | [sayhentai.cx](https://sayhentai.cx) | v3 | Comic | vi_VN |
 | HentaiCube -18+ | [hentaicube.xyz](https://hentaicube.xyz) | v2 | Comic | vi_VN |
 | Bilibili TV | [bilibili.tv](https://www.bilibili.tv) | v2 | Video | vi_VN |
+| DeepSeek Translate | [platform.deepseek.com](https://platform.deepseek.com) | v5 | Translate | global |
