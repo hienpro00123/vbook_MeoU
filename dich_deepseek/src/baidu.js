@@ -52,31 +52,36 @@ function baiduRequestTranslation(text, from, to, retryCount) {
     var token = baiduGetAcsToken(retryCount > 0);
     if (!token) return { text: "", error: "Không lấy được Baidu Acs-Token" };
 
-    var response = fetch(BAIDU_TRANSLATE_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "text/event-stream",
-            "Acs-Token": token,
-            "Cookie": String(localCookie.getCookie() || ""),
-            "Referer": BAIDU_HOME_URL,
-            "Origin": "https://fanyi.baidu.com",
-            "User-Agent": BAIDU_USER_AGENT
-        },
-        body: JSON.stringify({
-            needNewlineCombine: false,
-            disableCache: false,
-            isAi: false,
-            sseStartTime: Date.now() - 1,
-            query: text,
-            from: from,
-            to: to,
-            corpusIds: [],
-            needPhonetic: true,
-            domain: "common"
-        }),
-        timeout: 60000
-    });
+    var response;
+    try {
+        response = fetch(BAIDU_TRANSLATE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/event-stream",
+                "Acs-Token": token,
+                "Cookie": String(localCookie.getCookie() || ""),
+                "Referer": BAIDU_HOME_URL,
+                "Origin": "https://fanyi.baidu.com",
+                "User-Agent": BAIDU_USER_AGENT
+            },
+            body: JSON.stringify({
+                needNewlineCombine: false,
+                disableCache: false,
+                isAi: false,
+                sseStartTime: Date.now() - 1,
+                query: text,
+                from: from,
+                to: to,
+                corpusIds: [],
+                needPhonetic: true,
+                domain: "common"
+            }),
+            timeout: 60000
+        });
+    } catch (requestError) {
+        return { text: "", error: "Không thể kết nối Baidu: " + String(requestError) };
+    }
 
     if (!response.ok) {
         localStorage.removeItem(BAIDU_TOKEN_KEY);

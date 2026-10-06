@@ -4,7 +4,7 @@ var DEEPSEEK_API_BASE = "https://api.deepseek.com/chat/completions";
 var TRANSLATION_MEMORY_TABLE = "translation_memory";
 var MAX_MEMORY_ROWS = 2000;
 var MAX_MEMORY_MATCHES = 80;
-var MAX_LEARNED_ITEMS = 20;
+var MAX_LEARNED_ITEMS = 10;
 var MAX_CHINESE_REPAIR_FRAGMENTS = 40;
 var CHINESE_FRAGMENT_CONTEXT_LENGTH = 160;
 
@@ -44,7 +44,8 @@ function execute(text, from, to, source, model, style) {
         source,
         style,
         customInstruction,
-        memoryContext.prompt
+        memoryContext.prompt,
+        learnMemory
     );
 
     var request = {
@@ -56,19 +57,25 @@ function execute(text, from, to, source, model, style) {
         temperature: temperature,
         max_tokens: maxOutputTokens
     };
+    if (learnMemory) request.response_format = { type: "json_object" };
     var requestBody = JSON.stringify(request);
 
     var lastError = "";
     for (var keyIndex = 0; keyIndex < apiKeys.length; keyIndex++) {
-        var response = fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + apiKeys[keyIndex]
-            },
-            body: requestBody,
-            timeout: 120000
-        });
+        var response;
+        try {
+            response = fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + apiKeys[keyIndex]
+                },
+                body: requestBody,
+                timeout: 120000
+            });
+        } catch (requestError) {
+            return Response.error("Không thể kết nối DeepSeek: " + String(requestError));
+        }
 
         if (!response.ok) {
             lastError = readApiError(response);
@@ -91,7 +98,7 @@ function execute(text, from, to, source, model, style) {
         }
 
         var cleaned = stripCodeFence(translated);
-        var parsedResult = parseTranslationResult(cleaned, false);
+        var parsedResult = parseTranslationResult(cleaned, learnMemory);
         var finalText = parsedResult.translation;
         if (!finalText) {
             return Response.error("DeepSeek không trả về bản dịch hợp lệ");
@@ -108,10 +115,7 @@ function execute(text, from, to, source, model, style) {
         }
 
         if (learnMemory) {
-            var learnedItems = extractTranslationMemory(
-                endpoint, apiKeys[keyIndex], text, finalText, memoryContext.prompt
-            );
-            persistTranslationMemory(memoryContext, text, learnedItems);
+            persistTranslationMemory(memoryContext, text, finalText, parsedResult.memory);
         }
 
         return Response.success(finalText);
@@ -308,7 +312,7 @@ function parseTranslationResult(value, expectsMemory) {
     var extracted = extractLooseTranslation(raw);
     if (extracted) return { translation: extracted, memory: [] };
 
-    if (!expectsMemory && !looksLikeJsonResult(raw)) {
+    if (!looksLikeJsonResult(raw)) {
         return { translation: raw, memory: [] };
     }
 
@@ -374,7 +378,7 @@ function looksLikeJsonResult(value) {
     return trimmed.charAt(0) === "{" || trimmed.charAt(0) === "[" || /"translation"\s*:/.test(trimmed);
 }
 
-function persistTranslationMemory(context, input, items) {
+function persistTranslationMemory(context, input, translatedText, items) {
     if (!context.bookId || !Array.isArray(items) || items.length === 0) return;
 
     var records = [];
@@ -387,6 +391,7 @@ function persistTranslationMemory(context, input, items) {
         if (!source || !target || context.existing[source]) continue;
         if (source.length > 80 || target.length > 160) continue;
         if (!containsChinese(source) || input.indexOf(source) < 0) continue;
+        if (translatedText.indexOf(target) < 0) continue;
 
         var kind = normalizeMemoryKind(item.kind);
         var note = oneLine(String(item.note || ""));
@@ -404,42 +409,6 @@ function persistTranslationMemory(context, input, items) {
     try {
         localDatabase.upsertAll(context.bookId, TRANSLATION_MEMORY_TABLE, records);
     } catch (e) {}
-}
-
-function extractTranslationMemory(endpoint, apiKey, original, translated, memoryPrompt) {
-    var instruction = "Identify at most 20 high-confidence proper names, places, organizations, titles, or recurring terms in the Chinese source. " +
-        "Use the matching forms already present in the Vietnamese translation. Do not invent names or reinterpret existing memory. " +
-        "Return only a JSON object with a memory array of objects containing source, target, kind, and note. " +
-        "Each source must be an exact Chinese substring of SOURCE. If uncertain, omit the item.";
-    if (memoryPrompt) instruction += "\n\n" + memoryPrompt;
-    var request = {
-        model: "deepseek-chat",
-        messages: [
-            { role: "system", content: instruction },
-            { role: "user", content: "SOURCE:\n" + original + "\n\nVIETNAMESE TRANSLATION:\n" + translated }
-        ],
-        temperature: 0,
-        max_tokens: 2048,
-        response_format: { type: "json_object" }
-    };
-
-    try {
-        var response = fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + apiKey
-            },
-            body: JSON.stringify(request),
-            timeout: 30000
-        });
-        if (!response.ok) return [];
-        var data = JSON.parse(response.text());
-        var result = parseTranslationJson(stripCodeFence(extractText(data)));
-        return result && Array.isArray(result.memory) ? result.memory : [];
-    } catch (e) {
-        return [];
-    }
 }
 
 function normalizeMemoryKind(value) {
@@ -649,7 +618,7 @@ function normalizeModel(model) {
     return models[selected] ? selected : "deepseek-chat";
 }
 
-function buildInstruction(from, to, source, style, customInstruction, memoryPrompt) {
+function buildInstruction(from, to, source, style, customInstruction, memoryPrompt, includeMemory) {
     var sourceLanguage = from === "auto" ? "the automatically detected source language" : from;
     var instruction = "You are a professional literary translator. Translate the user text from " +
         sourceLanguage + " to " + to + ". Preserve meaning, tone, paragraph breaks, " +
@@ -672,7 +641,15 @@ function buildInstruction(from, to, source, style, customInstruction, memoryProm
 
     if (memoryPrompt) instruction += "\n\n" + memoryPrompt;
 
-    instruction += " Return only the translated text, without explanations, labels, quotation marks, or Markdown fences.";
+    if (includeMemory) {
+        instruction += " Return one valid JSON object only with this shape: " +
+            '{"translation":"complete translated text","memory":[{"source":"exact Chinese source term","target":"matching Vietnamese form","kind":"character|place|organization|term","note":"short useful note"}]}. ' +
+            "The translation must be complete and preserve all paragraph and line breaks. " +
+            "Include at most 10 high-confidence proper names or recurring terms in memory; source must be an exact Chinese substring and target must appear exactly in the translation. " +
+            "Use an empty memory array when uncertain. Escape JSON strings correctly.";
+    } else {
+        instruction += " Return only the translated text, without explanations, labels, quotation marks, or Markdown fences.";
+    }
     return instruction;
 }
 

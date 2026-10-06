@@ -66,7 +66,7 @@ function execute() {
         },
         auto_translation_memory: {
             title: "Tự động học bộ nhớ dịch",
-            subtitle: "Tự lưu thực thể mới khi dịch chương; chỉ hoạt động khi Sử dụng bộ nhớ dịch đang bật",
+            subtitle: "Tự lưu thực thể mới trong cùng lượt gọi DeepSeek khi dịch chương; chỉ hoạt động khi Sử dụng bộ nhớ dịch đang bật",
             default: "true",
             mode: "toggle"
         },

@@ -200,10 +200,12 @@ function translationBuildPrompt(styleRule) {
         "(4) thống nhất tên riêng, địa danh, tổ chức, danh hiệu và thuật ngữ; " +
         "(5) áp dụng phong cách bên dưới.\n" +
         "Không dịch máy từng chữ khi câu trở nên cứng hoặc tối nghĩa. Có thể đổi cấu trúc câu để tiếng Việt tự nhiên nhưng không thêm, bớt, giải thích hay suy diễn. " +
+        "Đọc toàn bộ đoạn như một mạch truyện; dùng câu trước và sau để xác định chủ thể bị lược, đại từ, người nói/người nghe, thời điểm, phủ định, điều kiện và quan hệ nhân quả. Chỉ suy ra điều được ngữ cảnh hoặc bộ nhớ hỗ trợ; chỗ chưa rõ thì giữ cách diễn đạt trung tính. " +
+        "Với thành ngữ, tục ngữ, điển cố, ẩn dụ và lời mỉa mai, hãy xác định nghĩa cùng sắc thái trong ngữ cảnh trước khi dịch. Dùng thành ngữ tiếng Việt tương đương khi giữ được ý và sắc thái; nếu không có, diễn đạt ngắn gọn theo nghĩa tự nhiên, không ghép nghĩa từng chữ, không ép thành ngữ Việt và không xóa dụng ý văn hóa hoặc chơi chữ quan trọng. " +
         "Không tự đoán giới tính, tuổi, quan hệ hoặc vai vế; khi chưa rõ hãy dùng tên, danh hiệu hoặc cách diễn đạt trung tính. " +
         "Trong lời thoại phải xác định đúng người nói, người nghe và từng vai xưng hô; không gộp nhầm ngôi thứ nhất với ngôi thứ hai khi sửa câu lặp. " +
         "Một tên hoặc thuật ngữ đã có cách dịch phải giữ nguyên ở mọi lần xuất hiện. " +
         "Dịch đầy đủ mọi đoạn, kể cả câu ngắn, tên gọi và chữ Hán xen giữa; giữ nguyên số liệu, URL, placeholder và cấu trúc HTML/Markdown.\n" +
         "Phong cách: " + styleRule + "\n" +
-        "Trước khi hoàn tất, tự kiểm tra im lặng: có dịch sót không; có còn chữ Hán không; tên, giới tính, quan hệ, xưng hô và thuật ngữ có nhất quán với bộ nhớ không; có vô tình thêm hoặc bỏ thông tin không."
+        "Trước khi hoàn tất, tự kiểm tra im lặng: có dịch sót không; thành ngữ/ẩn dụ có bị dịch sát chữ hoặc sai sắc thái không; chủ thể, đại từ, phủ định, điều kiện và nhân quả có khớp mạch đoạn không; tên, giới tính, quan hệ, xưng hô và thuật ngữ có nhất quán với bộ nhớ không; có vô tình thêm hoặc bỏ thông tin không."
 }

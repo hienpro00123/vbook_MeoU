@@ -274,15 +274,17 @@
       "type": "video",
       "locale": "vi_VN"
     },
-     {
+    {
       "name": "DeepSeek Translate",
-      "author": "Meo",
-      "version": 1,
+      "author": "vBook",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dich_deepseek/plugin.zip",
+      "lib": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dich_deepseek/plugin.json",
+      "version": 5,
       "source": "https://platform.deepseek.com",
-      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/blob/main/dich_deepseek/plugin.zip",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/blob/main/dich_deepseek/icon.png",
-      "description": "Dịch nội dung bằng DeepSeek API",
-      "type": "translate"
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/dich_deepseek/icon.png",
+      "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
+      "type": "translate",
+      "locale": "global"
     }
   ]
 }

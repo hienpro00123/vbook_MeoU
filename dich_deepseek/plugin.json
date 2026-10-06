@@ -2,9 +2,9 @@
   "metadata": {
     "name": "DeepSeek Translate",
     "author": "vBook",
-    "version": 1,
+    "version": 5,
     "source": "https://platform.deepseek.com",
-    "description": "Dịch nội dung bằng DeepSeek API",
+    "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
     "locale": "global",
     "regexp": "",
     "type": "translate",
@@ -37,6 +37,16 @@
       "mode": "input",
       "format": "number"
     },
-    "support_url": "https://platform.deepseek.com/api_keys"
+    "required_api_key": {
+      "title": "Yêu cầu DeepSeek API key",
+      "default": "true",
+      "mode": "toggle"
+    },
+    "support_url": {
+      "title": "Tạo DeepSeek API key",
+      "default": "https://platform.deepseek.com/api_keys",
+      "mode": "input",
+      "format": "text"
+    }
   }
 }
