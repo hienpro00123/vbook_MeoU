@@ -273,6 +273,16 @@
       "description": "Bilibili TV Anime (Vietnam)",
       "type": "video",
       "locale": "vi_VN"
+    },
+     {
+      "name": "DeepSeek Translate",
+      "author": "Meo",
+      "version": 1,
+      "source": "https://platform.deepseek.com",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/blob/main/dich_deepseek/plugin.zip",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/blob/main/dich_deepseek/icon.png",
+      "description": "Dịch nội dung bằng DeepSeek API",
+      "type": "translate"
     }
   ]
 }
