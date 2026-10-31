@@ -2,7 +2,7 @@
 
 Extensions are JavaScript files that tell vBook how to fetch content from websites. Each extension declares a set of named scripts in `plugin.json`; each script is one `.js` file with one `execute(...)` function that vBook calls with specific arguments and expects a `Response.success`/`Response.error` return.
 
-Working starter code (full script sets per type, with error handling already applied) lives in `.agents/skills/vbook-extensions/templates/<type>/` — this document is the field/API contract, not a copy-paste source.
+Working starter code (full script sets per type, with error handling already applied) lives in `.claude/skills/vbook-extensions/templates/<type>/` — this document is the field/API contract, not a copy-paste source.
 
 ## Table of contents
 

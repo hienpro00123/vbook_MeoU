@@ -1,6 +1,6 @@
 When asked to create, modify, test or debug code in this project, you MUST first read and rigidly follow the guidelines in `CLAUDE.md` located in the root directory, which defines LLM behavioral instructions (Surgical Changes, Simplicity First, Think Before Coding) and project-specific CLI commands.
 
-For VBook extension development, you MUST read and follow the Master Extension API Spec: `api_docs.md`, `.agents/skills/vbook-publish/SKILL.md`, and `.agents/skills/vbook-extensions/SKILL.md`. Follow these rules exactly, particularly the Rhino runtime constraints (ES6 safe mode: no async/await, no optional chaining, no redeclaring config keys like `DOMAIN`).
+For VBook extension development, you MUST read and follow the Master Extension API Spec: `docs/extension-api.md`, `docs/verify-checklist.md`, and `.claude/skills/vbook-extensions/SKILL.md`. Follow these rules exactly, particularly the Rhino runtime constraints (ES6 safe mode: no async/await, no optional chaining, no redeclaring config keys like `DOMAIN`).
 
 # USER RULES (QUY TẮC CỐT LÕI):
 1. Luôn luôn đọc docs và rules trước khi viết hoặc sửa bất kỳ dòng code nào.

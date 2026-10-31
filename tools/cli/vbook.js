@@ -2,10 +2,10 @@
 // vbook extension CLI — build payload from disk, call the vBook local REST API directly
 // (see extension_docs.md). No MCP. Lives in the skill dir but operates on the repo it's
 // invoked from; run from the repo root:
-//   node .agents/skills/vbook-extensions/scripts/vbook.js connect
-//   node .agents/skills/vbook-extensions/scripts/vbook.js install <ext-dir> [--no-icon]
-//   node .agents/skills/vbook-extensions/scripts/vbook.js build   <ext-dir> [outfile.zip]
-//   node .agents/skills/vbook-extensions/scripts/vbook.js test    <ext-dir> <script.js> [arg1 arg2 ...]
+//   node .claude/skills/vbook-extensions/scripts/vbook.js connect
+//   node .claude/skills/vbook-extensions/scripts/vbook.js install <ext-dir> [--no-icon]
+//   node .claude/skills/vbook-extensions/scripts/vbook.js build   <ext-dir> [outfile.zip]
+//   node .claude/skills/vbook-extensions/scripts/vbook.js test    <ext-dir> <script.js> [arg1 arg2 ...]
 //
 // Server selection order:
 //   1. --server <url>            (single explicit server, no probing)
@@ -28,7 +28,7 @@ const SERVERS_EXAMPLE = path.join(__dirname, "servers.example.json");
 
 function die(msg) { console.error("ERROR: " + msg); process.exit(1); }
 
-// The script lives under .agents/skills/vbook-extensions/scripts/ but operates on
+// The script lives under .claude/skills/vbook-extensions/scripts/ but operates on
 // the repo it is invoked from — resolve everything against the current working dir.
 function repoRoot() { return process.cwd(); }
 
@@ -377,7 +377,7 @@ async function main() {
 
   const extDir = args[1];
   if (!cmd || !extDir) {
-    console.error("usage: node .agents/skills/vbook-extensions/scripts/vbook.js <connect|install|build|test|testall> <ext-dir> [...] [--server <url>] [--no-icon]");
+    console.error("usage: node .claude/skills/vbook-extensions/scripts/vbook.js <connect|install|build|test|testall> <ext-dir> [...] [--server <url>] [--no-icon]");
     process.exit(2);
   }
 
