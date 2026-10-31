@@ -2,7 +2,7 @@
   "metadata": {
     "name": "NovelCooksTW",
     "author": "Meo",
-    "version": 11,
+    "version": 12,
     "source": "https://novel.cooks.tw",
     "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
@@ -16,6 +16,7 @@
     "rankcontent": "rankcontent.js",
     "genre": "genre.js",
     "genrecontent": "genrecontent.js",
+    "tagcontent": "tagcontent.js",
     "detail": "detail.js",
     "search": "search.js",
     "toc": "toc.js",

@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Bixiange",
     "author": "Meo",
-    "version": 14,
+    "version": 16,
     "source": "https://m.bixiange.top",
     "regexp": "m\\.bixiange\\.(top|me)\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
