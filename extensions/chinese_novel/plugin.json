@@ -25,20 +25,21 @@
     "name": "Bixiange",
     "author": "Meo",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
-    "source": "https://m.bixiange.me",
-    "version": 10,
+    "source": "https://m.bixiange.top",
+    "version": 11,
     "type": "chinese_novel",
     "locale": "zh_CN",
     "relativePath": "extensions/chinese_novel/bixiange",
     "metadata": {
       "name": "Bixiange",
       "author": "Meo",
-      "version": 10,
-      "source": "https://m.bixiange.me",
-      "regexp": "m\\.bixiange\\.me\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
+      "version": 11,
+      "source": "https://m.bixiange.top",
+      "regexp": "m\\.bixiange\\.(top|me)\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
       "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
       "locale": "zh_CN",
-      "type": "chinese_novel"
+      "type": "chinese_novel",
+      "nsfw": false
     }
   },
   {
@@ -47,20 +48,20 @@
     "author": "Meo",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
     "source": "https://novel.cooks.tw",
-    "version": 9,
+    "version": 10,
     "type": "chinese_novel",
     "locale": "zh_TW",
     "relativePath": "extensions/chinese_novel/novelcookstw",
     "metadata": {
       "name": "NovelCooksTW",
       "author": "Meo",
-      "version": 9,
+      "version": 10,
       "source": "https://novel.cooks.tw",
-      "regexp": "novel\\.cooks\\.tw\\/reader\\.html",
+      "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
       "locale": "zh_TW",
       "type": "chinese_novel",
-      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/icon.png"
+      "nsfw": false
     }
   },
   {

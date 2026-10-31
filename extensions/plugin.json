@@ -68,17 +68,17 @@
       "name": "MeTruyenSangTac",
       "author": "Meo",
       "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
-      "source": "https://metruyensangtac.com",
-      "version": 5,
+      "source": "https://metruyensangtac.vn",
+      "version": 6,
       "type": "novel",
       "locale": "vi_VN",
       "relativePath": "extensions/novel/metruyensangtac",
       "metadata": {
         "name": "MeTruyenSangTac",
         "author": "Meo",
-        "version": 5,
-        "source": "https://metruyensangtac.com",
-        "regexp": "metruyensangtac\\.com\\/truyen\\/[^\\/]+\\/?$",
+        "version": 6,
+        "source": "https://metruyensangtac.vn",
+        "regexp": "metruyensangtac\\.(vn|com)/truyen/[^/]+/?$",
         "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
         "locale": "vi_VN",
         "type": "novel"
@@ -174,20 +174,21 @@
       "author": "Meo",
       "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
       "source": "https://wanwansekai.com",
-      "version": 9,
+      "version": 10,
       "type": "novel",
       "locale": "vi_VN",
       "relativePath": "extensions/novel/wanwansekai",
       "metadata": {
         "name": "WanwanSekai -18+",
         "author": "Meo",
-        "version": 9,
+        "version": 10,
         "source": "https://wanwansekai.com",
-        "regexp": "wanwansekai\\\\.com\\\\/novel\\\\/[^\\\\/]+\\\\/?$",
+        "regexp": "wanwansekai\\.com/novel/[^/]+/?$",
         "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
         "locale": "vi_VN",
         "tag": "18+",
-        "type": "novel"
+        "type": "novel",
+        "nsfw": true
       }
     },
     {
@@ -240,21 +241,22 @@
       "name": "LoppyToon -18+",
       "author": "Meo",
       "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
-      "source": "https://loppytoon.com",
-      "version": 18,
+      "source": "https://loppytoonn.com",
+      "version": 19,
       "type": "comic",
       "locale": "vi_VN",
       "relativePath": "extensions/comic/loppytoon",
       "metadata": {
         "name": "LoppyToon -18+",
         "author": "Meo",
-        "version": 18,
-        "source": "https://loppytoon.com",
-        "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
+        "version": 19,
+        "source": "https://loppytoonn.com",
+        "regexp": "loppytoonn?\\.com/truyen/[^/]+/?$",
         "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
         "locale": "vi_VN",
         "tag": "NSFW",
-        "type": "comic"
+        "type": "comic",
+        "nsfw": true
       }
     },
     {
@@ -417,20 +419,21 @@
       "name": "Bixiange",
       "author": "Meo",
       "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
-      "source": "https://m.bixiange.me",
-      "version": 10,
+      "source": "https://m.bixiange.top",
+      "version": 11,
       "type": "chinese_novel",
       "locale": "zh_CN",
       "relativePath": "extensions/chinese_novel/bixiange",
       "metadata": {
         "name": "Bixiange",
         "author": "Meo",
-        "version": 10,
-        "source": "https://m.bixiange.me",
-        "regexp": "m\\.bixiange\\.me\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
+        "version": 11,
+        "source": "https://m.bixiange.top",
+        "regexp": "m\\.bixiange\\.(top|me)\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
         "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
         "locale": "zh_CN",
-        "type": "chinese_novel"
+        "type": "chinese_novel",
+        "nsfw": false
       }
     },
     {
@@ -439,20 +442,20 @@
       "author": "Meo",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
       "source": "https://novel.cooks.tw",
-      "version": 9,
+      "version": 10,
       "type": "chinese_novel",
       "locale": "zh_TW",
       "relativePath": "extensions/chinese_novel/novelcookstw",
       "metadata": {
         "name": "NovelCooksTW",
         "author": "Meo",
-        "version": 9,
+        "version": 10,
         "source": "https://novel.cooks.tw",
-        "regexp": "novel\\.cooks\\.tw\\/reader\\.html",
+        "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
         "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
         "locale": "zh_TW",
         "type": "chinese_novel",
-        "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novelcookstw/icon.png"
+        "nsfw": false
       }
     },
     {

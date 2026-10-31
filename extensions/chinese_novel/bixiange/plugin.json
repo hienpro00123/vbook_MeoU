@@ -2,12 +2,13 @@
   "metadata": {
     "name": "Bixiange",
     "author": "Meo",
-    "version": 10,
-    "source": "https://m.bixiange.me",
-    "regexp": "m\\.bixiange\\.me\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
+    "version": 11,
+    "source": "https://m.bixiange.top",
+    "regexp": "m\\.bixiange\\.(top|me)\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
     "locale": "zh_CN",
-    "type": "chinese_novel"
+    "type": "chinese_novel",
+    "nsfw": false
   },
   "script": {
     "home": "home.js",
@@ -19,5 +20,17 @@
     "toc": "toc.js",
     "chap": "chap.js",
     "suggest": "suggest.js"
+  },
+  "config": {
+    "DOMAIN": {
+      "title": "Domain",
+      "default": "https://m.bixiange.top",
+      "values": [
+        "https://m.bixiange.top",
+        "https://m.bixiange.me"
+      ],
+      "mode": "select",
+      "format": "single"
+    }
   }
 }

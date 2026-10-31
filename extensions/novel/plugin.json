@@ -67,17 +67,17 @@
     "name": "MeTruyenSangTac",
     "author": "Meo",
     "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
-    "source": "https://metruyensangtac.com",
-    "version": 5,
+    "source": "https://metruyensangtac.vn",
+    "version": 6,
     "type": "novel",
     "locale": "vi_VN",
     "relativePath": "extensions/novel/metruyensangtac",
     "metadata": {
       "name": "MeTruyenSangTac",
       "author": "Meo",
-      "version": 5,
-      "source": "https://metruyensangtac.com",
-      "regexp": "metruyensangtac\\.com\\/truyen\\/[^\\/]+\\/?$",
+      "version": 6,
+      "source": "https://metruyensangtac.vn",
+      "regexp": "metruyensangtac\\.(vn|com)/truyen/[^/]+/?$",
       "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
       "locale": "vi_VN",
       "type": "novel"
@@ -173,20 +173,21 @@
     "author": "Meo",
     "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
     "source": "https://wanwansekai.com",
-    "version": 9,
+    "version": 10,
     "type": "novel",
     "locale": "vi_VN",
     "relativePath": "extensions/novel/wanwansekai",
     "metadata": {
       "name": "WanwanSekai -18+",
       "author": "Meo",
-      "version": 9,
+      "version": 10,
       "source": "https://wanwansekai.com",
-      "regexp": "wanwansekai\\\\.com\\\\/novel\\\\/[^\\\\/]+\\\\/?$",
+      "regexp": "wanwansekai\\.com/novel/[^/]+/?$",
       "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
       "locale": "vi_VN",
       "tag": "18+",
-      "type": "novel"
+      "type": "novel",
+      "nsfw": true
     }
   },
   {

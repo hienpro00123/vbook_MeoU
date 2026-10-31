@@ -2,9 +2,9 @@
   "metadata": {
     "name": "MeTruyenSangTac",
     "author": "Meo",
-    "version": 5,
-    "source": "https://metruyensangtac.com",
-    "regexp": "metruyensangtac\\.com\\/truyen\\/[^\\/]+\\/?$",
+    "version": 6,
+    "source": "https://metruyensangtac.vn",
+    "regexp": "metruyensangtac\\.(vn|com)/truyen/[^/]+/?$",
     "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
     "locale": "vi_VN",
     "type": "novel"
@@ -19,5 +19,17 @@
     "toc": "toc.js",
     "chap": "chap.js",
     "suggest": "suggest.js"
+  },
+  "config": {
+    "DOMAIN": {
+      "title": "Domain",
+      "default": "https://metruyensangtac.vn",
+      "values": [
+        "https://metruyensangtac.vn",
+        "https://metruyensangtac.com"
+      ],
+      "mode": "select",
+      "format": "single"
+    }
   }
 }
