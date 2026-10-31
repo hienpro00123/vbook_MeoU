@@ -5,19 +5,19 @@
     "author": "Meo",
     "description": "笔趣阁 - Truyện chữ Tiếng Trung",
     "source": "https://www.biquge.tw",
-    "version": 9,
-    "type": "chinese_novel",
+    "version": 10,
+    "type": "novel",
     "locale": "zh_CN",
     "relativePath": "extensions/chinese_novel/biquge",
     "metadata": {
       "name": "Biquge",
       "author": "Meo",
-      "version": 9,
+      "version": 10,
       "source": "https://www.biquge.tw",
       "regexp": "(www\\.)?biquge\\.tw/book/\\d+(\\.html)?/?$",
       "description": "笔趣阁 - Truyện chữ Tiếng Trung",
       "locale": "zh_CN",
-      "type": "chinese_novel"
+      "type": "novel"
     }
   },
   {
@@ -26,19 +26,19 @@
     "author": "Meo",
     "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
     "source": "https://m.bixiange.top",
-    "version": 11,
-    "type": "chinese_novel",
+    "version": 12,
+    "type": "novel",
     "locale": "zh_CN",
     "relativePath": "extensions/chinese_novel/bixiange",
     "metadata": {
       "name": "Bixiange",
       "author": "Meo",
-      "version": 11,
+      "version": 12,
       "source": "https://m.bixiange.top",
       "regexp": "m\\.bixiange\\.(top|me)\\/(dsyq|wxxz|xhqh|cyjk|khjj|ghxy|jsls|guanchang|xtfq|dmtr|trxs|jqxs)\\/\\d+(\\.html)?/?$",
       "description": "笔仙阁 - Truyện chữ Tiếng Trung online",
       "locale": "zh_CN",
-      "type": "chinese_novel",
+      "type": "novel",
       "nsfw": false
     }
   },
@@ -48,19 +48,19 @@
     "author": "Meo",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
     "source": "https://novel.cooks.tw",
-    "version": 10,
-    "type": "chinese_novel",
+    "version": 11,
+    "type": "novel",
     "locale": "zh_TW",
     "relativePath": "extensions/chinese_novel/novelcookstw",
     "metadata": {
       "name": "NovelCooksTW",
       "author": "Meo",
-      "version": 10,
+      "version": 11,
       "source": "https://novel.cooks.tw",
       "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
       "locale": "zh_TW",
-      "type": "chinese_novel",
+      "type": "novel",
       "nsfw": false
     }
   },
@@ -70,20 +70,20 @@
     "author": "Meo",
     "description": "ShiBaShuWu - Truyện chữ Trung Quốc 18+",
     "source": "https://www.shibashuwu.net",
-    "version": 20,
-    "type": "chinese_novel",
+    "version": 21,
+    "type": "novel",
     "locale": "zh_CN",
     "relativePath": "extensions/chinese_novel/shibashuwu",
     "metadata": {
       "name": "ShiBaShuWu -18+",
       "author": "Meo",
-      "version": 20,
+      "version": 21,
       "source": "https://www.shibashuwu.net",
       "regexp": "https?:\\/\\/(?:www\\.)?shibashuwu\\.net\\/book\\/\\d+(?:\\/|\\/\\d+(?:_\\d+)?\\.html)?$",
       "description": "ShiBaShuWu - Truyện chữ Trung Quốc 18+",
       "locale": "zh_CN",
       "tag": "18+",
-      "type": "chinese_novel"
+      "type": "novel"
     }
   }
 ]

@@ -2,12 +2,12 @@
   "metadata": {
     "name": "NovelCooksTW",
     "author": "Meo",
-    "version": 10,
+    "version": 11,
     "source": "https://novel.cooks.tw",
     "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
     "locale": "zh_TW",
-    "type": "chinese_novel",
+    "type": "novel",
     "nsfw": false
   },
   "script": {
@@ -26,7 +26,9 @@
     "DOMAIN": {
       "title": "Domain",
       "default": "https://novel.cooks.tw",
-      "values": ["https://novel.cooks.tw"],
+      "values": [
+        "https://novel.cooks.tw"
+      ],
       "mode": "select",
       "format": "single"
     }

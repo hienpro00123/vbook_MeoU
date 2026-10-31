@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const acorn = require('acorn');
 
-async function handleValidateCommand(options, workspaceRoot) {
-    const pluginPath = options.plugin || 'extensions/novel/kychi_ntruyen';
+async function validateSingle(pluginPath, workspaceRoot) {
     const resolvedPath = path.resolve(workspaceRoot, pluginPath);
     const srcDir = path.join(resolvedPath, 'src');
     const pJsonPath = path.join(resolvedPath, 'plugin.json');
@@ -30,13 +29,20 @@ async function handleValidateCommand(options, workspaceRoot) {
     const files = fs.readdirSync(srcDir).filter(f => f.endsWith('.js'));
 
     for (const file of files) {
+        if (file.endsWith('.encrypted.js')) {
+            console.log(`\nChecking ${file}...`);
+            console.log(`  ℹ Encrypted bytecode/file (skipped AST check).`);
+            continue;
+        }
+
         const filePath = path.join(srcDir, file);
         const code = fs.readFileSync(filePath, 'utf8');
         console.log(`\nChecking ${file}...`);
 
         // 1. AST Validation for Rhino ES6 Safe Mode
+        let ast = null;
         try {
-            acorn.parse(code, { ecmaVersion: 2020 });
+            ast = acorn.parse(code, { ecmaVersion: 2020 });
             console.log(`  ✓ Syntax: Valid JavaScript syntax.`);
         } catch (err) {
             console.warn(`  ✗ Syntax Error at ${err.loc.line}:${err.loc.column}: ${err.message}`);
@@ -68,28 +74,73 @@ async function handleValidateCommand(options, workspaceRoot) {
             overallSuccess = false;
         }
 
-        // Check for async/await or unsupported features
-        if (/\b(async|await)\b/.test(code)) {
-            console.warn(`  ✗ Unsupported on Rhino: 'async/await' keyword detected.`);
-            overallSuccess = false;
-        }
-        if (/\?\.\s*[^0-9]/.test(code)) {
-            console.warn(`  ✗ Unsupported on Rhino: Optional chaining '?.' detected.`);
-            overallSuccess = false;
-        }
-        if (/\?\?/.test(code)) {
-            console.warn(`  ✗ Unsupported on Rhino: Nullish coalescing '??' detected.`);
-            overallSuccess = false;
+        // AST walk for unsupported Rhino features
+        if (ast) {
+            function walkAst(node) {
+                if (!node || typeof node !== 'object') return;
+                if (node.type === 'ChainExpression') {
+                    console.warn(`  ✗ Unsupported on Rhino: Optional chaining '?.' detected.`);
+                    overallSuccess = false;
+                }
+                if (node.type === 'LogicalExpression' && node.operator === '??') {
+                    console.warn(`  ✗ Unsupported on Rhino: Nullish coalescing '??' detected.`);
+                    overallSuccess = false;
+                }
+                if (node.async || node.type === 'AwaitExpression') {
+                    console.warn(`  ✗ Unsupported on Rhino: 'async/await' detected.`);
+                    overallSuccess = false;
+                }
+                for (const key of Object.keys(node)) {
+                    if (key === 'loc' || key === 'range') continue;
+                    const child = node[key];
+                    if (Array.isArray(child)) {
+                        child.forEach(walkAst);
+                    } else if (child && typeof child === 'object') {
+                        walkAst(child);
+                    }
+                }
+            }
+            walkAst(ast);
         }
     }
 
     if (overallSuccess) {
-        console.log('\n[SUCCESS] Extension is valid and compliant with VBook Rhino ES6 Safe Mode.');
+        console.log(`\n[SUCCESS] ${pluginPath} is valid and compliant with VBook Rhino ES6 Safe Mode.`);
     } else {
-        console.warn('\n[ISSUE] Validation failed. Please fix the items above.');
+        console.warn(`\n[ISSUE] Validation failed for ${pluginPath}.`);
     }
 
     return overallSuccess;
+}
+
+async function handleValidateCommand(options, workspaceRoot) {
+    if (options && options.plugin) {
+        return validateSingle(options.plugin, workspaceRoot);
+    }
+
+    // Default: validate all extensions in extensions/
+    const baseDir = path.resolve(workspaceRoot, 'extensions');
+    const categories = ['novel', 'comic', 'video', 'chinese_novel', 'translate', 'tts'];
+    let allPassed = true;
+    let validatedCount = 0;
+
+    for (const cat of categories) {
+        const catDir = path.join(baseDir, cat);
+        if (!fs.existsSync(catDir)) continue;
+        const items = fs.readdirSync(catDir).filter(f => fs.statSync(path.join(catDir, f)).isDirectory());
+        for (const item of items) {
+            const relPath = `extensions/${cat}/${item}`;
+            if (fs.existsSync(path.join(workspaceRoot, relPath, 'plugin.json'))) {
+                const passed = await validateSingle(relPath, workspaceRoot);
+                validatedCount++;
+                if (!passed) allPassed = false;
+            }
+        }
+    }
+
+    console.log(`\n=========================================`);
+    console.log(`Validated ${validatedCount} extensions. Result: ${allPassed ? 'ALL PASSED ✓' : 'SOME FAILED ✗'}`);
+    return allPassed;
 }
 
 module.exports = { handleValidateCommand };
