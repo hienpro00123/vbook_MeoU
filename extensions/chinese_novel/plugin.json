@@ -8,7 +8,8 @@
     "version": 12,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "chinese_novel/biquge",
+    "relativePath": "extensions/chinese_novel/biquge",
+    "ghPath": "chinese_novel/biquge",
     "metadata": {
       "name": "Biquge",
       "author": "Meo",
@@ -29,7 +30,8 @@
     "version": 16,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "chinese_novel/bixiange",
+    "relativePath": "extensions/chinese_novel/bixiange",
+    "ghPath": "chinese_novel/bixiange",
     "metadata": {
       "name": "Bixiange",
       "author": "Meo",
@@ -51,7 +53,8 @@
     "version": 12,
     "type": "novel",
     "locale": "zh_TW",
-    "relativePath": "chinese_novel/novelcookstw",
+    "relativePath": "extensions/chinese_novel/novelcookstw",
+    "ghPath": "chinese_novel/novelcookstw",
     "metadata": {
       "name": "NovelCooksTW",
       "author": "Meo",
@@ -73,7 +76,8 @@
     "version": 21,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "chinese_novel/shibashuwu",
+    "relativePath": "extensions/chinese_novel/shibashuwu",
+    "ghPath": "chinese_novel/shibashuwu",
     "metadata": {
       "name": "ShiBaShuWu -18+",
       "author": "Meo",

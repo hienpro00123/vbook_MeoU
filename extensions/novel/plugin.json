@@ -8,7 +8,8 @@
     "version": 5,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/dualeo",
+    "relativePath": "extensions/novel/dualeo",
+    "ghPath": "novel/dualeo",
     "metadata": {
       "name": "dualeotruyenfull",
       "author": "Meo",
@@ -29,7 +30,8 @@
     "version": 16,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/lnkuro",
+    "relativePath": "extensions/novel/lnkuro",
+    "ghPath": "novel/lnkuro",
     "metadata": {
       "name": "LN Kuro",
       "author": "Meo",
@@ -50,7 +52,8 @@
     "version": 17,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/metruyenchu",
+    "relativePath": "extensions/novel/metruyenchu",
+    "ghPath": "novel/metruyenchu",
     "metadata": {
       "name": "MeTruyenChu",
       "author": "Meo",
@@ -71,7 +74,8 @@
     "version": 6,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/metruyensangtac",
+    "relativePath": "extensions/novel/metruyensangtac",
+    "ghPath": "novel/metruyensangtac",
     "metadata": {
       "name": "MeTruyenSangTac",
       "author": "Meo",
@@ -92,7 +96,8 @@
     "version": 5,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/storya",
+    "relativePath": "extensions/novel/storya",
+    "ghPath": "novel/storya",
     "metadata": {
       "name": "Storya",
       "author": "Meo",
@@ -113,7 +118,8 @@
     "version": 8,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/trichtinhlau",
+    "relativePath": "extensions/novel/trichtinhlau",
+    "ghPath": "novel/trichtinhlau",
     "metadata": {
       "name": "TrichTinhLau",
       "author": "Meo",
@@ -134,7 +140,8 @@
     "version": 9,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/truyenchu",
+    "relativePath": "extensions/novel/truyenchu",
+    "ghPath": "novel/truyenchu",
     "metadata": {
       "name": "TruyenChu",
       "author": "Meo",
@@ -155,7 +162,8 @@
     "version": 10,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/valvrareteam",
+    "relativePath": "extensions/novel/valvrareteam",
+    "ghPath": "novel/valvrareteam",
     "metadata": {
       "name": "Valvrareteam",
       "author": "Meo",
@@ -176,7 +184,8 @@
     "version": 10,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "novel/wanwansekai",
+    "relativePath": "extensions/novel/wanwansekai",
+    "ghPath": "novel/wanwansekai",
     "metadata": {
       "name": "WanwanSekai -18+",
       "author": "Meo",
@@ -199,7 +208,8 @@
     "version": 21,
     "type": "novel",
     "locale": "vi",
-    "relativePath": "novel/wattpad",
+    "relativePath": "extensions/novel/wattpad",
+    "ghPath": "novel/wattpad",
     "metadata": {
       "name": "Wattpad - Tiếng Việt",
       "author": "Meo",
