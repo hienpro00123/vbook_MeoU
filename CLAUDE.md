@@ -75,11 +75,11 @@ This section merges VBook's codebase architecture and developer workflow instruc
 4. **Luôn luôn nâng version** trong `plugin.json` lên thêm 1 phiên bản trước khi chuẩn bị commit.
 
 ### 💻 Official Admin CLI Commands (Official REST-API CLI)
-* **Kết nối server app**: `node .claude/skills/vbook-extensions/scripts/vbook.js connect` (hoặc `npm run vbook:connect`)
-* **Chạy test script**: `node .claude/skills/vbook-extensions/scripts/vbook.js test <ext-folder> <script.js> [args...]`
-* **Kiểm thử toàn bộ / Audit repo**: `node .claude/skills/vbook-extensions/scripts/vbook.js testall [ext...] [--query <kw>] [--json report.json]` (hoặc `npm run vbook:testall`)
-* **Cài đặt trực tiếp vào app**: `node .claude/skills/vbook-extensions/scripts/vbook.js install <ext-folder>`
-* **Đóng gói ZIP**: `node .claude/skills/vbook-extensions/scripts/vbook.js build <ext-folder> [out.zip]`
+* **Kết nối server app**: `node .agents/skills/vbook-extensions/scripts/vbook.js connect` (hoặc `npm run vbook:connect`)
+* **Chạy test script**: `node .agents/skills/vbook-extensions/scripts/vbook.js test <ext-folder> <script.js> [args...]`
+* **Kiểm thử toàn bộ / Audit repo**: `node .agents/skills/vbook-extensions/scripts/vbook.js testall [ext...] [--query <kw>] [--json report.json]` (hoặc `npm run vbook:testall`)
+* **Cài đặt trực tiếp vào app**: `node .agents/skills/vbook-extensions/scripts/vbook.js install <ext-folder>`
+* **Đóng gói ZIP**: `node .agents/skills/vbook-extensions/scripts/vbook.js build <ext-folder> [out.zip]`
 
 ### 💻 Local Tooling CLI Commands
 * **Khởi tạo extension**: `npm run ext:create -- --name <Tên_Extension> --source <URL_Nguồn>`
@@ -92,8 +92,8 @@ Script extension chạy trên Rhino (ES6 safe subset).
 * **Quy tắc quan trọng**: Luôn kiểm tra `response.ok` trước khi gọi `.html()`, `.json()`, `.text()`.
 
 ### 📚 Key Documentation Paths
-* **Official Extension API (Standard)**: [docs/extension-api.md](./docs/extension-api.md)
-* **Official Verification Checklist**: [docs/verify-checklist.md](./docs/verify-checklist.md)
-* **Skill Master Spec**: [.claude/skills/vbook-extensions/SKILL.md](.claude/skills/vbook-extensions/SKILL.md)
-* **Decryption Patterns**: [docs/DECRYPTION_PATTERNS.md](./docs/DECRYPTION_PATTERNS.md)
-* **Contributing Rules**: [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+* **Official Extension API (Standard)**: [api_docs.md](./api_docs.md)
+* **Official Verification Checklist**: [.agents/skills/vbook-publish/SKILL.md](.agents/skills/vbook-publish/SKILL.md)
+* **Skill Master Spec**: [.agents/skills/vbook-extensions/SKILL.md](.agents/skills/vbook-extensions/SKILL.md)
+* **Encryption/Decryption Tooling**: [tools/encrypt/](tools/encrypt/) và [tools/cli/vbook_decoder.js](tools/cli/vbook_decoder.js)
+* **Contributing Rules**: [.agents/rules/commit-rules.md](.agents/rules/commit-rules.md)
