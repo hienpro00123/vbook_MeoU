@@ -6,10 +6,21 @@ async function handleValidateCommand(options, workspaceRoot) {
     const pluginPath = options.plugin || 'extensions/novel/kychi_ntruyen';
     const resolvedPath = path.resolve(workspaceRoot, pluginPath);
     const srcDir = path.join(resolvedPath, 'src');
+    const pJsonPath = path.join(resolvedPath, 'plugin.json');
 
     if (!fs.existsSync(srcDir)) {
         console.error(`[ERROR] src/ directory not found in ${pluginPath}`);
         return false;
+    }
+
+    let registeredScripts = new Set();
+    if (fs.existsSync(pJsonPath)) {
+        try {
+            const p = JSON.parse(fs.readFileSync(pJsonPath, 'utf8'));
+            if (p.script) {
+                Object.values(p.script).forEach(s => registeredScripts.add(s));
+            }
+        } catch (e) {}
     }
 
     console.log(`\nVBook Extension Validation: ${pluginPath}`);
@@ -33,7 +44,9 @@ async function handleValidateCommand(options, workspaceRoot) {
         }
 
         // 2. VBook API Pattern & Constraint Checks
-        if (file !== 'config.js') {
+        // Chỉ bắt buộc execute() cho các file đăng ký trong plugin.json.script (trừ config.js)
+        const isRegisteredEntry = registeredScripts.size > 0 ? registeredScripts.has(file) : (file !== 'config.js');
+        if (isRegisteredEntry && file !== 'config.js') {
             if (!code.includes('function execute')) {
                 console.warn(`  ✗ Missing 'function execute(...)' entry point.`);
                 overallSuccess = false;
@@ -45,6 +58,8 @@ async function handleValidateCommand(options, workspaceRoot) {
             if ((code.includes('.html()') || code.includes('.json()') || code.includes('.text()')) && !code.includes('.ok')) {
                 console.warn(`  ! Warning: Calling .html()/.json()/.text() without checking 'response.ok'.`);
             }
+        } else {
+            console.log(`  ℹ Helper/Library file (no execute function required).`);
         }
 
         // Check for forbidden re-declaration of DOMAIN or config keys
@@ -58,7 +73,7 @@ async function handleValidateCommand(options, workspaceRoot) {
             console.warn(`  ✗ Unsupported on Rhino: 'async/await' keyword detected.`);
             overallSuccess = false;
         }
-        if (/\?\./.test(code)) {
+        if (/\?\.\s*[^0-9]/.test(code)) {
             console.warn(`  ✗ Unsupported on Rhino: Optional chaining '?.' detected.`);
             overallSuccess = false;
         }
