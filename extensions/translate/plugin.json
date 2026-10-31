@@ -1,0 +1,25 @@
+[
+  {
+    "folder": "dich_deepseek",
+    "name": "DeepSeek Translate",
+    "author": "Meo",
+    "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
+    "source": "https://platform.deepseek.com",
+    "version": 6,
+    "type": "translate",
+    "locale": "global",
+    "relativePath": "extensions/translate/dich_deepseek",
+    "metadata": {
+      "name": "DeepSeek Translate",
+      "author": "Meo",
+      "version": 6,
+      "source": "https://platform.deepseek.com",
+      "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
+      "locale": "global",
+      "regexp": "",
+      "type": "translate",
+      "nsfw": false,
+      "encrypt": false
+    }
+  }
+]

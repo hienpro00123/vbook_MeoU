@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "name": "TruyenDex",
+    "author": "Meo",
+    "version": 29,
+    "source": "https://truyendex.cc/nettrom",
+    "regexp": "truyendex\\.(cc|com)/nettrom/truyen-tranh/[a-f0-9\\-]+/?$",
+    "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
+    "locale": "vi_VN",
+    "type": "comic"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "detail": "detail.js",
+    "search": "search.js",
+    "page": "page.js",
+    "toc": "toc.js",
+    "chap": "chap.js",
+    "suggest": "suggest.js"
+  }
+}

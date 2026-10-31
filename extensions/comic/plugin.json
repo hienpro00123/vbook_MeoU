@@ -1,0 +1,153 @@
+[
+  {
+    "folder": "hentaicube",
+    "name": "HentaiCube -18+",
+    "author": "Meo",
+    "description": "HentaiCube - Truyện Hentai Online 18+",
+    "source": "https://hentaicube.xyz",
+    "version": 1,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/hentaicube",
+    "metadata": {
+      "name": "HentaiCube -18+",
+      "author": "Meo",
+      "version": 1,
+      "source": "https://hentaicube.xyz",
+      "regexp": "hentaicube\\.xyz\\/read\\/[^\\/]+\\/?$",
+      "description": "HentaiCube - Truyện Hentai Online 18+",
+      "locale": "vi_VN",
+      "tag": "NSFW",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "loppytoon",
+    "name": "LoppyToon -18+",
+    "author": "Meo",
+    "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
+    "source": "https://loppytoon.com",
+    "version": 18,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/loppytoon",
+    "metadata": {
+      "name": "LoppyToon -18+",
+      "author": "Meo",
+      "version": 18,
+      "source": "https://loppytoon.com",
+      "regexp": "loppytoon\\.com\\/truyen\\/[^\\/]+\\/?$",
+      "description": "LoppyToon - Truyện tranh & tiểu thuyết 18+",
+      "locale": "vi_VN",
+      "tag": "NSFW",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "nettruyen",
+    "name": "nettruyenviet.monster",
+    "author": "Meo",
+    "description": "Đọc truyện tranh từ NetTruyen",
+    "source": "https://nettruyenviet.monster",
+    "version": 4,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/nettruyen",
+    "metadata": {
+      "name": "nettruyenviet.monster",
+      "author": "Meo",
+      "version": 4,
+      "source": "https://nettruyenviet.monster",
+      "regexp": "nettruyenviet\\.monster\\/truyen-tranh\\/[^\\/]+\\/?$",
+      "description": "Đọc truyện tranh từ NetTruyen",
+      "locale": "vi_VN",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "otruyen",
+    "name": "OTruyen",
+    "author": "Meo",
+    "description": "Đọc truyện tranh từ OTruyen.CC",
+    "source": "https://otruyen.cc",
+    "version": 24,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/otruyen",
+    "metadata": {
+      "name": "OTruyen",
+      "author": "Meo",
+      "version": 24,
+      "source": "https://otruyen.cc",
+      "regexp": "(www.)?otruyen\\.(cc|net)/truyen-tranh/[^/]+/?$",
+      "description": "Đọc truyện tranh từ OTruyen.CC",
+      "locale": "vi_VN",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "sayhentai",
+    "name": "SayHentai -18+",
+    "author": "Meo",
+    "description": "SayHentai - truyen hentai, manhwa 18+ tieng Viet",
+    "source": "https://sayhentai.cx",
+    "version": 3,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/sayhentai",
+    "metadata": {
+      "name": "SayHentai -18+",
+      "author": "Meo",
+      "version": 3,
+      "source": "https://sayhentai.cx",
+      "regexp": "sayhentai\\.(?:sh|cx)\\/truyen-[^\\/]+(?:\\.html)?\\/?$",
+      "description": "SayHentai - truyen hentai, manhwa 18+ tieng Viet",
+      "locale": "vi_VN",
+      "tag": "NSFW",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "sayhentaibaby",
+    "name": "SayHentaiBaby -18+",
+    "author": "Meo",
+    "description": "SayHentai Baby - Doc truyen hentai -18+ online",
+    "source": "https://sayhentai.baby",
+    "version": 13,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/sayhentaibaby",
+    "metadata": {
+      "name": "SayHentaiBaby -18+",
+      "author": "Meo",
+      "version": 13,
+      "source": "https://sayhentai.baby",
+      "regexp": "sayhentai\\.baby\\/truyen\\/[^\\/]+(?:\\.html)?\\/?(?:\\?.*)?$",
+      "description": "SayHentai Baby - Doc truyen hentai -18+ online",
+      "locale": "vi_VN",
+      "tag": "nsfw",
+      "type": "comic"
+    }
+  },
+  {
+    "folder": "truyendex",
+    "name": "TruyenDex",
+    "author": "Meo",
+    "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
+    "source": "https://truyendex.cc/nettrom",
+    "version": 29,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "extensions/comic/truyendex",
+    "metadata": {
+      "name": "TruyenDex",
+      "author": "Meo",
+      "version": 29,
+      "source": "https://truyendex.cc/nettrom",
+      "regexp": "truyendex\\.(cc|com)/nettrom/truyen-tranh/[a-f0-9\\-]+/?$",
+      "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
+      "locale": "vi_VN",
+      "type": "comic"
+    }
+  }
+]

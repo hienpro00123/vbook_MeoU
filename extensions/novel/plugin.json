@@ -1,0 +1,213 @@
+[
+  {
+    "folder": "dualeo",
+    "name": "dualeotruyenfull",
+    "author": "Meo",
+    "description": "Dưa Leo Truyện Full - Đọc truyện chữ online",
+    "source": "https://dualeotruyenfull.net",
+    "version": 5,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/dualeo",
+    "metadata": {
+      "name": "dualeotruyenfull",
+      "author": "Meo",
+      "version": 5,
+      "description": "Dưa Leo Truyện Full - Đọc truyện chữ online",
+      "type": "novel",
+      "locale": "vi_VN",
+      "source": "https://dualeotruyenfull.net",
+      "regexp": "dualeotruyenfull\\.net/doc-truyen/"
+    }
+  },
+  {
+    "folder": "lnkuro",
+    "name": "LN Kuro",
+    "author": "Meo",
+    "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
+    "source": "https://lnkuro.top",
+    "version": 16,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/lnkuro",
+    "metadata": {
+      "name": "LN Kuro",
+      "author": "Meo",
+      "version": 16,
+      "source": "https://lnkuro.top",
+      "regexp": "lnkuro\\.top\\/.+",
+      "description": "LN Kuro - Đọc Light Novel Hàn Quốc dịch tiếng Việt",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "metruyenchu",
+    "name": "MeTruyenChu",
+    "author": "Meo",
+    "description": "MeTruyenChu - Đọc truyện chữ online miễn phí, không quảng cáo",
+    "source": "https://metruyenchu.com.vn",
+    "version": 17,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/metruyenchu",
+    "metadata": {
+      "name": "MeTruyenChu",
+      "author": "Meo",
+      "version": 17,
+      "source": "https://metruyenchu.com.vn",
+      "regexp": "metruyenchu\\.com\\.vn\\/[^\\/]+\\/?$",
+      "description": "MeTruyenChu - Đọc truyện chữ online miễn phí, không quảng cáo",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "metruyensangtac",
+    "name": "MeTruyenSangTac",
+    "author": "Meo",
+    "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
+    "source": "https://metruyensangtac.com",
+    "version": 5,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/metruyensangtac",
+    "metadata": {
+      "name": "MeTruyenSangTac",
+      "author": "Meo",
+      "version": 5,
+      "source": "https://metruyensangtac.com",
+      "regexp": "metruyensangtac\\.com\\/truyen\\/[^\\/]+\\/?$",
+      "description": "MeTruyenSangTac - Nền tảng đọc truyện sáng tác miễn phí",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "storya",
+    "name": "Storya",
+    "author": "Meo",
+    "description": "Storya - Đọc truyện chữ online miễn phí",
+    "source": "https://storya.click",
+    "version": 5,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/storya",
+    "metadata": {
+      "name": "Storya",
+      "author": "Meo",
+      "version": 5,
+      "source": "https://storya.click",
+      "regexp": "storya\\.click\\/truyen\\/[^\\/]+\\/?$",
+      "description": "Storya - Đọc truyện chữ online miễn phí",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "trichtinhlau",
+    "name": "TrichTinhLau",
+    "author": "Meo",
+    "description": "Trích Tinh Lâu - Đọc truyện chữ online miễn phí",
+    "source": "https://trichtinhlau.com",
+    "version": 8,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/trichtinhlau",
+    "metadata": {
+      "name": "TrichTinhLau",
+      "author": "Meo",
+      "version": 8,
+      "source": "https://trichtinhlau.com",
+      "regexp": "trichtinhlau\\.com\\/doc-truyen\\/[^\\/]+\\/[^\\/]+",
+      "description": "Trích Tinh Lâu - Đọc truyện chữ online miễn phí",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "truyenchu",
+    "name": "TruyenChu",
+    "author": "Meo",
+    "description": "TruyenChu - Đọc truyện chữ online miễn phí",
+    "source": "https://truyenchu.net",
+    "version": 9,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/truyenchu",
+    "metadata": {
+      "name": "TruyenChu",
+      "author": "Meo",
+      "version": 9,
+      "source": "https://truyenchu.net",
+      "regexp": "truyenchu\\.net\\/truyen\\/[^\\/]+\\/?$",
+      "description": "TruyenChu - Đọc truyện chữ online miễn phí",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "valvrareteam",
+    "name": "Valvrareteam",
+    "author": "Meo",
+    "description": "Light Novel Vietsub - Valvrareteam",
+    "source": "https://valvrareteam.net",
+    "version": 10,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/valvrareteam",
+    "metadata": {
+      "name": "Valvrareteam",
+      "author": "Meo",
+      "version": 10,
+      "source": "https://valvrareteam.net",
+      "regexp": "valvrareteam\\.net/truyen/__ID__[0-9a-fA-F]{24}$",
+      "description": "Light Novel Vietsub - Valvrareteam",
+      "locale": "vi_VN",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "wanwansekai",
+    "name": "WanwanSekai -18+",
+    "author": "Meo",
+    "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
+    "source": "https://wanwansekai.com",
+    "version": 9,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "extensions/novel/wanwansekai",
+    "metadata": {
+      "name": "WanwanSekai -18+",
+      "author": "Meo",
+      "version": 9,
+      "source": "https://wanwansekai.com",
+      "regexp": "wanwansekai\\\\.com\\\\/novel\\\\/[^\\\\/]+\\\\/?$",
+      "description": "WanwanSekai - Đọc web novel tiếng Việt 18+",
+      "locale": "vi_VN",
+      "tag": "18+",
+      "type": "novel"
+    }
+  },
+  {
+    "folder": "wattpad",
+    "name": "Wattpad - Tiếng Việt",
+    "author": "Meo",
+    "description": "Đọc truyện tiếng Việt trên Wattpad",
+    "source": "https://www.wattpad.com",
+    "version": 21,
+    "type": "novel",
+    "locale": "vi",
+    "relativePath": "extensions/novel/wattpad",
+    "metadata": {
+      "name": "Wattpad - Tiếng Việt",
+      "author": "Meo",
+      "version": 21,
+      "source": "https://www.wattpad.com",
+      "regexp": "(www\\.|m\\.)?wattpad\\.com/(story/)?\\d+",
+      "description": "Đọc truyện tiếng Việt trên Wattpad",
+      "locale": "vi",
+      "type": "novel"
+    }
+  }
+]

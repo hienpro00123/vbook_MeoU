@@ -1,5 +1,46 @@
 {
-  "devDependencies": {
-    "archiver": "^7.0.1"
+  "name": "vbook-meo-extensions",
+  "version": "3.0.1",
+  "description": "VBook 3.0: Modular & AI-Agent Ready CLI for Extension Developers",
+  "author": "Meo",
+  "main": "tools/cli/index.js",
+  "bin": {
+    "vbook": "./tools/cli/index.js"
+  },
+  "scripts": {
+    "vbook": "node tools/cli/index.js",
+    "vbook:connect": "node tools/cli/index.js connect",
+    "vbook:test": "node tools/cli/index.js test",
+    "vbook:install": "node .claude/skills/vbook-extensions/scripts/vbook.js install",
+    "vbook:build": "node .claude/skills/vbook-extensions/scripts/vbook.js build",
+    "vbook:testall": "node .claude/skills/vbook-extensions/scripts/vbook.js testall",
+    "vbook:audit": "node .claude/skills/vbook-extensions/scripts/vbook.js testall",
+    "ext:create": "node tools/cli/index.js ext --mode create",
+    "ext:edit": "node tools/cli/index.js ext --mode edit",
+    "ext:create:dry": "node tools/cli/index.js ext --mode create --name DemoExt --source https://example.com --author kychi --dry-run",
+    "build:ext": "node tools/cli/index.js build",
+    "build:catalog": "node tools/cli/index.js build-catalog",
+    "ref:sync": "node tools/cli/index.js sync-ref",
+    "encrypt:obfuscate": "node tools/encrypt/obfuscate.js",
+    "encrypt:aes": "node tools/encrypt/encrypt.js",
+    "encrypt:pipeline": "node tools/encrypt/pipeline.js",
+    "encrypt:truyencv": "node tools/encrypt/pipeline.js extensions/novel/kychi_truyencv",
+    "validate": "node tools/cli/index.js validate",
+    "verify": "node tools/cli/index.js verify"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "acorn": "^8.16.0",
+    "adm-zip": "^0.5.17",
+    "archiver": "^7.0.1",
+    "axios": "^1.15.0",
+    "cheerio": "^1.2.0",
+    "commander": "^12.1.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "javascript-obfuscator": "^4.1.2",
+    "playwright": "^1.60.0",
+    "string-argv": "^0.3.2",
+    "terser": "^5.48.0"
   }
 }

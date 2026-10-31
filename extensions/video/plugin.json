@@ -1,0 +1,24 @@
+[
+  {
+    "folder": "bilibili",
+    "name": "Bilibili TV",
+    "author": "Meo",
+    "description": "Bilibili TV Anime (Vietnam)",
+    "source": "https://www.bilibili.tv",
+    "version": 2,
+    "type": "video",
+    "locale": "vi_VN",
+    "relativePath": "extensions/video/bilibili",
+    "metadata": {
+      "name": "Bilibili TV",
+      "author": "Meo",
+      "version": 2,
+      "source": "https://www.bilibili.tv",
+      "regexp": "bilibili\\.tv",
+      "description": "Bilibili TV Anime (Vietnam)",
+      "locale": "vi_VN",
+      "type": "video",
+      "encrypt": true
+    }
+  }
+]

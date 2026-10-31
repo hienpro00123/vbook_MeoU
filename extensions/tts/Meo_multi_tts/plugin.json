@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "name": "Multi TTS VN",
+    "author": "Meo",
+    "version": 20,
+    "source": "https://ai.zalo.solutions/docs/api/getting-started",
+    "description": "Đọc văn bản bằng Zalo AI, ElevenLabs, FPT.AI và Viettel AI; hỗ trợ nhiều API key, tự chuyển key khi hết quota, tải phân trang giọng ElevenLabs và đồng bộ danh sách giọng Viettel AI từ API.\n\nHƯỚNG DẪN CÀI ĐẶT\n1. Chọn Dịch vụ TTS.\n2. Trong Danh sách API key / token, nhấn Thêm để nhập từng key. Dùng tiền tố ZAI, EL, FPT hoặc VTAI; có thể nhập key không tiền tố nếu chỉ dùng cho dịch vụ đang chọn.\n3. Chọn giọng có tiền tố khớp với dịch vụ. Danh sách ElevenLabs cần key có quyền Voices (read) và Text to Speech; danh sách Viettel AI được tải từ API công khai.\n4. Chọn model nếu dùng ElevenLabs; các tùy chọn đọc trước và giới hạn văn bản nằm phía dưới.\n\nLẤY API KEY/TOKEN\nZalo AI: https://ai.zalo.solutions/docs/api/getting-started\nElevenLabs: https://elevenlabs.io/docs/api-reference/authentication\nFPT.AI: https://docs.fpt.ai/docs/en/console/documentation/console/\nViettel AI: https://viettelai.vn/en/tai-lieu\n\nKhóa được lưu trong cài đặt vBook và gửi đến dịch vụ đã chọn. Không chia sẻ cấu hình có chứa khóa.",
+    "locale": "vi",
+    "regexp": "",
+    "type": "tts",
+    "nsfw": false,
+    "encrypt": true
+  },
+  "script": {
+    "config": "config.js",
+    "voice": "voice.js",
+    "tts": "tts.js"
+  },
+  "config": {
+    "tts_provider": {
+      "title": "Dịch vụ",
+      "subtitle": "Chọn nhà cung cấp giọng đọc.",
+      "default": "Zalo AI",
+      "values": [
+        "Zalo AI",
+        "ElevenLabs",
+        "FPT.AI",
+        "Viettel AI"
+      ],
+      "mode": "select",
+      "format": "single"
+    },
+    "provider_credentials": {
+      "title": "API key / token",
+      "subtitle": "Nhấn Thêm cho từng khóa. Dùng tiền tố ZAI, EL, FPT hoặc VTAI.",
+      "default": "",
+      "mode": "list",
+      "format": "text"
+    },
+    "tts_voice": {
+      "title": "Giọng đọc",
+      "subtitle": "FPT x1: cùng giá theo gói; ElevenLabs: giá theo model. Zalo/Viettel chưa công khai giá theo voice.",
+      "default": "Zalo AI | Nữ miền Nam",
+      "values": [
+        "Zalo AI | Nữ miền Nam",
+        "Zalo AI | Nữ miền Bắc",
+        "Zalo AI | Nam miền Nam",
+        "Zalo AI | Nam miền Bắc",
+        "FPT.AI | Ban Mai - Nữ miền Bắc (x1)",
+        "FPT.AI | Lan Nhi - Nữ miền Nam (x1)",
+        "FPT.AI | Lê Minh - Nam miền Bắc (x1)",
+        "FPT.AI | Mỹ An - Nữ miền Trung (x1)",
+        "FPT.AI | Thu Minh - Nữ miền Bắc (x1)",
+        "FPT.AI | Gia Huy - Nam miền Trung (x1)",
+        "FPT.AI | Linh San - Nữ miền Nam (x1)",
+        "Viettel AI | Quỳnh Anh - Nữ miền Bắc",
+        "Viettel AI | Diễm My - Nữ miền Nam",
+        "Viettel AI | Thanh Tùng - Nam miền Bắc",
+        "Viettel AI | Minh Quân - Nam miền Nam",
+        "Viettel AI | Mai Ngọc chất lượng cao - Nữ miền Trung",
+        "Viettel AI | Phương Trang chất lượng cao - Nữ miền Bắc",
+        "Viettel AI | Thảo Chi chất lượng cao - Nữ miền Bắc",
+        "Viettel AI | Thanh Hà chất lượng cao - Nữ miền Bắc",
+        "Viettel AI | Phương Ly chất lượng cao - Nữ miền Nam",
+        "Viettel AI | Thùy Dung chất lượng cao - Nữ miền Nam",
+        "Viettel AI | Bảo Quốc - Nam miền Trung",
+        "Viettel AI | Thanh Phương chất lượng cao - Nữ miền Bắc",
+        "Viettel AI | Nam Khánh chất lượng cao - Nam miền Bắc",
+        "Viettel AI | Lê Yến chất lượng cao - Nữ miền Nam",
+        "Viettel AI | Tiến Quân chất lượng cao - Nam miền Bắc",
+        "Viettel AI | Thùy Duyên chất lượng cao - Nữ miền Nam"
+      ],
+      "mode": "select",
+      "format": "single"
+    },
+    "elevenlabs_model": {
+      "title": "Model ElevenLabs",
+      "subtitle": "Giá API: x1 = $0.08/1.000 ký tự; x0.5 = $0.04/1.000 ký tự. Giá phụ thuộc model, không phụ thuộc giọng.",
+      "default": "ElevenLabs | eleven_multilingual_v2 (x1 - $0.08/1k)",
+      "values": [
+        "ElevenLabs | eleven_multilingual_v2 (x1 - $0.08/1k)",
+        "ElevenLabs | eleven_v3 (x1 - $0.08/1k)",
+        "ElevenLabs | eleven_turbo_v2_5 (x0.5 - $0.04/1k)",
+        "ElevenLabs | eleven_flash_v2_5 (x0.5 - $0.04/1k)"
+      ],
+      "mode": "select",
+      "format": "single"
+    },
+    "preload_size": {
+      "title": "Số câu tải trước",
+      "default": "2",
+      "values": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "5"
+      ],
+      "mode": "select",
+      "format": "single"
+    },
+    "preload_parallel": {
+      "title": "Tải câu đọc song song",
+      "default": "false",
+      "mode": "toggle"
+    },
+    "max_length": {
+      "title": "Giới hạn ký tự mỗi lượt",
+      "default": "500",
+      "values": [
+        "250",
+        "500",
+        "1000",
+        "2000",
+        "5000"
+      ],
+      "mode": "select",
+      "format": "single"
+    },
+    "required_api_key": {
+      "title": "Bắt buộc API key",
+      "default": "true",
+      "mode": "toggle"
+    }
+  }
+}
