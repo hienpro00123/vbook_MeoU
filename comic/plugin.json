@@ -8,7 +8,7 @@
     "version": 1,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/hentaicube",
+    "relativePath": "comic/hentaicube",
     "metadata": {
       "name": "HentaiCube -18+",
       "author": "Meo",
@@ -30,7 +30,7 @@
     "version": 19,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/loppytoon",
+    "relativePath": "comic/loppytoon",
     "metadata": {
       "name": "LoppyToon -18+",
       "author": "Meo",
@@ -53,7 +53,7 @@
     "version": 4,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/nettruyen",
+    "relativePath": "comic/nettruyen",
     "metadata": {
       "name": "nettruyenviet.monster",
       "author": "Meo",
@@ -74,7 +74,7 @@
     "version": 24,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/otruyen",
+    "relativePath": "comic/otruyen",
     "metadata": {
       "name": "OTruyen",
       "author": "Meo",
@@ -95,7 +95,7 @@
     "version": 3,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/sayhentai",
+    "relativePath": "comic/sayhentai",
     "metadata": {
       "name": "SayHentai -18+",
       "author": "Meo",
@@ -117,7 +117,7 @@
     "version": 13,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/sayhentaibaby",
+    "relativePath": "comic/sayhentaibaby",
     "metadata": {
       "name": "SayHentaiBaby -18+",
       "author": "Meo",
@@ -139,7 +139,7 @@
     "version": 29,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/truyendex",
+    "relativePath": "comic/truyendex",
     "metadata": {
       "name": "TruyenDex",
       "author": "Meo",

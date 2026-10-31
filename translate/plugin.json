@@ -8,7 +8,7 @@
     "version": 6,
     "type": "translate",
     "locale": "global",
-    "relativePath": "extensions/translate/dich_deepseek",
+    "relativePath": "translate/dich_deepseek",
     "metadata": {
       "name": "DeepSeek Translate",
       "author": "Meo",

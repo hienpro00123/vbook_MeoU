@@ -8,7 +8,7 @@
     "version": 2,
     "type": "video",
     "locale": "vi_VN",
-    "relativePath": "extensions/video/bilibili",
+    "relativePath": "video/bilibili",
     "metadata": {
       "name": "Bilibili TV",
       "author": "Meo",
