@@ -1,48 +1,28 @@
 load("config.js");
 
 function execute() {
-    return Response.success([
-        { title: "Action",        input: "action-95",        script: "genrecontent.js" },
-        { title: "Adventure",     input: "adventure",        script: "genrecontent.js" },
-        { title: "Anime",         input: "anime",            script: "genrecontent.js" },
-        { title: "Chuyển Sinh",   input: "chuyen-sinh-2130", script: "genrecontent.js" },
-        { title: "Comedy",        input: "comedy-99",        script: "genrecontent.js" },
-        { title: "Comic",         input: "comic",            script: "genrecontent.js" },
-        { title: "Cooking",       input: "cooking",          script: "genrecontent.js" },
-        { title: "Cổ Đại",        input: "co-dai-207",       script: "genrecontent.js" },
-        { title: "Doujinshi",     input: "doujinshi",        script: "genrecontent.js" },
-        { title: "Drama",         input: "drama-103",        script: "genrecontent.js" },
-        { title: "Đam Mỹ",        input: "dam-my",           script: "genrecontent.js" },
-        { title: "Fantasy",       input: "fantasy-105",      script: "genrecontent.js" },
-        { title: "Gender Bender", input: "gender-bender",    script: "genrecontent.js" },
-        { title: "Historical",    input: "historical",       script: "genrecontent.js" },
-        { title: "Horror",        input: "horror",           script: "genrecontent.js" },
-        { title: "Live action",   input: "live-action",      script: "genrecontent.js" },
-        { title: "Manga",         input: "manga-112",        script: "genrecontent.js" },
-        { title: "Manhua",        input: "manhua",           script: "genrecontent.js" },
-        { title: "Manhwa",        input: "manhwa-11400",     script: "genrecontent.js" },
-        { title: "Martial Arts",  input: "martial-arts",     script: "genrecontent.js" },
-        { title: "Mecha",         input: "mecha-117",        script: "genrecontent.js" },
-        { title: "Mystery",       input: "mystery",          script: "genrecontent.js" },
-        { title: "Ngôn Tình",     input: "ngon-tinh",        script: "genrecontent.js" },
-        { title: "Psychological", input: "psychological",    script: "genrecontent.js" },
-        { title: "Romance",       input: "romance-121",      script: "genrecontent.js" },
-        { title: "School Life",   input: "school-life",      script: "genrecontent.js" },
-        { title: "Sci-fi",        input: "sci-fi",           script: "genrecontent.js" },
-        { title: "Shoujo",        input: "shoujo",           script: "genrecontent.js" },
-        { title: "Shoujo Ai",     input: "shoujo-ai-126",    script: "genrecontent.js" },
-        { title: "Shounen",       input: "shounen-127",      script: "genrecontent.js" },
-        { title: "Shounen Ai",    input: "shounen-ai",       script: "genrecontent.js" },
-        { title: "Slice of Life", input: "slice-of-life",    script: "genrecontent.js" },
-        { title: "Sports",        input: "sports",           script: "genrecontent.js" },
-        { title: "Supernatural",  input: "supernatural",     script: "genrecontent.js" },
-        { title: "Thiếu Nhi",     input: "thieu-nhi",        script: "genrecontent.js" },
-        { title: "Tragedy",       input: "tragedy-136",      script: "genrecontent.js" },
-        { title: "Trinh Thám",    input: "trinh-tham",       script: "genrecontent.js" },
-        { title: "Truyện scan",   input: "truyen-scan",      script: "genrecontent.js" },
-        { title: "Truyện Màu",    input: "truyen-mau",       script: "genrecontent.js" },
-        { title: "Tu Tiên",       input: "tu-tien",          script: "genrecontent.js" },
-        { title: "Webtoon",       input: "webtoon",          script: "genrecontent.js" },
-        { title: "Xuyên Không",   input: "xuyen-khong-205",  script: "genrecontent.js" }
-    ]);
+    var res = restFetch("/truyen_category?per_page=100&_fields=id,name,count");
+    var arr = restJson(res);
+    if (!arr || !arr.length) return Response.error("Không tải được danh sách thể loại");
+
+    var found = [];
+    for (var i = 0; i < arr.length; i++) {
+        var c = arr[i];
+        if (!c || !c.id) continue;
+        var rawName = c.name;
+        if (rawName && typeof rawName !== "string") rawName = rawName.rendered || "";
+        var title = decodeEntities(rawName || "");
+        var count = c.count || 0;
+        if (!title || count <= 0) continue;
+        found.push({ title: title, input: String(c.id), count: count });
+    }
+    if (found.length === 0) return Response.error("Không tìm thấy thể loại");
+
+    found.sort(function (a, b) { return b.count - a.count; });
+
+    var out = [];
+    for (var j = 0; j < found.length; j++) {
+        out.push({ title: found[j].title, input: found[j].input, script: "genrecontent.js" });
+    }
+    return Response.success(out);
 }

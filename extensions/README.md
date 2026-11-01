@@ -50,7 +50,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/wattpad/icon.png" width="36" height="36"> | **Wattpad - Tiếng Việt** | `novel` | v21 | [www.wattpad.com](https://www.wattpad.com) | `vi` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/hentaicube/icon.png" width="36" height="36"> | **HentaiCube -18+** | `comic` | v1 | [hentaicube.xyz](https://hentaicube.xyz) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/loppytoon/icon.png" width="36" height="36"> | **LoppyToon -18+** | `comic` | v19 | [loppytoonn.com](https://loppytoonn.com) | `vi_VN` |
-| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/nettruyen/icon.png" width="36" height="36"> | **nettruyenviet.monster** | `comic` | v4 | [nettruyenviet.monster](https://nettruyenviet.monster) | `vi_VN` |
+| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/nettruyen/icon.png" width="36" height="36"> | **municipiodaboavista.com** | `comic` | v5 | [www.municipiodaboavista.com](https://www.municipiodaboavista.com) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/otruyen/icon.png" width="36" height="36"> | **OTruyen** | `comic` | v24 | [otruyen.cc](https://otruyen.cc) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/sayhentai/icon.png" width="36" height="36"> | **SayHentai -18+** | `comic` | v3 | [sayhentai.cx](https://sayhentai.cx) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/sayhentaibaby/icon.png" width="36" height="36"> | **SayHentaiBaby -18+** | `comic` | v13 | [sayhentai.baby](https://sayhentai.baby) | `vi_VN` |
@@ -59,7 +59,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/bixiange/icon.png" width="36" height="36"> | **Bixiange** | `chinese_novel` | v11 | [m.bixiange.top](https://m.bixiange.top) | `zh_CN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/novelcookstw/icon.png" width="36" height="36"> | **NovelCooksTW** | `chinese_novel` | v10 | [novel.cooks.tw](https://novel.cooks.tw) | `zh_TW` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/shibashuwu/icon.png" width="36" height="36"> | **ShiBaShuWu -18+** | `chinese_novel` | v20 | [www.shibashuwu.net](https://www.shibashuwu.net) | `zh_CN` |
-| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/video/bilibili/icon.png" width="36" height="36"> | **Bilibili TV** | `video` | v2 | [www.bilibili.tv](https://www.bilibili.tv) | `vi_VN` |
+| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/video/bilibili/icon.png" width="36" height="36"> | **Bilibili TV** | `video` | v3 | [www.bilibili.tv](https://www.bilibili.tv) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/translate/dich_deepseek/icon.png" width="36" height="36"> | **DeepSeek Translate** | `translate` | v6 | [platform.deepseek.com](https://platform.deepseek.com) | `global` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/tts/Meo_multi_tts/icon.png" width="36" height="36"> | **Multi TTS VN** | `tts` | v20 | [ai.zalo.solutions](https://ai.zalo.solutions/docs/api/getting-started) | `vi` |
 

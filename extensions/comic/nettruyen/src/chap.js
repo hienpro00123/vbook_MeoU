@@ -1,5 +1,13 @@
 load("config.js");
 
+// Ảnh chương đi qua proxy cùng host: /storage/?url=<encoded> (không có đuôi ảnh)
+function isPageImage(src) {
+    if (!src || src.indexOf("http") !== 0) return false;
+    if (/logo|badge|icon|avatar|banner|advert|\/ads|pixel|dmca/i.test(src)) return false;
+    if (src.indexOf("/storage/?url=") >= 0) return true;
+    return /\.(jpg|jpeg|png|webp|gif|avif|bmp)(\?|#|$)/i.test(src);
+}
+
 function execute(url) {
     var chapUrl = (url.indexOf("http") === 0) ? url : BASE_URL + url;
     var res = fetchRetry(chapUrl);
@@ -7,16 +15,17 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Không đọc được nội dung chương");
 
-    var imgs = doc.select(".page-chapter img");
-    if (imgs.size() === 0) return Response.error("Không tìm thấy ảnh chương");
+    var imgs = doc.select("div.chapter-images img");
+    if (imgs.size() === 0) imgs = doc.select(".chapter-content img, #chapter-content img");
+    if (imgs.size() === 0) imgs = doc.select("img[data-src]");
 
     var result = [];
+    var seen = [];
     for (var i = 0; i < imgs.size(); i++) {
-        var img = imgs.get(i);
-        var src = img.attr("data-src") || img.attr("data-original") || img.attr("src") || "";
-        if (!src || src.indexOf("data:") === 0) continue;
-        // Bỏ qua ảnh assets/thông báo
-        if (src.indexOf("/assets/") >= 0) continue;
+        var src = cleanImgSrc(imgs.get(i));
+        if (!isPageImage(src)) continue;
+        if (seen.indexOf(src) >= 0) continue;
+        seen.push(src);
         result.push({ link: src });
     }
 

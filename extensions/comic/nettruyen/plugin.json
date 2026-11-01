@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "name": "nettruyenviet.monster",
+    "name": "municipiodaboavista.com",
     "author": "Meo",
-    "version": 4,
-    "source": "https://nettruyenviet.monster",
-    "regexp": "nettruyenviet\\.monster\\/truyen-tranh\\/[^\\/]+\\/?$",
+    "version": 5,
+    "source": "https://www.municipiodaboavista.com",
+    "regexp": "municipiodaboavista\\.com\\/truyen-tranh\\/[^\\/]+\\/?$",
     "description": "Đọc truyện tranh từ NetTruyen",
     "locale": "vi_VN",
     "type": "comic"

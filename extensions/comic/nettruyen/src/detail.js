@@ -7,63 +7,49 @@ function execute(url) {
     var doc = res.html();
     if (!doc) return Response.error("Không đọc được nội dung trang");
 
-    // Tiêu đề
-    var titleEl = selFirst(doc, "h1.title-detail");
-    var title = titleEl ? titleEl.text().trim() : "";
-
-    // Cover
-    var cover = "";
-    var coverEl = selFirst(doc, "img.image-thumb");
-    if (coverEl) {
-        cover = coverEl.attr("src") || coverEl.attr("data-original") || "";
+    var titleEl = selFirst(doc, "h1.tieu-de-truyen");
+    var title = titleEl ? decodeEntities(titleEl.text()) : "";
+    if (!title) {
+        var h1 = selFirst(doc, "h1");
+        title = h1 ? decodeEntities(h1.text()) : "";
     }
 
-    // Các thông tin từ .detail-info .row
+    var cover = cleanImgSrc(selFirst(doc, "img.wp-post-image"));
+    if (!cover) cover = cleanImgSrc(selFirst(doc, ".thumb-main img"));
+
     var author = "";
-    var altName = "";
     var statusText = "";
-    var rows = doc.select(".detail-info .row");
-    for (var ri = 0; ri < rows.size(); ri++) {
-        var row = rows.get(ri);
-        var labelEl = selFirst(row, ".col-xs-4");
-        var valEl = selFirst(row, ".col-xs-8");
-        if (!labelEl || !valEl) continue;
-        var labelText = labelEl.text().trim();
-        if (labelText.indexOf("Tác giả") >= 0) {
-            var authorA = selFirst(valEl, "a");
-            author = authorA ? authorA.text().trim() : valEl.text().trim();
-        } else if (labelText.indexOf("Tên khác") >= 0) {
-            altName = valEl.text().trim();
-        } else if (labelText.indexOf("Tình trạng") >= 0) {
-            statusText = valEl.text().trim();
-        }
+    var views = "";
+    var updated = "";
+    var infoItems = doc.select("div.info-item");
+    for (var ii = 0; ii < infoItems.size(); ii++) {
+        var t = decodeEntities(infoItems.get(ii).text());
+        if (t.indexOf("Tác giả:") === 0) author = t.replace("Tác giả:", "").trim();
+        else if (t.indexOf("Trạng thái:") === 0) statusText = t.replace("Trạng thái:", "").trim();
+        else if (t.indexOf("Lượt views:") === 0) views = t.replace("Lượt views:", "").trim();
+        else if (t.indexOf("Cập nhật cuối:") === 0) updated = t.replace("Cập nhật cuối:", "").trim();
     }
 
-    // Thể loại từ .kind a
     var genres = [];
-    var genreEls = doc.select(".kind a");
+    var genreEls = doc.select("a.genre-link");
     for (var gi = 0; gi < genreEls.size(); gi++) {
-        var ga = genreEls.get(gi);
-        var gText = ga.text().trim();
-        var gHref = ga.attr("href") || "";
-        var gSlug = gHref.replace(BASE_URL + "/tim-truyen/", "").replace("/tim-truyen/", "").replace(/\/$/, "");
-        if (gText && gSlug) {
-            genres.push({ title: gText, input: gSlug, script: "genrecontent.js" });
-        }
+        var gHref = genreEls.get(gi).attr("href") || "";
+        var m = /\/the-loai\/([^\/?#]+)\/?/.exec(gHref);
+        var gText = decodeEntities(genreEls.get(gi).text());
+        if (m && gText) genres.push({ title: gText, input: m[1], script: "genrecontent.js" });
     }
 
-    // Mô tả
     var description = "";
-    var descEl = selFirst(doc, ".detail-content p");
-    if (descEl) {
-        description = descEl.text().trim();
-    }
+    var descEl = selFirst(doc, ".gioi-thieu-truyen .truyen-content");
+    if (!descEl) descEl = selFirst(doc, ".truyen-content");
+    if (descEl) description = decodeEntities(descEl.text());
 
     var ongoing = (statusText.indexOf("Đang") >= 0 || statusText === "");
 
-    var detail = "";
-    if (altName) detail += "Tên khác: " + altName;
-    if (statusText) detail += (detail ? "\n" : "") + "Tình trạng: " + statusText;
+    var detailParts = [];
+    if (statusText) detailParts.push("Tình trạng: " + statusText);
+    if (views) detailParts.push("Lượt xem: " + views);
+    if (updated) detailParts.push("Cập nhật cuối: " + updated);
 
     return Response.success({
         name: title,
@@ -71,7 +57,7 @@ function execute(url) {
         host: HOST,
         author: author,
         description: description,
-        detail: detail,
+        detail: detailParts.join("\n"),
         ongoing: ongoing,
         genres: genres,
         suggests: [],

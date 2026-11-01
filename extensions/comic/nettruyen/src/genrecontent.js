@@ -1,19 +1,25 @@
 load("config.js");
 
-function execute(slug, page) {
-    var p = page ? parseInt(page) : 1;
-    var fetchUrl = p <= 1
-        ? BASE_URL + "/tim-truyen/" + slug
-        : BASE_URL + "/tim-truyen/" + slug + "?page=" + p;
+// home/genre truyền id, detail truyền slug — REST chỉ lọc theo id
+function resolveCategoryId(input) {
+    var s = String(input || "").replace(/^\s+|\s+$/g, "");
+    if (!s) return "";
+    if (/^[0-9]+$/.test(s)) return s;
+    var res = restFetch("/truyen_category?slug=" + encodeURIComponent(s) + "&_fields=id");
+    var arr = restJson(res);
+    if (arr && arr.length && arr[0].id) return String(arr[0].id);
+    return "";
+}
 
-    var res = fetchRetry(fetchUrl);
-    if (!res || !res.ok) return Response.error("Không tải được thể loại");
-    var doc = res.html();
-    if (!doc) return Response.success([], null);
+function execute(input, page) {
+    var id = resolveCategoryId(input);
+    if (!id) return Response.error("Không tìm thấy thể loại");
+    var p = pageNum(page);
 
-    var items = parseListItems(doc);
-    if (!items || items.length === 0) return Response.success([], null);
+    var path = "/truyen?truyen_category=" + id + "&orderby=modified&order=desc" +
+        "&per_page=" + PAGE_SIZE + "&page=" + p + "&_fields=" + REST_FIELDS;
 
-    var next = getNextPage(doc, p);
-    return Response.success(items, next);
+    var r = restList(path, p);
+    if (r.items.length === 0) return Response.success([], null);
+    return Response.success(r.items, r.next);
 }

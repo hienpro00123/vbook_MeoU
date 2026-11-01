@@ -142,11 +142,11 @@
       "nsfw": true
     },
     {
-      "name": "nettruyenviet.monster",
+      "name": "municipiodaboavista.com",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/nettruyen/plugin.zip",
-      "version": 4,
-      "source": "https://nettruyenviet.monster",
+      "version": 5,
+      "source": "https://www.municipiodaboavista.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/nettruyen/icon.png",
       "description": "Đọc truyện tranh từ NetTruyen",
       "type": "comic",
@@ -202,10 +202,10 @@
       "name": "Bilibili TV",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/video/bilibili/plugin.zip",
-      "version": 2,
+      "version": 3,
       "source": "https://www.bilibili.tv",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/video/bilibili/icon.png",
-      "description": "Bilibili TV Anime (Vietnam)",
+      "description": "Anime Bilibili TV (Việt Nam) — phụ đề đa ngôn ngữ, tìm kiếm, thể loại. Nội dung cần đăng nhập: đăng nhập 1 lần trong trình duyệt của app (WebView) để xem ngay, hoặc dán cookie SESSDATA vào mục Cookie của extension để phát native 720P (chỉ cần 1 lần, tự lưu và tự dùng lại sau).",
       "type": "video",
       "locale": "vi_VN"
     },
