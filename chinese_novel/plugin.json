@@ -8,7 +8,7 @@
     "version": 12,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "extensions/chinese_novel/biquge",
+    "relativePath": "chinese_novel/biquge",
     "ghPath": "chinese_novel/biquge",
     "metadata": {
       "name": "Biquge",
@@ -30,7 +30,7 @@
     "version": 16,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "extensions/chinese_novel/bixiange",
+    "relativePath": "chinese_novel/bixiange",
     "ghPath": "chinese_novel/bixiange",
     "metadata": {
       "name": "Bixiange",
@@ -53,7 +53,7 @@
     "version": 12,
     "type": "novel",
     "locale": "zh_TW",
-    "relativePath": "extensions/chinese_novel/novelcookstw",
+    "relativePath": "chinese_novel/novelcookstw",
     "ghPath": "chinese_novel/novelcookstw",
     "metadata": {
       "name": "NovelCooksTW",
@@ -76,7 +76,7 @@
     "version": 21,
     "type": "novel",
     "locale": "zh_CN",
-    "relativePath": "extensions/chinese_novel/shibashuwu",
+    "relativePath": "chinese_novel/shibashuwu",
     "ghPath": "chinese_novel/shibashuwu",
     "metadata": {
       "name": "ShiBaShuWu -18+",

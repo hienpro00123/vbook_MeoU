@@ -8,7 +8,7 @@
     "version": 20,
     "type": "tts",
     "locale": "vi",
-    "relativePath": "extensions/tts/Meo_multi_tts",
+    "relativePath": "tts/Meo_multi_tts",
     "ghPath": "tts/Meo_multi_tts",
     "metadata": {
       "name": "Multi TTS VN",

@@ -8,7 +8,7 @@
     "version": 3,
     "type": "video",
     "locale": "vi_VN",
-    "relativePath": "extensions/video/bilibili",
+    "relativePath": "video/bilibili",
     "ghPath": "video/bilibili",
     "metadata": {
       "name": "Bilibili TV",

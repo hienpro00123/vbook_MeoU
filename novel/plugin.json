@@ -8,7 +8,7 @@
     "version": 5,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/dualeo",
+    "relativePath": "novel/dualeo",
     "ghPath": "novel/dualeo",
     "metadata": {
       "name": "dualeotruyenfull",
@@ -30,7 +30,7 @@
     "version": 16,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/lnkuro",
+    "relativePath": "novel/lnkuro",
     "ghPath": "novel/lnkuro",
     "metadata": {
       "name": "LN Kuro",
@@ -52,7 +52,7 @@
     "version": 17,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/metruyenchu",
+    "relativePath": "novel/metruyenchu",
     "ghPath": "novel/metruyenchu",
     "metadata": {
       "name": "MeTruyenChu",
@@ -74,7 +74,7 @@
     "version": 6,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/metruyensangtac",
+    "relativePath": "novel/metruyensangtac",
     "ghPath": "novel/metruyensangtac",
     "metadata": {
       "name": "MeTruyenSangTac",
@@ -96,7 +96,7 @@
     "version": 5,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/storya",
+    "relativePath": "novel/storya",
     "ghPath": "novel/storya",
     "metadata": {
       "name": "Storya",
@@ -118,7 +118,7 @@
     "version": 8,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/trichtinhlau",
+    "relativePath": "novel/trichtinhlau",
     "ghPath": "novel/trichtinhlau",
     "metadata": {
       "name": "TrichTinhLau",
@@ -140,7 +140,7 @@
     "version": 9,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/truyenchu",
+    "relativePath": "novel/truyenchu",
     "ghPath": "novel/truyenchu",
     "metadata": {
       "name": "TruyenChu",
@@ -162,7 +162,7 @@
     "version": 10,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/valvrareteam",
+    "relativePath": "novel/valvrareteam",
     "ghPath": "novel/valvrareteam",
     "metadata": {
       "name": "Valvrareteam",
@@ -184,7 +184,7 @@
     "version": 10,
     "type": "novel",
     "locale": "vi_VN",
-    "relativePath": "extensions/novel/wanwansekai",
+    "relativePath": "novel/wanwansekai",
     "ghPath": "novel/wanwansekai",
     "metadata": {
       "name": "WanwanSekai -18+",
@@ -208,7 +208,7 @@
     "version": 21,
     "type": "novel",
     "locale": "vi",
-    "relativePath": "extensions/novel/wattpad",
+    "relativePath": "novel/wattpad",
     "ghPath": "novel/wattpad",
     "metadata": {
       "name": "Wattpad - Tiếng Việt",

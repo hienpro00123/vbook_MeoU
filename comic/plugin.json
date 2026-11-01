@@ -8,7 +8,7 @@
     "version": 1,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/hentaicube",
+    "relativePath": "comic/hentaicube",
     "ghPath": "comic/hentaicube",
     "metadata": {
       "name": "HentaiCube -18+",
@@ -31,7 +31,7 @@
     "version": 19,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/loppytoon",
+    "relativePath": "comic/loppytoon",
     "ghPath": "comic/loppytoon",
     "metadata": {
       "name": "LoppyToon -18+",
@@ -55,7 +55,7 @@
     "version": 5,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/nettruyen",
+    "relativePath": "comic/nettruyen",
     "ghPath": "comic/nettruyen",
     "metadata": {
       "name": "municipiodaboavista.com",
@@ -77,7 +77,7 @@
     "version": 24,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/otruyen",
+    "relativePath": "comic/otruyen",
     "ghPath": "comic/otruyen",
     "metadata": {
       "name": "OTruyen",
@@ -99,7 +99,7 @@
     "version": 3,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/sayhentai",
+    "relativePath": "comic/sayhentai",
     "ghPath": "comic/sayhentai",
     "metadata": {
       "name": "SayHentai -18+",
@@ -122,7 +122,7 @@
     "version": 13,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/sayhentaibaby",
+    "relativePath": "comic/sayhentaibaby",
     "ghPath": "comic/sayhentaibaby",
     "metadata": {
       "name": "SayHentaiBaby -18+",
@@ -145,7 +145,7 @@
     "version": 29,
     "type": "comic",
     "locale": "vi_VN",
-    "relativePath": "extensions/comic/truyendex",
+    "relativePath": "comic/truyendex",
     "ghPath": "comic/truyendex",
     "metadata": {
       "name": "TruyenDex",
