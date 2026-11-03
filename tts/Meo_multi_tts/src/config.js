@@ -2,7 +2,19 @@ function execute() {
     var provider = getProviderId(tts_provider);
     var voices = [];
     var voiceSubtitle = "";
-    var credSubtitle = "Nhấn Thêm cho từng khóa. VD: ZAI:key_zalo, EL:key_eleven, FPT:key_fpt, VTAI:token_viettel (hoặc nhập thẳng key nếu chỉ dùng dịch vụ đang chọn).";
+    var currentKeys = getProviderCredentials(provider);
+    var keyCount = currentKeys.length;
+    var providerName = getProviderName(provider);
+    var prefix = getProviderPrefix(provider);
+
+    var currentStrategy = String(typeof key_strategy !== "undefined" && key_strategy ? key_strategy : "Vòng tròn (Round-Robin)");
+    var strategyHint = currentStrategy.indexOf("Tuần tự") !== -1
+        ? " [Tuần tự: giữ 1 key cố định]"
+        : " [Vòng tròn: luân phiên mỗi câu]";
+    var countText = keyCount > 0
+        ? ("Đang có " + keyCount + " key " + providerName + strategyHint + ".")
+        : ("Chưa có key " + providerName + " nào.");
+    var credSubtitle = countText + " Nhấn Thêm hoặc dán nhiều key (ngăn cách bằng phẩy hoặc xuống dòng). VD: " + prefix + ":key_cua_ban (hoặc nhập thẳng key).";
 
     if (provider === "zalo") {
         voices = [
@@ -12,7 +24,6 @@ function execute() {
             "Zalo AI | Nam miền Bắc"
         ];
         voiceSubtitle = "Zalo AI: 4 giọng chuẩn Bắc/Nam.";
-        credSubtitle = "Nhấn Thêm cho từng key Zalo. VD: ZAI:key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng Zalo AI).";
     } else if (provider === "fpt") {
         voices = [
             "FPT.AI | Ban Mai - Nữ miền Bắc (x1)",
@@ -24,7 +35,6 @@ function execute() {
             "FPT.AI | Linh San - Nữ miền Nam (x1)"
         ];
         voiceSubtitle = "FPT.AI (x1): Ban Mai, Lan Nhi, Lê Minh, Mỹ An, Thu Minh, Gia Huy, Linh San.";
-        credSubtitle = "Nhấn Thêm cho từng key FPT. VD: FPT:key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng FPT.AI).";
     } else if (provider === "viettel") {
         var viettelStatic = [
             "Viettel AI | Quỳnh Anh - Nữ miền Bắc",
@@ -52,15 +62,12 @@ function execute() {
             voices = viettelResult.names;
             voiceSubtitle = "Đã đồng bộ " + voices.length + " giọng từ Viettel AI.";
         }
-        credSubtitle = "Nhấn Thêm cho từng token Viettel. VD: VTAI:token_cua_ban (hoặc nhập thẳng token nếu chỉ dùng Viettel AI).";
     } else if (provider === "elevenlabs") {
         voiceSubtitle = "ElevenLabs: Giá phụ thuộc model, không phụ thuộc giọng.";
-        credSubtitle = "Nhấn Thêm cho từng key ElevenLabs. VD: EL:sk_key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng ElevenLabs).";
-        var credentials = getElevenLabsCredentials();
-        if (credentials.length === 0) {
+        if (keyCount === 0) {
             voiceSubtitle = "Thêm key EL: trong mục \"API key / token\", sau đó mở lại cài đặt để tải danh sách giọng ElevenLabs.";
         } else {
-            var result = getElevenLabsVoiceNames(credentials);
+            var result = getElevenLabsVoiceNames(currentKeys);
             if (result.error) {
                 voiceSubtitle = "Không tải được giọng ElevenLabs (" + result.error + "). Kiểm tra quyền Voices (read) và key EL:.";
             } else {
@@ -112,6 +119,118 @@ function getProviderId(value) {
     return "";
 }
 
+function getProviderPrefix(provider) {
+    if (provider === "zalo") return "ZAI";
+    if (provider === "elevenlabs") return "EL";
+    if (provider === "fpt") return "FPT";
+    if (provider === "viettel") return "VTAI";
+    return provider;
+}
+
+function getProviderName(provider) {
+    if (provider === "zalo") return "Zalo AI";
+    if (provider === "elevenlabs") return "ElevenLabs";
+    if (provider === "fpt") return "FPT.AI";
+    if (provider === "viettel") return "Viettel AI";
+    return provider;
+}
+
+function parseCredentialValues(raw) {
+    if (!raw) return [];
+    var rawItems = [];
+    if (Array.isArray(raw)) {
+        rawItems = raw;
+    } else if (typeof raw === "string") {
+        var trimmed = raw.trim();
+        if (trimmed.indexOf("[") === 0 && trimmed.lastIndexOf("]") === trimmed.length - 1) {
+            try {
+                var parsed = JSON.parse(trimmed);
+                if (Array.isArray(parsed)) rawItems = parsed;
+                else rawItems = [trimmed];
+            } catch (e) {
+                rawItems = [trimmed];
+            }
+        } else {
+            rawItems = [trimmed];
+        }
+    } else {
+        rawItems = [String(raw)];
+    }
+
+    var tokens = [];
+    for (var i = 0; i < rawItems.length; i++) {
+        var item = String(rawItems[i] || "").trim();
+        if (!item) continue;
+        var parts = item.split(/[\r\n,;]+/);
+        for (var j = 0; j < parts.length; j++) {
+            var tok = parts[j].trim();
+            if ((tok.indexOf('"') === 0 && tok.lastIndexOf('"') === tok.length - 1 && tok.length > 1) ||
+                (tok.indexOf("'") === 0 && tok.lastIndexOf("'") === tok.length - 1 && tok.length > 1)) {
+                tok = tok.substring(1, tok.length - 1).trim();
+            }
+            if (tok && tokens.indexOf(tok) === -1) {
+                tokens.push(tok);
+            }
+        }
+    }
+    return tokens;
+}
+
+function getProviderCredentials(provider) {
+    var rawList = [];
+    if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
+        rawList = rawList.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
+        rawList = rawList.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    }
+    if (rawList.length === 0 && typeof provider_credentials !== "undefined") {
+        rawList = rawList.concat(parseCredentialValues(provider_credentials));
+    }
+    var credentials = [];
+    var currentSelectedProvider = getProviderId(tts_provider);
+
+    for (var i = 0; i < rawList.length; i++) {
+        var item = String(rawList[i] || "").trim();
+        if (!item) continue;
+
+        var separator = item.indexOf(":");
+        var keyVal = item;
+        var itemProvider = "";
+
+        if (separator > 0) {
+            var prefixCandidate = item.substring(0, separator).trim();
+            var parsedProvider = getProviderId(prefixCandidate);
+            if (parsedProvider) {
+                itemProvider = parsedProvider;
+                keyVal = item.substring(separator + 1).trim();
+            }
+        }
+
+        if (!itemProvider) {
+            if (currentSelectedProvider === provider) {
+                itemProvider = provider;
+            } else {
+                continue;
+            }
+        }
+
+        if (itemProvider !== provider) continue;
+
+        if (keyVal.indexOf("Bearer ") === 0 || keyVal.indexOf("bearer ") === 0) {
+            keyVal = keyVal.substring(7).trim();
+        }
+
+        if ((keyVal.indexOf('"') === 0 && keyVal.lastIndexOf('"') === keyVal.length - 1 && keyVal.length > 1) ||
+            (keyVal.indexOf("'") === 0 && keyVal.lastIndexOf("'") === keyVal.length - 1 && keyVal.length > 1)) {
+            keyVal = keyVal.substring(1, keyVal.length - 1).trim();
+        }
+
+        if (keyVal && credentials.indexOf(keyVal) === -1) {
+            credentials.push(keyVal);
+        }
+    }
+    return credentials;
+}
+
 function getViettelVoiceNames() {
     var response;
     try {
@@ -146,47 +265,6 @@ function getViettelVoiceName(voice) {
     if (voice.code === "hn-thanhtung") return "Viettel AI | Thanh Tùng - Nam miền Bắc";
     if (voice.code === "hcm-minhquan") return "Viettel AI | Minh Quân - Nam miền Nam";
     return "Viettel AI | " + String(voice.name) + " - " + String(voice.description);
-}
-
-function getElevenLabsCredentials() {
-    var values = [];
-    if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
-        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
-        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
-    }
-    if (values.length === 0 && typeof provider_credentials !== "undefined") {
-        values = values.concat(parseCredentialValues(provider_credentials));
-    }
-    var credentials = [];
-    for (var i = 0; i < values.length; i++) {
-        var value = String(values[i] || "").trim();
-        if (!value) continue;
-        var separator = value.indexOf(":");
-        if (separator > 0) {
-            var prefix = value.substring(0, separator).trim().toLowerCase();
-            if (prefix === "el" || prefix === "elevenlabs" || prefix === "eleven labs") {
-                value = value.substring(separator + 1).trim();
-            } else {
-                continue;
-            }
-        } else if (getProviderId(tts_provider) !== "elevenlabs") {
-            continue;
-        }
-        if (value && credentials.indexOf(value) === -1) credentials.push(value);
-    }
-    return credentials;
-}
-
-function parseCredentialValues(raw) {
-    var value = String(raw || "").trim();
-    if (!value) return [];
-    try {
-        var parsed = JSON.parse(value);
-        if (Array.isArray(parsed)) return parsed;
-        return [parsed];
-    } catch (e) {
-        return value.split(/\r?\n/);
-    }
 }
 
 function getElevenLabsVoiceNames(credentials) {

@@ -114,43 +114,99 @@ function getViettelVoiceName(voice) {
 }
 
 function getProviderCredentials(provider) {
-    var values = [];
+    var rawList = [];
     if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
-        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
-        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+        rawList = rawList.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
+        rawList = rawList.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
     }
-    if (values.length === 0 && typeof provider_credentials !== "undefined") {
-        values = values.concat(parseCredentialValues(provider_credentials));
+    if (rawList.length === 0 && typeof provider_credentials !== "undefined") {
+        rawList = rawList.concat(parseCredentialValues(provider_credentials));
     }
     var credentials = [];
-    for (var i = 0; i < values.length; i++) {
-        var value = String(values[i] || "").trim();
-        if (!value) continue;
-        var separator = value.indexOf(":");
+    var currentSelectedProvider = getProviderId(tts_provider);
+
+    for (var i = 0; i < rawList.length; i++) {
+        var item = String(rawList[i] || "").trim();
+        if (!item) continue;
+
+        var separator = item.indexOf(":");
+        var keyVal = item;
+        var itemProvider = "";
+
         if (separator > 0) {
-            var configuredProvider = getProviderId(value.substring(0, separator));
-            if (configuredProvider) {
-                if (configuredProvider !== provider) continue;
-                value = value.substring(separator + 1).trim();
+            var prefixCandidate = item.substring(0, separator).trim();
+            var parsedProvider = getProviderId(prefixCandidate);
+            if (parsedProvider) {
+                itemProvider = parsedProvider;
+                keyVal = item.substring(separator + 1).trim();
             }
-        } else if (getProviderId(tts_provider) !== provider) {
-            continue;
         }
-        if (value && credentials.indexOf(value) === -1) credentials.push(value);
+
+        if (!itemProvider) {
+            if (currentSelectedProvider === provider) {
+                itemProvider = provider;
+            } else {
+                continue;
+            }
+        }
+
+        if (itemProvider !== provider) continue;
+
+        if (keyVal.indexOf("Bearer ") === 0 || keyVal.indexOf("bearer ") === 0) {
+            keyVal = keyVal.substring(7).trim();
+        }
+
+        if ((keyVal.indexOf('"') === 0 && keyVal.lastIndexOf('"') === keyVal.length - 1 && keyVal.length > 1) ||
+            (keyVal.indexOf("'") === 0 && keyVal.lastIndexOf("'") === keyVal.length - 1 && keyVal.length > 1)) {
+            keyVal = keyVal.substring(1, keyVal.length - 1).trim();
+        }
+
+        if (keyVal && credentials.indexOf(keyVal) === -1) {
+            credentials.push(keyVal);
+        }
     }
     return credentials;
 }
 
 function parseCredentialValues(raw) {
-    var value = String(raw || "").trim();
-    if (!value) return [];
-    try {
-        var parsed = JSON.parse(value);
-        if (Array.isArray(parsed)) return parsed;
-        return [parsed];
-    } catch (e) {
-        return value.split(/\r?\n/);
+    if (!raw) return [];
+    var rawItems = [];
+    if (Array.isArray(raw)) {
+        rawItems = raw;
+    } else if (typeof raw === "string") {
+        var trimmed = raw.trim();
+        if (trimmed.indexOf("[") === 0 && trimmed.lastIndexOf("]") === trimmed.length - 1) {
+            try {
+                var parsed = JSON.parse(trimmed);
+                if (Array.isArray(parsed)) rawItems = parsed;
+                else rawItems = [trimmed];
+            } catch (e) {
+                rawItems = [trimmed];
+            }
+        } else {
+            rawItems = [trimmed];
+        }
+    } else {
+        rawItems = [String(raw)];
     }
+
+    var tokens = [];
+    for (var i = 0; i < rawItems.length; i++) {
+        var item = String(rawItems[i] || "").trim();
+        if (!item) continue;
+        var parts = item.split(/[\r\n,;]+/);
+        for (var j = 0; j < parts.length; j++) {
+            var tok = parts[j].trim();
+            if ((tok.indexOf('"') === 0 && tok.lastIndexOf('"') === tok.length - 1 && tok.length > 1) ||
+                (tok.indexOf("'") === 0 && tok.lastIndexOf("'") === tok.length - 1 && tok.length > 1)) {
+                tok = tok.substring(1, tok.length - 1).trim();
+            }
+            if (tok && tokens.indexOf(tok) === -1) {
+                tokens.push(tok);
+            }
+        }
+    }
+    return tokens;
 }
 
 function isCredentialFailure(status) {
