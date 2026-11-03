@@ -1,12 +1,22 @@
 function execute(text, voiceId) {
-    var inputText = String(text || "");
+    var rawText = String(text || "");
+    var inputText = cleanText(rawText);
     var voiceParts = String(voiceId || "").split("|");
-    if (!inputText.trim()) return Response.error("Văn bản đọc đang trống.");
+
+    if (!inputText) return Response.error("Văn bản đọc đang trống.");
     if (voiceParts.length !== 2 || !voiceParts[1]) {
         return Response.error("Giọng đọc không hợp lệ. Hãy tải lại danh sách giọng.");
     }
-    if (inputText.length > 5000) {
-        return Response.error("Văn bản vượt quá giới hạn 5000 ký tự mỗi yêu cầu.");
+
+    var maxLimit = 5000;
+    if (typeof max_length !== "undefined" && max_length) {
+        var parsedLimit = parseInt(max_length, 10);
+        if (!isNaN(parsedLimit) && parsedLimit > 0) {
+            maxLimit = parsedLimit;
+        }
+    }
+    if (inputText.length > maxLimit) {
+        inputText = inputText.substring(0, maxLimit);
     }
 
     var provider = getProviderId(tts_provider);
@@ -14,16 +24,43 @@ function execute(text, voiceId) {
     if (voiceParts[0] !== provider) {
         return Response.error("Nhà cung cấp đã đổi. Hãy tải lại danh sách và chọn lại giọng.");
     }
+
     var credentials = getProviderCredentials(provider);
     if (credentials.length === 0) {
-        return Response.error("Thêm ít nhất một key có tiền tố \"" + getProviderPrefix(provider) + ":\" trong Danh sách API key / token.");
+        var prefix = getProviderPrefix(provider);
+        return Response.error("Thêm ít nhất một key có tiền tố \"" + prefix + ":\" trong mục \"API key / token\". VD: " + getExampleKey(provider));
     }
+
     var voice = voiceParts[1];
     if (provider === "zalo") return synthesizeZalo(inputText, voice, credentials);
     if (provider === "elevenlabs") return synthesizeElevenLabs(inputText, voice, credentials);
     if (provider === "fpt") return synthesizeFpt(inputText, voice, credentials);
     if (provider === "viettel") return synthesizeViettel(inputText, voice, credentials);
     return Response.error("Nhà cung cấp TTS không được hỗ trợ.");
+}
+
+function cleanText(raw) {
+    if (!raw) return "";
+    var s = String(raw);
+    s = s.replace(/<[^>]*>/g, " ");
+    s = s.replace(/&amp;/g, "&")
+         .replace(/&lt;/g, "<")
+         .replace(/&gt;/g, ">")
+         .replace(/&quot;/g, '"')
+         .replace(/&#39;/g, "'")
+         .replace(/&nbsp;/g, " ")
+         .replace(/&#160;/g, " ");
+    s = s.replace(/^[\s\*\-\=_#~]+$/gm, "");
+    s = s.replace(/[ \t\r\n]+/g, " ").trim();
+    return s;
+}
+
+function getExampleKey(provider) {
+    if (provider === "zalo") return "ZAI:key_zalo (hoặc nhập thẳng key)";
+    if (provider === "elevenlabs") return "EL:sk_key_eleven (hoặc nhập thẳng key)";
+    if (provider === "fpt") return "FPT:key_fpt (hoặc nhập thẳng key)";
+    if (provider === "viettel") return "VTAI:token_viettel (hoặc nhập thẳng token)";
+    return "key_cua_ban";
 }
 
 function getProviderId(value) {
@@ -36,9 +73,14 @@ function getProviderId(value) {
 }
 
 function getProviderCredentials(provider) {
-    var values = parseCredentialValues(localConfig.getItem("provider_credentials"));
-    var legacy = localConfig.getItem("provider_credential");
-    values = values.concat(parseCredentialValues(legacy));
+    var values = [];
+    if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    }
+    if (values.length === 0 && typeof provider_credentials !== "undefined") {
+        values = values.concat(parseCredentialValues(provider_credentials));
+    }
     var credentials = [];
     for (var i = 0; i < values.length; i++) {
         var value = String(values[i] || "").trim();
@@ -50,6 +92,8 @@ function getProviderCredentials(provider) {
                 if (configuredProvider !== provider) continue;
                 value = value.substring(separator + 1).trim();
             }
+        } else if (getProviderId(tts_provider) !== provider) {
+            continue;
         }
         if (value && credentials.indexOf(value) === -1) credentials.push(value);
     }
@@ -72,14 +116,6 @@ function isCredentialFailure(status) {
     return status === 401 || status === 403 || status === 429;
 }
 
-function getProviderName(provider) {
-    if (provider === "zalo") return "Zalo AI";
-    if (provider === "elevenlabs") return "ElevenLabs";
-    if (provider === "fpt") return "FPT.AI";
-    if (provider === "viettel") return "Viettel AI";
-    return provider;
-}
-
 function getProviderPrefix(provider) {
     if (provider === "zalo") return "ZAI";
     if (provider === "elevenlabs") return "EL";
@@ -96,51 +132,67 @@ function parseJson(response) {
     }
 }
 
-function downloadAudio(url, provider) {
-    var audioResponse = fetch(url);
-    if (!audioResponse.ok) {
-        return Response.error("Không tải được âm thanh từ " + provider + " (HTTP " + audioResponse.status + ").");
-    }
-    return Response.success(audioResponse.base64());
-}
-
 function synthesizeZalo(inputText, voice, credentials) {
+    var lastError = "";
     var lastStatus = 0;
     for (var keyIndex = 0; keyIndex < credentials.length; keyIndex++) {
-        for (var attempt = 0; attempt < 2; attempt++) {
-            var response = fetch("https://api.zalo.ai/v1/tts/synthesize", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "apikey": credentials[keyIndex]
-                },
-                body: "input=" + encodeURIComponent(inputText) +
-                    "&encode_type=mp3&speed=1.0&speaker_id=" + encodeURIComponent(voice)
-            });
-            if (!response.ok) {
-                lastStatus = response.status;
-                if (isCredentialFailure(response.status) && keyIndex < credentials.length - 1) break;
-                return Response.error("Zalo AI tạo giọng đọc thất bại (HTTP " + response.status + ").");
+        var key = credentials[keyIndex];
+        var response = fetch("https://api.zalo.ai/v1/tts/synthesize", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "apikey": key
+            },
+            body: "input=" + encodeURIComponent(inputText) +
+                "&encode_type=mp3&speed=1.0&speaker_id=" + encodeURIComponent(voice)
+        });
+        if (!response || !response.ok) {
+            lastStatus = response ? response.status : 0;
+            lastError = "HTTP " + lastStatus;
+            if (isCredentialFailure(lastStatus) && keyIndex < credentials.length - 1) {
+                continue;
             }
-            var data = parseJson(response);
-            if (!data || data.error_code !== 0 || !data.data || !data.data.url) {
-                return Response.error("Zalo AI không trả về đường dẫn âm thanh.");
-            }
-
-            var audioResponse = fetch(data.data.url);
-            if (audioResponse.ok) return Response.success(audioResponse.base64());
-            if (audioResponse.status !== 404 || attempt > 0) {
-                return Response.error("Không tải được âm thanh từ Zalo AI (HTTP " + audioResponse.status + ").");
-            }
-            sleep(1000);
+            return Response.error("Zalo AI tạo giọng đọc thất bại (" + lastError + ").");
         }
+        var data = parseJson(response);
+        if (!data) {
+            lastError = "Phản hồi không hợp lệ";
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("Zalo AI trả về phản hồi không hợp lệ.");
+        }
+        if (data.error_code !== 0) {
+            lastError = data.error_message || data.message || ("Mã lỗi " + data.error_code);
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("Zalo AI: " + lastError);
+        }
+        if (!data.data || !data.data.url) {
+            lastError = "Không có đường dẫn âm thanh";
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("Zalo AI không trả về đường dẫn âm thanh.");
+        }
+
+        var audioUrl = data.data.url;
+        for (var attempt = 0; attempt < 15; attempt++) {
+            if (attempt > 0) sleep(1000);
+            var audioResponse = fetch(audioUrl);
+            if (audioResponse && audioResponse.ok) {
+                return Response.success(audioResponse.base64());
+            }
+            if (audioResponse && audioResponse.status !== 404) {
+                lastError = "HTTP " + audioResponse.status;
+                break;
+            }
+        }
+        lastError = "Hết thời gian chờ tạo âm thanh";
+        if (keyIndex < credentials.length - 1) continue;
     }
-    return Response.error("Tất cả key Zalo AI đều bị từ chối (HTTP " + lastStatus + ").");
+    return Response.error("Tất cả key Zalo AI đều thất bại (" + (lastError || ("HTTP " + lastStatus)) + ").");
 }
 
 function synthesizeElevenLabs(inputText, voice, credentials) {
     var modelId = getElevenLabsModel();
     if (!modelId) return Response.error("Hãy chọn một model ElevenLabs hợp lệ.");
+    var lastError = "";
     var lastStatus = 0;
     for (var keyIndex = 0; keyIndex < credentials.length; keyIndex++) {
         var response = fetch(
@@ -158,18 +210,26 @@ function synthesizeElevenLabs(inputText, voice, credentials) {
                 })
             }
         );
-        if (!response.ok) {
-            lastStatus = response.status;
-            if (isCredentialFailure(response.status) && keyIndex < credentials.length - 1) continue;
-            return Response.error("ElevenLabs tạo giọng đọc thất bại (HTTP " + response.status + ").");
+        if (!response || !response.ok) {
+            lastStatus = response ? response.status : 0;
+            var errData = response ? parseJson(response) : null;
+            var detailMsg = "";
+            if (errData && errData.detail) {
+                detailMsg = typeof errData.detail === "object" ? (errData.detail.message || errData.detail.status || "") : String(errData.detail);
+            }
+            lastError = detailMsg || ("HTTP " + lastStatus);
+            if ((isCredentialFailure(lastStatus) || lastStatus === 400) && keyIndex < credentials.length - 1) {
+                continue;
+            }
+            return Response.error("ElevenLabs: " + lastError);
         }
         return Response.success(response.base64());
     }
-    return Response.error("Tất cả key ElevenLabs đều bị từ chối (HTTP " + lastStatus + ").");
+    return Response.error("Tất cả key ElevenLabs đều thất bại (" + (lastError || ("HTTP " + lastStatus)) + ").");
 }
 
 function getElevenLabsModel() {
-    var model = String(elevenlabs_model || "eleven_multilingual_v2").trim();
+    var model = String(typeof elevenlabs_model !== "undefined" && elevenlabs_model ? elevenlabs_model : "eleven_multilingual_v2").trim();
     var prefix = "ElevenLabs | ";
     if (model.indexOf(prefix) === 0) {
         model = model.substring(prefix.length).trim();
@@ -190,7 +250,11 @@ function getElevenLabsModel() {
 }
 
 function synthesizeFpt(inputText, voice, credentials) {
-    if (inputText.length < 3) return Response.error("FPT.AI yêu cầu văn bản có ít nhất 3 ký tự.");
+    var textToSend = inputText;
+    if (textToSend.length < 3) {
+        textToSend = textToSend + "...";
+    }
+    var lastError = "";
     var lastStatus = 0;
     for (var keyIndex = 0; keyIndex < credentials.length; keyIndex++) {
         var response = fetch("https://api.fpt.ai/hmi/tts/v5", {
@@ -202,32 +266,50 @@ function synthesizeFpt(inputText, voice, credentials) {
                 "format": "mp3",
                 "Cache-Control": "no-cache"
             },
-            body: inputText
+            body: textToSend
         });
-        if (!response.ok) {
-            lastStatus = response.status;
-            if (isCredentialFailure(response.status) && keyIndex < credentials.length - 1) continue;
-            return Response.error("FPT.AI tạo giọng đọc thất bại (HTTP " + response.status + ").");
+        if (!response || !response.ok) {
+            lastStatus = response ? response.status : 0;
+            lastError = "HTTP " + lastStatus;
+            if (isCredentialFailure(lastStatus) && keyIndex < credentials.length - 1) continue;
+            return Response.error("FPT.AI tạo giọng đọc thất bại (" + lastError + ").");
         }
         var data = parseJson(response);
-        if (!data || data.error !== 0 || !data["as" + "ync"]) {
+        if (!data) {
+            lastError = "Phản hồi không hợp lệ";
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("FPT.AI trả về dữ liệu không hợp lệ.");
+        }
+        if (data.error !== 0) {
+            lastError = data.message || ("Mã lỗi " + data.error);
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("FPT.AI: " + lastError);
+        }
+        if (!data["as" + "ync"]) {
+            lastError = "Không có đường dẫn âm thanh";
+            if (keyIndex < credentials.length - 1) continue;
             return Response.error("FPT.AI không trả về đường dẫn âm thanh.");
         }
-        lastStatus = 0;
-        for (var attempt = 0; attempt < 20; attempt++) {
+
+        var asyncUrl = data["as" + "ync"];
+        for (var attempt = 0; attempt < 25; attempt++) {
             if (attempt > 0) sleep(1000);
-            response = fetch(data["as" + "ync"]);
-            if (response.ok) return Response.success(response.base64());
-            if (response.status !== 404) {
-                return Response.error("Không tải được âm thanh từ FPT.AI (HTTP " + response.status + ").");
+            var audioResponse = fetch(asyncUrl);
+            if (audioResponse && audioResponse.ok) return Response.success(audioResponse.base64());
+            if (audioResponse && audioResponse.status !== 404) {
+                lastError = "HTTP " + audioResponse.status;
+                break;
             }
         }
+        lastError = "Hết thời gian chờ tạo âm thanh";
+        if (keyIndex < credentials.length - 1) continue;
     }
-    if (lastStatus) return Response.error("Tất cả key FPT.AI đều bị từ chối (HTTP " + lastStatus + ").");
-    return Response.error("Âm thanh FPT.AI chưa sẵn sàng sau 20 giây; hãy thử lại với đoạn văn ngắn hơn.");
+    if (lastError) return Response.error("Tất cả key FPT.AI đều thất bại (" + lastError + ").");
+    return Response.error("Âm thanh FPT.AI chưa sẵn sàng; hãy thử lại với đoạn văn ngắn hơn.");
 }
 
 function synthesizeViettel(inputText, voice, credentials) {
+    var lastError = "";
     var lastStatus = 0;
     for (var keyIndex = 0; keyIndex < credentials.length; keyIndex++) {
         var response = fetch("https://viettelai.vn/tts/speech_synthesis", {
@@ -245,16 +327,21 @@ function synthesizeViettel(inputText, voice, credentials) {
                 without_filter: false
             })
         });
-        if (!response.ok) {
-            lastStatus = response.status;
-            if (isCredentialFailure(response.status) && keyIndex < credentials.length - 1) continue;
-            return Response.error("Viettel AI tạo giọng đọc thất bại (HTTP " + response.status + ").");
+        if (!response || !response.ok) {
+            lastStatus = response ? response.status : 0;
+            lastError = "HTTP " + lastStatus;
+            if (isCredentialFailure(lastStatus) && keyIndex < credentials.length - 1) continue;
+            return Response.error("Viettel AI tạo giọng đọc thất bại (" + lastError + ").");
         }
         var contentType = String(response.header("Content-Type") || "").toLowerCase();
         if (contentType.indexOf("json") !== -1) {
-            return Response.error("Viettel AI trả về lỗi JSON thay vì tệp âm thanh.");
+            var data = parseJson(response);
+            var msg = (data && (data.message || data.error || data.status)) ? (data.message || data.error || ("Lỗi " + data.status)) : "Lỗi phản hồi JSON";
+            lastError = msg;
+            if (keyIndex < credentials.length - 1) continue;
+            return Response.error("Viettel AI: " + msg);
         }
         return Response.success(response.base64());
     }
-    return Response.error("Tất cả token Viettel AI đều bị từ chối (HTTP " + lastStatus + ").");
+    return Response.error("Tất cả token Viettel AI đều thất bại (" + (lastError || ("HTTP " + lastStatus)) + ").");
 }

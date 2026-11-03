@@ -1,73 +1,110 @@
 function execute() {
     var provider = getProviderId(tts_provider);
-    var voices = [
-        "Zalo AI | Nữ miền Nam",
-        "Zalo AI | Nữ miền Bắc",
-        "Zalo AI | Nam miền Nam",
-        "Zalo AI | Nam miền Bắc",
-        "FPT.AI | Ban Mai - Nữ miền Bắc (x1)",
-        "FPT.AI | Lan Nhi - Nữ miền Nam (x1)",
-        "FPT.AI | Lê Minh - Nam miền Bắc (x1)",
-        "FPT.AI | Mỹ An - Nữ miền Trung (x1)",
-        "FPT.AI | Thu Minh - Nữ miền Bắc (x1)",
-        "FPT.AI | Gia Huy - Nam miền Trung (x1)",
-        "FPT.AI | Linh San - Nữ miền Nam (x1)",
-        "Viettel AI | Quỳnh Anh - Nữ miền Bắc",
-        "Viettel AI | Diễm My - Nữ miền Nam",
-        "Viettel AI | Thanh Tùng - Nam miền Bắc",
-        "Viettel AI | Minh Quân - Nam miền Nam",
-        "Viettel AI | Mai Ngọc chất lượng cao - Nữ miền Trung",
-        "Viettel AI | Phương Trang chất lượng cao - Nữ miền Bắc",
-        "Viettel AI | Thảo Chi chất lượng cao - Nữ miền Bắc",
-        "Viettel AI | Thanh Hà chất lượng cao - Nữ miền Bắc",
-        "Viettel AI | Phương Ly chất lượng cao - Nữ miền Nam",
-        "Viettel AI | Thùy Dung chất lượng cao - Nữ miền Nam",
-        "Viettel AI | Bảo Quốc - Nam miền Trung",
-        "Viettel AI | Thanh Phương chất lượng cao - Nữ miền Bắc",
-        "Viettel AI | Nam Khánh chất lượng cao - Nam miền Bắc",
-        "Viettel AI | Lê Yến chất lượng cao - Nữ miền Nam",
-        "Viettel AI | Tiến Quân chất lượng cao - Nam miền Bắc",
-        "Viettel AI | Thùy Duyên chất lượng cao - Nữ miền Nam"
-    ];
-    var voiceSubtitle = "FPT x1: cùng giá theo gói; ElevenLabs: giá theo model. Zalo/Viettel chưa công khai giá theo voice.";
-    if (provider === "elevenlabs") {
+    var voices = [];
+    var voiceSubtitle = "";
+    var credSubtitle = "Nhấn Thêm cho từng khóa. VD: ZAI:key_zalo, EL:key_eleven, FPT:key_fpt, VTAI:token_viettel (hoặc nhập thẳng key nếu chỉ dùng dịch vụ đang chọn).";
+
+    if (provider === "zalo") {
+        voices = [
+            "Zalo AI | Nữ miền Nam",
+            "Zalo AI | Nữ miền Bắc",
+            "Zalo AI | Nam miền Nam",
+            "Zalo AI | Nam miền Bắc"
+        ];
+        voiceSubtitle = "Zalo AI: 4 giọng chuẩn Bắc/Nam.";
+        credSubtitle = "Nhấn Thêm cho từng key Zalo. VD: ZAI:key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng Zalo AI).";
+    } else if (provider === "fpt") {
+        voices = [
+            "FPT.AI | Ban Mai - Nữ miền Bắc (x1)",
+            "FPT.AI | Lan Nhi - Nữ miền Nam (x1)",
+            "FPT.AI | Lê Minh - Nam miền Bắc (x1)",
+            "FPT.AI | Mỹ An - Nữ miền Trung (x1)",
+            "FPT.AI | Thu Minh - Nữ miền Bắc (x1)",
+            "FPT.AI | Gia Huy - Nam miền Trung (x1)",
+            "FPT.AI | Linh San - Nữ miền Nam (x1)"
+        ];
+        voiceSubtitle = "FPT.AI (x1): Ban Mai, Lan Nhi, Lê Minh, Mỹ An, Thu Minh, Gia Huy, Linh San.";
+        credSubtitle = "Nhấn Thêm cho từng key FPT. VD: FPT:key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng FPT.AI).";
+    } else if (provider === "viettel") {
+        var viettelStatic = [
+            "Viettel AI | Quỳnh Anh - Nữ miền Bắc",
+            "Viettel AI | Diễm My - Nữ miền Nam",
+            "Viettel AI | Thanh Tùng - Nam miền Bắc",
+            "Viettel AI | Minh Quân - Nam miền Nam",
+            "Viettel AI | Mai Ngọc chất lượng cao - Nữ miền Trung",
+            "Viettel AI | Phương Trang chất lượng cao - Nữ miền Bắc",
+            "Viettel AI | Thảo Chi chất lượng cao - Nữ miền Bắc",
+            "Viettel AI | Thanh Hà chất lượng cao - Nữ miền Bắc",
+            "Viettel AI | Phương Ly chất lượng cao - Nữ miền Nam",
+            "Viettel AI | Thùy Dung chất lượng cao - Nữ miền Nam",
+            "Viettel AI | Bảo Quốc - Nam miền Trung",
+            "Viettel AI | Thanh Phương chất lượng cao - Nữ miền Bắc",
+            "Viettel AI | Nam Khánh chất lượng cao - Nam miền Bắc",
+            "Viettel AI | Lê Yến chất lượng cao - Nữ miền Nam",
+            "Viettel AI | Tiến Quân chất lượng cao - Nam miền Bắc",
+            "Viettel AI | Thùy Duyên chất lượng cao - Nữ miền Nam"
+        ];
+        var viettelResult = getViettelVoiceNames();
+        if (viettelResult.error) {
+            voices = viettelStatic;
+            voiceSubtitle = "Dùng danh sách giọng Viettel AI có sẵn (" + viettelResult.error + ").";
+        } else {
+            voices = viettelResult.names;
+            voiceSubtitle = "Đã đồng bộ " + voices.length + " giọng từ Viettel AI.";
+        }
+        credSubtitle = "Nhấn Thêm cho từng token Viettel. VD: VTAI:token_cua_ban (hoặc nhập thẳng token nếu chỉ dùng Viettel AI).";
+    } else if (provider === "elevenlabs") {
+        voiceSubtitle = "ElevenLabs: Giá phụ thuộc model, không phụ thuộc giọng.";
+        credSubtitle = "Nhấn Thêm cho từng key ElevenLabs. VD: EL:sk_key_cua_ban (hoặc nhập thẳng key nếu chỉ dùng ElevenLabs).";
         var credentials = getElevenLabsCredentials();
         if (credentials.length === 0) {
-            voiceSubtitle = "Thêm key EL: trong Danh sách API key / token, sau đó mở lại cài đặt để tải giọng ElevenLabs.";
+            voiceSubtitle = "Thêm key EL: trong mục \"API key / token\", sau đó mở lại cài đặt để tải danh sách giọng ElevenLabs.";
         } else {
             var result = getElevenLabsVoiceNames(credentials);
             if (result.error) {
                 voiceSubtitle = "Không tải được giọng ElevenLabs (" + result.error + "). Kiểm tra quyền Voices (read) và key EL:.";
             } else {
-                voices = voices.concat(result.names);
-            }
-        }
-    } else if (provider === "viettel") {
-        var viettelResult = getViettelVoiceNames();
-        if (viettelResult.error) {
-            voiceSubtitle = "Không tải được danh sách giọng Viettel AI (" + viettelResult.error + ").";
-        } else {
-            for (var voiceIndex = 0; voiceIndex < viettelResult.names.length; voiceIndex++) {
-                if (voices.indexOf(viettelResult.names[voiceIndex]) === -1) {
-                    voices.push(viettelResult.names[voiceIndex]);
-                }
+                voices = result.names;
+                voiceSubtitle = "Đã tải " + voices.length + " giọng từ tài khoản ElevenLabs.";
             }
         }
     }
-    return Response.success({
-        tts_voice: {
+
+    var selectedVoice = String(typeof tts_voice !== "undefined" && tts_voice ? tts_voice : "");
+    var defaultVoice = "";
+    if (voices.length > 0) {
+        if (selectedVoice && voices.indexOf(selectedVoice) !== -1) {
+            defaultVoice = selectedVoice;
+        } else {
+            defaultVoice = voices[0];
+        }
+    }
+
+    var configObj = {
+        provider_credentials: {
+            title: "API key / token",
+            subtitle: credSubtitle,
+            mode: "list",
+            format: "text"
+        }
+    };
+
+    if (voices.length > 0) {
+        configObj.tts_voice = {
             title: "Giọng đọc",
             subtitle: voiceSubtitle,
-            default: String(tts_voice || "Zalo AI | Nữ miền Nam"),
+            default: defaultVoice,
             values: voices,
             mode: "select",
             format: "single"
-        }
-    });
+        };
+    }
+
+    return Response.success(configObj);
 }
 
 function getProviderId(value) {
-    var selected = String(value || "").trim().toLowerCase();
+    var selected = String(value || "Zalo AI").trim().toLowerCase();
     if (selected === "zai" || selected === "zalo" || selected === "zalo ai") return "zalo";
     if (selected === "el" || selected === "elevenlabs" || selected === "eleven labs") return "elevenlabs";
     if (selected === "fpt" || selected === "fpt.ai") return "fpt";
@@ -82,7 +119,7 @@ function getViettelVoiceNames() {
     } catch (e) {
         return { names: [], error: "không kết nối được API" };
     }
-    if (!response.ok) return { names: [], error: "HTTP " + response.status };
+    if (!response || !response.ok) return { names: [], error: "HTTP " + (response ? response.status : "0") };
     var data;
     try {
         data = response.json();
@@ -112,8 +149,14 @@ function getViettelVoiceName(voice) {
 }
 
 function getElevenLabsCredentials() {
-    var values = parseCredentialValues(localConfig.getItem("provider_credentials"));
-    values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    var values = [];
+    if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    }
+    if (values.length === 0 && typeof provider_credentials !== "undefined") {
+        values = values.concat(parseCredentialValues(provider_credentials));
+    }
     var credentials = [];
     for (var i = 0; i < values.length; i++) {
         var value = String(values[i] || "").trim();
@@ -164,8 +207,8 @@ function getElevenLabsVoiceNames(credentials) {
             } catch (e) {
                 return { names: [], error: "không kết nối được API" };
             }
-            if (!response.ok) {
-                lastStatus = response.status;
+            if (!response || !response.ok) {
+                lastStatus = response ? response.status : 0;
                 if ((lastStatus === 401 || lastStatus === 403 || lastStatus === 429) &&
                     keyIndex < credentials.length - 1) {
                     retryWithNextKey = true;

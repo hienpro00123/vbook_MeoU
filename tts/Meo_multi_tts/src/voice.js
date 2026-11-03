@@ -4,14 +4,14 @@ function execute() {
     if (provider === "elevenlabs") {
         var credentials = getProviderCredentials(provider);
         if (credentials.length === 0) {
-            return Response.error("Thêm ít nhất một key có tiền tố \"" + getProviderPrefix(provider) + ":\" trong Danh sách API key / token.");
+            return Response.error("Thêm ít nhất một key có tiền tố \"" + getProviderPrefix(provider) + ":\" trong mục \"API key / token\". VD: EL:sk_key_cua_ban");
         }
         return getElevenLabsVoices(credentials);
     }
     if (provider === "viettel") return getViettelVoices();
     var voices = getStaticVoices(provider);
+    var selectedVoice = String(typeof tts_voice !== "undefined" && tts_voice ? tts_voice : "");
     for (var i = 0; i < voices.length; i++) {
-        var selectedVoice = String(tts_voice || "");
         if (voices[i].name === selectedVoice ||
             (provider === "fpt" && voices[i].name + " (x1)" === selectedVoice)) {
             return Response.success([{
@@ -20,6 +20,14 @@ function execute() {
                 language: voices[i].language
             }]);
         }
+    }
+    // Fallback thông minh: Tự chọn giọng đầu tiên của nhà cung cấp hiện tại
+    if (voices.length > 0) {
+        return Response.success([{
+            id: voices[0].id,
+            name: voices[0].name,
+            language: voices[0].language
+        }]);
     }
     return Response.error("Chọn giọng có tiền tố \"" + getProviderName(provider) + " |\" trong cài đặt.");
 }
@@ -52,18 +60,18 @@ function getViettelVoices() {
     try {
         response = fetch("https://viettelai.vn/tts/voices");
     } catch (e) {
-        return Response.error("Không kết nối được danh sách giọng Viettel AI.");
+        return getStaticViettelVoices();
     }
-    if (!response.ok) {
-        return Response.error("Không lấy được danh sách giọng Viettel AI (HTTP " + response.status + ").");
+    if (!response || !response.ok) {
+        return getStaticViettelVoices();
     }
     var data = parseJson(response, "Viettel AI");
     if (data && data.code === 1) return data;
     if (!data || typeof data.length !== "number") {
-        return Response.error("Phản hồi danh sách giọng Viettel AI không hợp lệ.");
+        return getStaticViettelVoices();
     }
     var voices = [];
-    var selectedVoice = String(tts_voice || "");
+    var selectedVoice = String(typeof tts_voice !== "undefined" && tts_voice ? tts_voice : "");
     for (var i = 0; i < data.length; i++) {
         var voice = data[i];
         if (!voice || !voice.code || !voice.name || !voice.description) continue;
@@ -74,15 +82,27 @@ function getViettelVoices() {
         };
         if (selectedVoice.indexOf("Viettel AI |") === 0) {
             if (voiceData.name === selectedVoice) return Response.success([voiceData]);
-        } else {
-            voices.push(voiceData);
         }
+        voices.push(voiceData);
     }
-    if (selectedVoice.indexOf("Viettel AI |") === 0) {
-        return Response.error("Không tìm thấy giọng Viettel AI đã chọn. Hãy tải lại danh sách trong cài đặt.");
+    if (voices.length > 0) {
+        return Response.success([voices[0]]);
     }
-    if (voices.length === 0) return Response.error("Viettel AI không có giọng nào khả dụng.");
-    return Response.success(voices);
+    return getStaticViettelVoices();
+}
+
+function getStaticViettelVoices() {
+    var staticList = [
+        { id: "viettel|hn-quynhanh", name: "Viettel AI | Quỳnh Anh - Nữ miền Bắc", language: "vi-VN" },
+        { id: "viettel|hcm-diemmy", name: "Viettel AI | Diễm My - Nữ miền Nam", language: "vi-VN" },
+        { id: "viettel|hn-thanhtung", name: "Viettel AI | Thanh Tùng - Nam miền Bắc", language: "vi-VN" },
+        { id: "viettel|hcm-minhquan", name: "Viettel AI | Minh Quân - Nam miền Nam", language: "vi-VN" }
+    ];
+    var selectedVoice = String(typeof tts_voice !== "undefined" && tts_voice ? tts_voice : "");
+    for (var i = 0; i < staticList.length; i++) {
+        if (staticList[i].name === selectedVoice) return Response.success([staticList[i]]);
+    }
+    return Response.success([staticList[0]]);
 }
 
 function getViettelVoiceName(voice) {
@@ -94,8 +114,14 @@ function getViettelVoiceName(voice) {
 }
 
 function getProviderCredentials(provider) {
-    var values = parseCredentialValues(localConfig.getItem("provider_credentials"));
-    values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    var values = [];
+    if (typeof localConfig !== "undefined" && typeof localConfig.getItem === "function") {
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credentials")));
+        values = values.concat(parseCredentialValues(localConfig.getItem("provider_credential")));
+    }
+    if (values.length === 0 && typeof provider_credentials !== "undefined") {
+        values = values.concat(parseCredentialValues(provider_credentials));
+    }
     var credentials = [];
     for (var i = 0; i < values.length; i++) {
         var value = String(values[i] || "").trim();
@@ -107,6 +133,8 @@ function getProviderCredentials(provider) {
                 if (configuredProvider !== provider) continue;
                 value = value.substring(separator + 1).trim();
             }
+        } else if (getProviderId(tts_provider) !== provider) {
+            continue;
         }
         if (value && credentials.indexOf(value) === -1) credentials.push(value);
     }
@@ -164,6 +192,7 @@ function parseJson(response, provider) {
 
 function getElevenLabsVoices(credentials) {
     var lastStatus = 0;
+    var lastError = "";
     for (var keyIndex = 0; keyIndex < credentials.length; keyIndex++) {
         var voices = [];
         var nextPageToken = "";
@@ -175,13 +204,14 @@ function getElevenLabsVoices(credentials) {
             var response = fetch(url, {
                 headers: { "xi-api-key": credentials[keyIndex] }
             });
-            if (!response.ok) {
-                lastStatus = response.status;
-                if (isCredentialFailure(response.status) && keyIndex < credentials.length - 1) {
+            if (!response || !response.ok) {
+                lastStatus = response ? response.status : 0;
+                lastError = "HTTP " + lastStatus;
+                if (isCredentialFailure(lastStatus) && keyIndex < credentials.length - 1) {
                     retryWithNextKey = true;
                     break;
                 }
-                return Response.error("Không lấy được danh sách giọng ElevenLabs (HTTP " + response.status + ").");
+                return Response.error("Không lấy được danh sách giọng ElevenLabs (" + lastError + ").");
             }
             var data = parseJson(response, "ElevenLabs");
             if (data && data.code === 1) return data;
@@ -198,9 +228,8 @@ function getElevenLabsVoices(credentials) {
                 };
                 if (String(tts_voice || "").indexOf("ElevenLabs |") === 0) {
                     if (voiceData.name === String(tts_voice)) return Response.success([voiceData]);
-                } else {
-                    voices.push(voiceData);
                 }
+                voices.push(voiceData);
             }
             if (data.has_more !== true) break;
             nextPageToken = String(data.next_page_token || "");
@@ -213,11 +242,10 @@ function getElevenLabsVoices(credentials) {
             }
         }
         if (retryWithNextKey) continue;
-        if (String(tts_voice || "").indexOf("ElevenLabs |") === 0) {
-            return Response.error("Không tìm thấy giọng ElevenLabs đã chọn. Hãy tải lại danh sách trong cài đặt.");
+        if (voices.length > 0) {
+            return Response.success([voices[0]]);
         }
-        if (voices.length === 0) return Response.error("ElevenLabs không có giọng nào khả dụng cho API key này.");
-        return Response.success(voices);
+        return Response.error("ElevenLabs không có giọng nào khả dụng cho API key này.");
     }
-    return Response.error("Tất cả key ElevenLabs đều bị từ chối (HTTP " + lastStatus + ").");
+    return Response.error("Tất cả key ElevenLabs đều bị từ chối (" + (lastError || ("HTTP " + lastStatus)) + ").");
 }
