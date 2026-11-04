@@ -25,7 +25,7 @@ function execute() {
 
         retry_untranslated_chinese: {
             title: "Tự sửa phần tiếng Trung còn sót",
-            subtitle: "Gom các cụm tiếng Trung còn sót và gọi DeepSeek đúng 1 lần; nếu lần sửa lỗi thì giữ nguyên bản dịch ban đầu",
+            subtitle: "Gom các cụm tiếng Trung còn sót trong một lượt sửa; nếu lỗi hoặc kết quả thiếu, giữ nguyên bản dịch ban đầu",
             default: "true",
             mode: "toggle"
         },
@@ -55,7 +55,7 @@ function execute() {
         },
         translation_prompts: {
             title: "Prompt phong cách dịch truyện",
-            subtitle: "Dùng chung cho mọi truyện; khi thêm prompt mới hãy để trống bookId, nhập key là ID style và value là nội dung prompt",
+            subtitle: "Dùng chung cho mọi truyện; Trung tính là mặc định. Khi thêm prompt mới, để trống bookId, nhập key là ID style và value là nội dung prompt",
             mode: "database"
         },
         use_translation_memory: {
@@ -79,7 +79,11 @@ function execute() {
         }
     };
 
-    initializeTranslationPrompts();
+    try {
+        initializeTranslationPrompts();
+    } catch (promptError) {
+        return Response.error("Không thể cập nhật prompt dịch: " + String(promptError));
+    }
 
     var bookInfo = null;
     try {
@@ -106,14 +110,16 @@ function execute() {
 }
 
 function initializeTranslationPrompts() {
-    try {
-        if (localDatabase.count(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE) > 0) return;
-        var defaults = translationDefaultPrompts();
-        var rows = [];
-        for (var style in defaults) {
-            if (!defaults.hasOwnProperty(style)) continue;
-            rows.push({ key: style, value: defaults[style] });
-        }
-        if (rows.length > 0) localDatabase.upsertAll(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE, rows);
-    } catch (e) {}
+    if (localStorage.getItem(TRANSLATION_PROMPT_VERSION_KEY) === TRANSLATION_PROMPT_VERSION) return;
+
+    var defaults = translationDefaultPrompts();
+    var rows = [];
+    for (var style in defaults) {
+        if (!defaults.hasOwnProperty(style)) continue;
+        var storedPrompt = localDatabase.get(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE, style);
+        if (storedPrompt !== null && storedPrompt !== undefined) continue;
+        rows.push({ key: style, value: defaults[style] });
+    }
+    if (rows.length > 0) localDatabase.upsertAll(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE, rows);
+    localStorage.setItem(TRANSLATION_PROMPT_VERSION_KEY, TRANSLATION_PROMPT_VERSION);
 }

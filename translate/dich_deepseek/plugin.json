@@ -2,7 +2,7 @@
   "metadata": {
     "name": "DeepSeek Translate",
     "author": "Meo",
-    "version": 6,
+    "version": 7,
     "source": "https://platform.deepseek.com",
     "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
     "locale": "global",

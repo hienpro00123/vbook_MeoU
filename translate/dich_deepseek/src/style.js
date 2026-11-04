@@ -32,7 +32,9 @@ function execute() {
             });
             known[id] = true;
         }
-    } catch (e) {}
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể tải prompt phong cách tùy chỉnh: " + e);
+    }
 
     return Response.success(styles);
 }

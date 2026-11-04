@@ -24,12 +24,24 @@ function execute() {
     }
 
     var chapterLimit = analysisReadInteger("memory_analysis_chapters", 5, 1, ANALYSIS_MAX_CHAPTERS);
-    var chapters = analysisCollectChapters(info, chapterLimit);
+    var collection = analysisCollectChapters(info, chapterLimit);
+    var chapters = collection.chapters;
     if (chapters.length === 0) {
+        if (collection.error) {
+            return Response.error("Không đọc được danh sách chương: " + collection.error);
+        }
+        if (collection.skipped.length > 0) {
+            return Response.error("Không đọc được nội dung các chương tại vị trí: " + collection.skipped.join(", "));
+        }
         return Response.error("Không tìm thấy nội dung chương gốc đã lưu từ chương đang đọc trở đi");
     }
 
-    var memory = analysisLoadMemory(String(info.id));
+    var memory;
+    try {
+        memory = analysisLoadMemory(String(info.id));
+    } catch (memoryError) {
+        return Response.error("Không đọc được bộ nhớ dịch: " + String(memoryError));
+    }
     var analyzedBlocks = 0;
     var changedRows = 0;
 
@@ -54,19 +66,32 @@ function execute() {
                 );
             }
 
-            changedRows += analysisMergeEntities(
-                String(info.id),
-                memory,
-                result.entities,
-                block,
-                chapter.position
-            );
+            try {
+                changedRows += analysisMergeEntities(
+                    String(info.id),
+                    memory,
+                    result.entities,
+                    block,
+                    chapter.position
+                );
+            } catch (saveError) {
+                return Response.error(
+                    "Không lưu được bộ nhớ dịch tại chương " + chapter.position +
+                    " (phần " + (blockIndex + 1) + "/" + blocks.length + "): " + String(saveError)
+                );
+            }
             analyzedBlocks++;
         }
     }
 
     var message = "Đã phân tích " + chapters.length + " chương (" + analyzedBlocks +
         " phần), thực hiện " + changedRows + " lượt cập nhật bộ nhớ dịch";
+    if (collection.skipped.length > 0) {
+        message += ". Không đọc được chương tại vị trí: " + collection.skipped.join(", ");
+    }
+    if (collection.unavailable.length > 0) {
+        message += ". Chưa có nội dung đã lưu tại vị trí: " + collection.unavailable.join(", ");
+    }
     return Response.success(message);
 }
 
@@ -75,9 +100,11 @@ function analysisCollectChapters(info, limit) {
     try {
         toc = localBook.getTableOfContent();
     } catch (e) {
-        return [];
+        return { chapters: [], skipped: [], unavailable: [], error: String(e) };
     }
-    if (!Array.isArray(toc) || toc.length === 0) return [];
+    if (!Array.isArray(toc) || toc.length === 0) {
+        return { chapters: [], skipped: [], unavailable: [], error: "" };
+    }
 
     toc.sort(function (left, right) {
         return Number(left.position || 0) - Number(right.position || 0);
@@ -85,37 +112,47 @@ function analysisCollectChapters(info, limit) {
 
     var startPosition = parseInt(info.lastReadChapterIndex, 10);
     if (isNaN(startPosition) || startPosition < 0) startPosition = 0;
-    var selected = [];
+    var collection = { chapters: [], skipped: [], unavailable: [], error: "" };
     var seenPositions = {};
-    for (var index = 0; index < toc.length && selected.length < limit; index++) {
+    for (var index = 0; index < toc.length && collection.chapters.length < limit; index++) {
         var tocItem = toc[index];
         var position = Number(tocItem.position);
         if (isNaN(position) || position < startPosition) continue;
         if (String(tocItem.id || "").indexOf("_section_") >= 0) continue;
         if (seenPositions[position]) continue;
+        seenPositions[position] = true;
 
         var content;
         try {
             content = localBook.getChapterContent(position);
         } catch (e2) {
+            collection.skipped.push(position);
             continue;
         }
-        if (!content || !content.content) continue;
+        if (!content || !content.content) {
+            collection.unavailable.push(position);
+            continue;
+        }
 
         var raw = content.content.raw;
         if (raw === null || raw === undefined) raw = content.content[""];
-        if (raw === null || raw === undefined || String(raw).trim() === "") continue;
+        if (raw === null || raw === undefined || String(raw).trim() === "") {
+            collection.unavailable.push(position);
+            continue;
+        }
         var cleaned = analysisCleanContent(String(raw));
-        if (!cleaned) continue;
+        if (!cleaned) {
+            collection.unavailable.push(position);
+            continue;
+        }
 
-        seenPositions[position] = true;
-        selected.push({
+        collection.chapters.push({
             position: position,
             title: analysisChapterTitle(tocItem.title, position),
             text: cleaned
         });
     }
-    return selected;
+    return collection;
 }
 
 function analysisChapterTitle(value, position) {
@@ -229,6 +266,18 @@ function analysisRequest(apiKeys, chapter, text, blockIndex, blockCount, memoryC
             analysisLog("chapter=" + chapter.position + " invalidResponseJson=" + String(e2));
             return { entities: [], error: "DeepSeek trả về dữ liệu không hợp lệ" };
         }
+        var finishReason = data && data.choices && data.choices.length > 0 && data.choices[0]
+            ? String(data.choices[0].finish_reason || "")
+            : "";
+        if (!finishReason) {
+            return { entities: [], error: "DeepSeek không xác nhận trạng thái hoàn tất phân tích" };
+        }
+        if (finishReason === "length") {
+            return { entities: [], error: "DeepSeek đã cắt kết quả phân tích do chạm giới hạn token đầu ra" };
+        }
+        if (finishReason && finishReason !== "stop") {
+            return { entities: [], error: "DeepSeek không thể hoàn tất phân tích: " + finishReason };
+        }
         var parsed = analysisParseEntities(analysisExtractText(data));
         if (parsed.error) {
             analysisLog("chapter=" + chapter.position + " parseError=" + parsed.error);
@@ -274,23 +323,21 @@ function analysisParseEntities(value) {
             }
         }
         if (discovered.length > 0) entities = discovered;
-        else return { entities: [], error: "" };
+        else return { entities: [], error: "DeepSeek trả về JSON không có danh sách thực thể" };
     }
-    if (!entities) return { entities: [], error: "Gemini trả về JSON không thể phân tích" };
+    if (!entities) return { entities: [], error: "DeepSeek trả về JSON không thể phân tích" };
     return { entities: entities.slice(0, ANALYSIS_MAX_ENTITIES), error: "" };
 }
 
 function analysisLoadMemory(bookId) {
     var memory = {};
-    try {
-        var total = localDatabase.count(bookId, ANALYSIS_TABLE);
-        var rows = localDatabase.list(bookId, ANALYSIS_TABLE, 0, Math.min(total, ANALYSIS_MAX_MEMORY_ROWS));
-        for (var index = 0; rows && index < rows.length; index++) {
-            var key = analysisOneLine(rows[index].key);
-            if (!key) continue;
-            memory[key] = analysisParseMemoryValue(rows[index].value);
-        }
-    } catch (e) {}
+    var total = localDatabase.count(bookId, ANALYSIS_TABLE);
+    var rows = localDatabase.list(bookId, ANALYSIS_TABLE, 0, Math.min(total, ANALYSIS_MAX_MEMORY_ROWS));
+    for (var index = 0; rows && index < rows.length; index++) {
+        var key = analysisOneLine(rows[index].key);
+        if (!key) continue;
+        memory[key] = analysisParseMemoryValue(rows[index].value);
+    }
     return memory;
 }
 
@@ -377,11 +424,7 @@ function analysisMergeEntities(bookId, memory, entities, text, position) {
     }
 
     if (records.length === 0) return 0;
-    try {
-        return Number(localDatabase.upsertAll(bookId, ANALYSIS_TABLE, records)) || 0;
-    } catch (e) {
-        return 0;
-    }
+    return Number(localDatabase.upsertAll(bookId, ANALYSIS_TABLE, records)) || 0;
 }
 
 function analysisFindCanonical(memory, source) {
