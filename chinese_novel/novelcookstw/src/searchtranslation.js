@@ -19,10 +19,21 @@ var NOVEL_SEARCH_ALIAS_MAP = {
     "vo luyen dinh phong": "武炼巅峰",
     "van co than de": "万古神帝",
     "than an vuong toa": "神印王座",
-    "tu la vo than": "修罗武神"
+    "tu la vo than": "修罗武神",
+    "do thi": "都市",
+    "than dao dan ton": "神道丹尊",
+    "bat hu pham nhan": "不朽凡人",
+    "cau ma": "求魔",
+    "nga duc phong thien": "我欲封天",
+    "tuyet ung linh chu": "雪鹰领主",
+    "dai phung da canh nhan": "大奉打更人",
+    "co chan nhan": "蛊真人",
+    "thanh khu": "圣墟",
+    "linh vu thien ha": "灵武天下",
+    "truong sinh gioi": "长生界"
 };
 var NOVEL_SEARCH_TRANSLATION_TTL = 300000;
-var NOVEL_SEARCH_TRANSLATION_ERROR_TTL = 30000;
+var NOVEL_SEARCH_TRANSLATION_ERROR_TTL = 300000;
 var NOVEL_SEARCH_TRANSLATION_RETRY_TTL = 10000;
 var NOVEL_SEARCH_TRANSLATION_TIMEOUT = 8000;
 
@@ -69,14 +80,27 @@ function novelSearchResolveQuery(text) {
         if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cache read failed: " + e);
     }
 
+    var offlineQuery = novelSearchTranslateOffline(translationText);
+    if (offlineQuery) {
+        try {
+            cacheStorage.setItem(cacheKey, JSON.stringify({
+                expires: Date.now() + NOVEL_SEARCH_TRANSLATION_TTL,
+                query: offlineQuery
+            }));
+        } catch (e2) {
+            if (typeof Log !== "undefined") Log.log("NovelCooksTW offline translation cache write failed: " + e2);
+        }
+        return { query: offlineQuery };
+    }
+
     var cooldownKey = "novelcookstw:search-translation:google-429";
     try {
         var cooldown = parseJson(cacheStorage.getItem(cooldownKey));
         if (cooldown && cooldown.expires > Date.now()) {
             return { error: "Google Translate đang giới hạn yêu cầu (HTTP 429). Thử lại sau hoặc tìm bằng tên tiếng Trung." };
         }
-    } catch (e2) {
-        if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cooldown read failed: " + e2);
+    } catch (e3) {
+        if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cooldown read failed: " + e3);
     }
 
     var transientCooldownKey = "novelcookstw:search-translation:google-transient";
@@ -85,8 +109,8 @@ function novelSearchResolveQuery(text) {
         if (transientCooldown && transientCooldown.expires > Date.now()) {
             return { error: "Google Translate đang tạm lỗi kết nối. Thử lại sau hoặc tìm bằng tên tiếng Trung." };
         }
-    } catch (e3) {
-        if (typeof Log !== "undefined") Log.log("NovelCooksTW transient cooldown read failed: " + e3);
+    } catch (e4) {
+        if (typeof Log !== "undefined") Log.log("NovelCooksTW transient cooldown read failed: " + e4);
     }
 
     var translated = novelSearchTranslateWithGoogle(translationText);
@@ -96,16 +120,16 @@ function novelSearchResolveQuery(text) {
             cacheStorage.setItem(cooldownKey, JSON.stringify({
                 expires: Date.now() + NOVEL_SEARCH_TRANSLATION_ERROR_TTL
             }));
-        } catch (e4) {
-            if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cooldown write failed: " + e4);
+        } catch (e5) {
+            if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cooldown write failed: " + e5);
         }
     } else if (translated.error && (translated.status === 0 || translated.status >= 500)) {
         try {
             cacheStorage.setItem(transientCooldownKey, JSON.stringify({
                 expires: Date.now() + NOVEL_SEARCH_TRANSLATION_RETRY_TTL
             }));
-        } catch (e5) {
-            if (typeof Log !== "undefined") Log.log("NovelCooksTW transient cooldown write failed: " + e5);
+        } catch (e6) {
+            if (typeof Log !== "undefined") Log.log("NovelCooksTW transient cooldown write failed: " + e6);
         }
     }
     try {
@@ -123,10 +147,34 @@ function novelSearchResolveQuery(text) {
                 error: translated.error
             }));
         }
-    } catch (e6) {
-        if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cache write failed: " + e6);
+    } catch (e7) {
+        if (typeof Log !== "undefined") Log.log("NovelCooksTW translation cache write failed: " + e7);
     }
     return translated;
+}
+
+function novelSearchTranslateOffline(text) {
+    var words = novelSearchNormalize(text).split(" ");
+    var output = "";
+    var index = 0;
+    while (index < words.length) {
+        var match = "";
+        var translated = "";
+        var maxLength = words.length - index;
+        if (maxLength > 7) maxLength = 7;
+        for (var length = maxLength; length > 0; length--) {
+            var phrase = words.slice(index, index + length).join(" ");
+            if (NOVEL_SEARCH_OFFLINE_DICTIONARY[phrase]) {
+                match = phrase;
+                translated = NOVEL_SEARCH_OFFLINE_DICTIONARY[phrase];
+                break;
+            }
+        }
+        if (!match) return "";
+        output += translated;
+        index += match.split(" ").length;
+    }
+    return output;
 }
 
 function novelSearchPrepareTranslation(text) {

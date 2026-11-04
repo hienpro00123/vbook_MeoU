@@ -50,7 +50,7 @@
     "author": "Meo",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
     "source": "https://novel.cooks.tw",
-    "version": 31,
+    "version": 35,
     "type": "novel",
     "locale": "zh_TW",
     "relativePath": "chinese_novel/novelcookstw",
@@ -58,7 +58,7 @@
     "metadata": {
       "name": "NovelCooksTW",
       "author": "Meo",
-      "version": 31,
+      "version": 35,
       "source": "https://novel.cooks.tw",
       "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",

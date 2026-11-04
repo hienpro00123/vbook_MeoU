@@ -1,5 +1,6 @@
 load("config.js");
 load("searchtranslation.js");
+load("searchdictionary.js");
 function execute(key, page) {
     key = key || "";
     if (!key) return Response.error("Nhập từ khóa để tìm kiếm");
