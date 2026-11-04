@@ -1,8 +1,13 @@
 load("config.js");
 function execute(tagId, page) {
     if (!tagId) return Response.error("Thiếu ID thể loại");
-    var p = parseInt(page, 10) || 1;
-    var r = fetchApi("/novel/keyword/" + encodeURIComponent(tagId) + "?page=" + p + "&limit=20");
+    var pageValue = String(page || "1").trim();
+    if (!/^\d+$/.test(pageValue) || parseInt(pageValue, 10) < 1) {
+        return Response.error("Trang không hợp lệ");
+    }
+
+    var p = parseInt(pageValue, 10);
+    var r = fetchApi("/novel/keyword/" + encodeURIComponent(tagId) + "?page=" + p + "&limit=20", true);
     if (!r.json) return Response.error(r.error);
 
     var json = r.json;

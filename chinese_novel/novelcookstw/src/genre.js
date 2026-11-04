@@ -34,6 +34,6 @@ function execute() {
         { title: "Hôn Nhân Nghề Nghiệp",   input: "32", script: "genrecontent.js" },
         { title: "Hào Môn Tổng Tài",        input: "33", script: "genrecontent.js" },
         { title: "Dân Quốc Ngôn Tình",     input: "34", script: "genrecontent.js" },
-        { title: "Sách Xuất Bản",           input: "36", script: "genrecontent.js" }
+        { title: "Khác",                    input: "35", script: "genrecontent.js" },
     ]);
 }

@@ -1,7 +1,18 @@
 load("config.js");
 function execute(sortid, page) {
-    var p = parseInt(page, 10) || 1;
-    var r = fetchApi("/novel/list?sortid=" + sortid + "&page=" + p + "&limit=20");
+    var sort = String(sortid || "").trim();
+    var genreId = parseInt(sort, 10);
+    if (!/^\d+$/.test(sort) || genreId < 1 || genreId > 35) {
+        return Response.error("ID thể loại không hợp lệ");
+    }
+
+    var pageValue = String(page || "1").trim();
+    if (!/^\d+$/.test(pageValue) || parseInt(pageValue, 10) < 1) {
+        return Response.error("Trang không hợp lệ");
+    }
+
+    var p = parseInt(pageValue, 10);
+    var r = fetchApi("/novel/list?sortid=" + genreId + "&page=" + p + "&limit=20", true);
     if (!r.json) return Response.error(r.error);
 
     var json = r.json;

@@ -1,7 +1,7 @@
 load("config.js");
 function execute(url, page) {
     var path = url || "/novel/hot";
-    var r = fetchApi(path);
+    var r = fetchApi(path, path === "/novel/hot");
     if (!r.json) return Response.error(r.error);
 
     var json = r.json;

@@ -3,7 +3,7 @@ function execute(url) {
     var id = parseArticleId(url);
     if (!id) return Response.error("Không đọc được articleid từ URL");
 
-    var r = fetchApi("/novel/detail/" + id);
+    var r = fetchApi("/novel/detail/" + id, true);
     if (!r.json) return Response.error(r.error);
 
     var json = r.json;

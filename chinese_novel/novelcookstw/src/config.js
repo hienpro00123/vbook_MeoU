@@ -1,6 +1,7 @@
 var BASE_URL = DOMAIN || "https://novel.cooks.tw";
 var API_BASE = BASE_URL + "/api";
 var API_TIMEOUT = 25000;
+var API_CACHE_TTL = 30000;
 var PIC_BASE = "https://pic.cooks.tw";
 
 var FETCH_HEADERS = {
@@ -45,6 +46,25 @@ function fetchOnce(url) {
     }
     if (!res) return { error: "Không kết nối được máy chủ", status: 0, retryable: true };
 
+    if (!res.ok) {
+        var status = res.status;
+        var errorText = "";
+        try {
+            errorText = res.text();
+        } catch (e2) {}
+        var isCloudflare = isCloudflareChallenge(errorText);
+        if (!isCloudflare && typeof res.header === "function") {
+            var server = res.header("server") || "";
+            isCloudflare = String(server).toLowerCase().indexOf("cloudflare") >= 0;
+        }
+        return {
+            error: isCloudflare ? "Cloudflare chặn truy cập (HTTP " + status + ")" : "HTTP " + status,
+            status: status,
+            retryable: isCloudflare || status === 0 || status >= 500,
+            cf: isCloudflare
+        };
+    }
+
     var text = "";
     try {
         text = res.text();
@@ -55,10 +75,10 @@ function fetchOnce(url) {
     var json = parseJson(text);
     if (json) return { json: json };
 
-    if (res.status === 403 || res.status === 503 || isCloudflareChallenge(text)) {
+    if (isCloudflareChallenge(text)) {
         return { error: "Cloudflare chặn truy cập (HTTP " + res.status + ")", status: res.status, retryable: true, cf: true };
     }
-    return { error: "HTTP " + res.status, status: res.status, retryable: res.status === 0 || res.status >= 500 };
+    return { error: "Phản hồi không phải JSON (HTTP " + res.status + ")", status: res.status, retryable: false };
 }
 
 // Fallback WebView: vượt Cloudflare JS challenge rồi lấy JSON qua XHR đồng bộ
@@ -67,7 +87,7 @@ function fetchApiViaBrowser(url) {
     try {
         browser = Engine.newBrowser();
         browser.launch(url, 20000);
-        var script = "(function(){var x=new XMLHttpRequest();x.open('GET'," + JSON.stringify(url) + ",false);x.send();return x.responseText;})()";
+        var script = "(function(){var x=new XMLHttpRequest();x.open('GET'," + JSON.stringify(url) + ",false);x.send();return JSON.stringify({status:x.status,body:x.responseText});})()";
         var raw = null;
         try {
             raw = browser.callJs(script, 10000);
@@ -84,7 +104,9 @@ function fetchApiViaBrowser(url) {
                 raw = null;
             }
         }
-        return parseJson(raw);
+        var response = parseJson(raw);
+        if (!response || typeof response.status !== "number" || response.status < 200 || response.status >= 300) return null;
+        return parseJson(response.body);
     } catch (e) {
         return null;
     } finally {
@@ -96,18 +118,59 @@ function fetchApiViaBrowser(url) {
     }
 }
 
+function getCachedApiResult(key) {
+    try {
+        var cached = parseJson(cacheStorage.getItem(key));
+        if (cached && cached.expires > Date.now() && cached.json && cached.json.code === 200) {
+            return { json: cached.json };
+        }
+    } catch (e) {
+        if (typeof Log !== "undefined") Log.log("NovelCooksTW cache read failed: " + e);
+        return null;
+    }
+    return null;
+}
+
+function cacheApiResult(key, result) {
+    if (!result || !result.json || result.json.code !== 200) return;
+    try {
+        cacheStorage.setItem(key, JSON.stringify({
+            expires: Date.now() + API_CACHE_TTL,
+            json: result.json
+        }));
+    } catch (e) {
+        if (typeof Log !== "undefined") Log.log("NovelCooksTW cache write failed: " + e);
+    }
+}
+
 // Trả về { json } hoặc { error, status, cf }
-function fetchApi(path) {
+function fetchApi(path, useCache) {
     var url = apiUrl(path);
+    var cacheKey = "novelcookstw:" + url;
+    if (useCache) {
+        var cached = getCachedApiResult(cacheKey);
+        if (cached) return cached;
+    }
+
     var result = fetchOnce(url);
-    if (result.json) return result;
+    if (result.json) {
+        if (useCache) cacheApiResult(cacheKey, result);
+        return result;
+    }
 
-    if (result.retryable) result = fetchOnce(url);
-    if (result.json) return result;
+    if (result.retryable && !result.cf) result = fetchOnce(url);
+    if (result.json) {
+        if (useCache) cacheApiResult(cacheKey, result);
+        return result;
+    }
 
-    if (result.cf || result.status === 0 || result.status >= 500) {
+    if (result.cf || result.status === 0) {
         var viaBrowser = fetchApiViaBrowser(url);
-        if (viaBrowser) return { json: viaBrowser };
+        if (viaBrowser) {
+            result = { json: viaBrowser };
+            if (useCache) cacheApiResult(cacheKey, result);
+            return result;
+        }
     }
     return result;
 }
