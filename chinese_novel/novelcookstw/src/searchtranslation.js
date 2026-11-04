@@ -30,7 +30,32 @@ var NOVEL_SEARCH_ALIAS_MAP = {
     "co chan nhan": "蛊真人",
     "thanh khu": "圣墟",
     "linh vu thien ha": "灵武天下",
-    "truong sinh gioi": "长生界"
+    "truong sinh gioi": "长生界",
+    "xich tam tuan thien": "赤心巡天",
+    "su huynh ta thuc tai qua on trong": "我师兄实在太稳健了",
+    "tu chan lieu thien quan": "修真聊天群",
+    "gia thien": "遮天",
+    "thon phe tinh khong": "吞噬星空",
+    "ban long": "盘龙",
+    "tuong da": "将夜",
+    "khanh du nien": "庆余年",
+    "tuyet trung han dao hanh": "雪中悍刀行",
+    "muc than ky": "牧神记",
+    "thien khai du bao": "天启预报",
+    "dao quy di tien": "道诡异仙",
+    "chu te": "赘婿",
+    "minh trieu bai gia tu": "明朝败家子"
+};
+var NOVEL_SEARCH_OFFLINE_OVERRIDES = {
+    "tien hiep": "仙俠",
+    "tu tien": "修仙",
+    "xuyen khong": "穿越",
+    "trong sinh": "重生",
+    "ma phap": "魔法",
+    "phieu luu": "冒險",
+    "huyen huyen": "玄幻",
+    "tu chan": "修真",
+    "he thong": "系統"
 };
 var NOVEL_SEARCH_TRANSLATION_TTL = 300000;
 var NOVEL_SEARCH_TRANSLATION_ERROR_TTL = 300000;
@@ -56,7 +81,7 @@ function novelSearchIsVietnamese(text) {
     if (/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(text)) {
         return true;
     }
-    return /(^|\s)(tim kiem truyen|tim truyen|doc truyen|tim kiem|truyen|doc|tac gia|the loai|tieu thuyet|chuong|hoan thanh|dang ra|xuyen khong)(\s|$)/.test(novelSearchNormalize(text));
+    return /(^|\s)(tim kiem truyen|tim truyen|doc truyen|tim kiem|truyen|doc|tac gia|the loai|tieu thuyet|chuong|hoan thanh|dang ra|tien hiep|tu tien|xuyen khong|trong sinh|ma phap|phieu luu|huyen huyen|tu chan|he thong)(\s|$)/.test(novelSearchNormalize(text));
 }
 
 function novelSearchResolveQuery(text) {
@@ -69,7 +94,7 @@ function novelSearchResolveQuery(text) {
     var translationKey = novelSearchNormalize(translationText);
     if (translationText.length > 100) return { error: "Từ khóa tiếng Việt quá dài để dịch" };
 
-    var cacheKey = "novelcookstw:search-translation:" + encodeURIComponent(translationKey);
+    var cacheKey = "novelcookstw:search-translation:v3:" + encodeURIComponent(translationKey);
     try {
         var cached = parseJson(cacheStorage.getItem(cacheKey));
         if (cached && cached.expires > Date.now()) {
@@ -164,6 +189,11 @@ function novelSearchTranslateOffline(text) {
         if (maxLength > 7) maxLength = 7;
         for (var length = maxLength; length > 0; length--) {
             var phrase = words.slice(index, index + length).join(" ");
+            if (NOVEL_SEARCH_OFFLINE_OVERRIDES[phrase]) {
+                match = phrase;
+                translated = NOVEL_SEARCH_OFFLINE_OVERRIDES[phrase];
+                break;
+            }
             if (NOVEL_SEARCH_OFFLINE_DICTIONARY[phrase]) {
                 match = phrase;
                 translated = NOVEL_SEARCH_OFFLINE_DICTIONARY[phrase];
