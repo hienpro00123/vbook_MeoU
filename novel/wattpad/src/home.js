@@ -13,11 +13,6 @@ function execute() {
       input: API_V4 + "/stories?filter=new&language=" + LANG_VI,
     },
     {
-      title: "Mới nhất",
-      script: "homecontent.js",
-      input: API_V4 + "/stories?filter=fresh&language=" + LANG_VI,
-    },
-    {
       title: "Hoàn thành",
       script: "homecontent.js",
       input: API_V4 + "/stories?filter=hot&completed=1&language=" + LANG_VI,

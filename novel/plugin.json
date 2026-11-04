@@ -205,7 +205,7 @@
     "author": "Meo",
     "description": "Đọc truyện tiếng Việt trên Wattpad",
     "source": "https://www.wattpad.com",
-    "version": 21,
+    "version": 22,
     "type": "novel",
     "locale": "vi",
     "relativePath": "novel/wattpad",
@@ -213,7 +213,7 @@
     "metadata": {
       "name": "Wattpad - Tiếng Việt",
       "author": "Meo",
-      "version": 21,
+      "version": 22,
       "source": "https://www.wattpad.com",
       "regexp": "(www\\.|m\\.)?wattpad\\.com/(story/)?\\d+",
       "description": "Đọc truyện tiếng Việt trên Wattpad",

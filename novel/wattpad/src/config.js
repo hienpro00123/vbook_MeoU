@@ -34,7 +34,8 @@ function buildUrl(base, params) {
   for (var key in params) {
     qs.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
   }
-  return qs.length > 0 ? base + "?" + qs.join("&") : base;
+  if (qs.length === 0) return base;
+  return base + (base.indexOf("?") === -1 ? "?" : "&") + qs.join("&");
 }
 
 // Fetch JSON từ Wattpad API với retry 1 lần (bỏ qua 4xx — không retry lỗi client)
@@ -56,9 +57,10 @@ function fetchWattpadHtml(url) {
 }
 
 function parseStories(data) {
-  if (!data || !data.stories || !data.stories.length) return Response.success([], null);
+  if (!data || !data.stories) return Response.success([], null);
   var next = data.nextUrl ? OFFSET_RE.exec(data.nextUrl) : null;
   next = next ? next[1] : null;
+  if (!data.stories.length) return Response.success([], next);
   var list = [];
   var stories = data.stories;
   for (var i = 0; i < stories.length; i++) {
