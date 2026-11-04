@@ -332,7 +332,22 @@ function analysisParseEntities(value) {
 function analysisLoadMemory(bookId) {
     var memory = {};
     var total = localDatabase.count(bookId, ANALYSIS_TABLE);
-    var rows = localDatabase.list(bookId, ANALYSIS_TABLE, 0, Math.min(total, ANALYSIS_MAX_MEMORY_ROWS));
+    var rows;
+    if (total > ANALYSIS_MAX_MEMORY_ROWS) {
+        var half = Math.floor(ANALYSIS_MAX_MEMORY_ROWS / 2);
+        rows = localDatabase.list(bookId, ANALYSIS_TABLE, 0, half);
+        var recentRows = localDatabase.list(
+            bookId,
+            ANALYSIS_TABLE,
+            Math.max(0, total - half),
+            half
+        );
+        for (var recentIndex = 0; recentRows && recentIndex < recentRows.length; recentIndex++) {
+            rows.push(recentRows[recentIndex]);
+        }
+    } else {
+        rows = localDatabase.list(bookId, ANALYSIS_TABLE, 0, Math.min(total, ANALYSIS_MAX_MEMORY_ROWS));
+    }
     for (var index = 0; rows && index < rows.length; index++) {
         var key = analysisOneLine(rows[index].key);
         if (!key) continue;
