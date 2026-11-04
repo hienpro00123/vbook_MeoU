@@ -50,12 +50,33 @@ var NOVEL_SEARCH_OFFLINE_OVERRIDES = {
     "tien hiep": "仙俠",
     "tu tien": "修仙",
     "xuyen khong": "穿越",
+    "xuyen nhanh": "快穿",
     "trong sinh": "重生",
     "ma phap": "魔法",
     "phieu luu": "冒險",
     "huyen huyen": "玄幻",
     "tu chan": "修真",
-    "he thong": "系統"
+    "he thong": "系統",
+    "tinh cam": "言情",
+    "ngon tinh": "言情",
+    "ngon tinh co dai": "古代言情",
+    "ngon tinh hien dai": "現代言情",
+    "nu chinh": "女主",
+    "nu chinh manh": "女強",
+    "nam chinh": "男主",
+    "nam chinh ba dao": "霸道男主",
+    "ba dao": "霸道",
+    "co dai": "古代",
+    "hien dai": "現代",
+    "dam my": "耽美",
+    "bach hop": "百合",
+    "phan phai": "反派",
+    "vo dich": "無敵",
+    "sang van": "爽文",
+    "kiem hiep": "武俠",
+    "hoan thanh": "完結",
+    "dang ra": "連載",
+    "full": "完結"
 };
 var NOVEL_SEARCH_TRANSLATION_TTL = 300000;
 var NOVEL_SEARCH_TRANSLATION_ERROR_TTL = 300000;
@@ -81,7 +102,7 @@ function novelSearchIsVietnamese(text) {
     if (/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(text)) {
         return true;
     }
-    return /(^|\s)(tim kiem truyen|tim truyen|doc truyen|tim kiem|truyen|doc|tac gia|the loai|tieu thuyet|chuong|hoan thanh|dang ra|tien hiep|tu tien|xuyen khong|trong sinh|ma phap|phieu luu|huyen huyen|tu chan|he thong)(\s|$)/.test(novelSearchNormalize(text));
+    return /(^|\s)(tim kiem truyen|tim truyen|doc truyen|tim kiem|truyen|doc|tac gia|the loai|tieu thuyet|chuong|hoan thanh|dang ra|full|tien hiep|tu tien|xuyen khong|xuyen nhanh|trong sinh|ma phap|phieu luu|huyen huyen|tu chan|he thong|tinh cam|ngon tinh|nu chinh|nam chinh|co dai|hien dai|dam my|bach hop|phan phai|vo dich|sang van|kiem hiep|ba dao)(\s|$)/.test(novelSearchNormalize(text));
 }
 
 function novelSearchResolveQuery(text) {
@@ -94,7 +115,7 @@ function novelSearchResolveQuery(text) {
     var translationKey = novelSearchNormalize(translationText);
     if (translationText.length > 100) return { error: "Từ khóa tiếng Việt quá dài để dịch" };
 
-    var cacheKey = "novelcookstw:search-translation:v3:" + encodeURIComponent(translationKey);
+    var cacheKey = "novelcookstw:search-translation:v5:" + encodeURIComponent(translationKey);
     try {
         var cached = parseJson(cacheStorage.getItem(cacheKey));
         if (cached && cached.expires > Date.now()) {
@@ -211,10 +232,17 @@ function novelSearchPrepareTranslation(text) {
     var value = String(text || "").trim();
     for (var i = 0; i < 3; i++) {
         var trimmed = value
-            .replace(/^(tìm kiếm truyện|tim kiem truyen|tìm truyện|tim truyen|đọc truyện|doc truyen|tìm kiếm|tim kiem|tìm|tim|đọc|doc)\s+/i, "")
+            .replace(/^(tìm kiếm truyện|tim kiem truyen|tìm truyện|tim truyen|đọc truyện|doc truyen|thể loại truyện|the loai truyen|thể loại|the loai|truyện|truyen|tìm kiếm|tim kiem|tìm|tim|đọc|doc)\s+/i, "")
+            .trim();
+        if (trimmed && trimmed !== value) {
+            value = trimmed;
+            continue;
+        }
+
+        trimmed = value
             .replace(/\s+(truyện\s+(full|hoàn thành|hoan thanh|hay nhất|hay nhat|mới nhất|moi nhat)|full|hoàn thành|hoan thanh|hay nhất|hay nhat|mới nhất|moi nhat)$/i, "")
             .trim();
-        if (trimmed === value) break;
+        if (!trimmed || trimmed === value) break;
         value = trimmed;
     }
     return value || String(text || "").trim();
