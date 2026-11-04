@@ -1,9 +1,10 @@
 load("config.js");
 
 function execute(url, page) {
-    var p = page ? parseInt(page) : 1;
-    var json = apiJson("/genres/" + url + "/stories?page=" + p + "&limit=20");
-    if (!json || !json.data) return Response.error("Không tải được danh sách truyện");
-    var next = (json.meta && p < json.meta.totalPages) ? (p + 1) + "" : null;
-    return Response.success(parseStories(json.data), next);
+    var p = parseInt(page) || 1;
+    var slug = url.replace(/^.*\/vi\/genres\//, "").replace(/[?#].*$/, "").replace(/\/+$/, "");
+    var path = SITE_PREFIX + "/genres/" + slug + "?page=" + p;
+    var doc = fetchPage(path);
+    if (!doc) return Response.error("Không tải được danh sách truyện");
+    return Response.success(parseStories(doc), getNextPage(doc));
 }

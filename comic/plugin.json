@@ -142,7 +142,7 @@
     "author": "Meo",
     "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",
     "source": "https://truyendex.cc/nettrom",
-    "version": 29,
+    "version": 35,
     "type": "comic",
     "locale": "vi_VN",
     "relativePath": "comic/truyendex",
@@ -150,7 +150,7 @@
     "metadata": {
       "name": "TruyenDex",
       "author": "Meo",
-      "version": 29,
+      "version": 35,
       "source": "https://truyendex.cc/nettrom",
       "regexp": "truyendex\\.(cc|com)/nettrom/truyen-tranh/[a-f0-9\\-]+/?$",
       "description": "Đọc truyện tranh từ TruyenDex (MangaDex Tiếng Việt)",

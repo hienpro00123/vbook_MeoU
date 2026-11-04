@@ -1,39 +1,14 @@
 var BASE_URL = "https://truyendex.cc";
-var API_URL = "https://api-proxy.truyendex.cc/mangadex";
-var API_FALLBACK = "https://api.mangadex.org";
+var API_URL = "https://api.mangadex.org";
+var API_FALLBACK = "https://api-proxy.truyendex.cc/mangadex";
 var COVER_BASE = "https://uploads.mangadex.org/covers";
 var IMAGE_CDN = "https://uploads.mangadex.org";
-var PROXY_URL = "https://services.f-ck.me/v1/image/";
 var LANGUAGE = "vi";
 var CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive";
 var FEED_CONTENT_RATING = "contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic";
 var MANGA_PARAMS = "includes[]=cover_art&availableTranslatedLanguage[]=vi&hasAvailableChapters=true&" + CONTENT_RATING;
 var MANGA_LIST_PARAMS = MANGA_PARAMS;
-
-// BASE64_CHARS cache — không tạo lại mỗi lần toÀn Base64 được gọi (32+/lần trang)
-var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-function toBase64(str) {
-  var result = "";
-  for (var i = 0; i < str.length; i += 3) {
-    var a = str.charCodeAt(i);
-    var b = (i + 1 < str.length) ? str.charCodeAt(i + 1) : 0;
-    var c = (i + 2 < str.length) ? str.charCodeAt(i + 2) : 0;
-    result += BASE64_CHARS.charAt((a >> 2) & 63);
-    result += BASE64_CHARS.charAt(((a & 3) << 4) | ((b >> 4) & 15));
-    result += (i + 1 < str.length) ? BASE64_CHARS.charAt(((b & 15) << 2) | ((c >> 6) & 3)) : "=";
-    result += (i + 2 < str.length) ? BASE64_CHARS.charAt(c & 63) : "=";
-  }
-  return result;
-}
-
-// Pre-detect btoa — tránh try/catch overhead mỗi lần gọi proxyImage (32+ lần/trang)
-var HAS_BTOA = false;
-try { HAS_BTOA = typeof btoa === "function"; } catch(e) {}
-
-function proxyImage(url) {
-  return PROXY_URL + (HAS_BTOA ? btoa(url) : toBase64(url));
-}
+var VI_CHAPTER_CACHE_TTL = 6 * 60 * 60 * 1000;
 
 function getLocalized(obj) {
   if (!obj) return "";
@@ -52,7 +27,7 @@ function getCoverUrl(mangaId, relationships, size) {
     var rel = relationships[i];
     if (rel.type === "cover_art" && rel.attributes && rel.attributes.fileName) {
       var url = COVER_BASE + "/" + mangaId + "/" + rel.attributes.fileName + "." + (size || "256") + ".jpg";
-      return proxyImage(url);
+      return url;
     }
   }
   return "";
@@ -78,12 +53,53 @@ function extractUUID(url) {
   return match ? match[1] : url;
 }
 
+function hasVietnameseChapters(mangaId) {
+  var cacheKey = "truyendex:vi-chapters:v1:" + mangaId;
+  var cachedValue = "";
+  try {
+    cachedValue = cacheStorage.getItem(cacheKey);
+  } catch (e) {
+    if (typeof Log !== "undefined") Log.log("TruyenDex chapter cache read failed: " + e);
+  }
+  if (cachedValue) {
+    try {
+      var cached = JSON.parse(cachedValue);
+      if (cached && cached.expires > Date.now() && typeof cached.available === "boolean") {
+        return cached.available;
+      }
+    } catch (e) {
+      if (typeof Log !== "undefined") Log.log("TruyenDex chapter cache is invalid: " + e);
+    }
+  }
+
+  var response = fetchRetry(API_URL + "/manga/" + mangaId + "/feed?translatedLanguage[]=vi&limit=1");
+  if (!response.ok) return null;
+
+  var data;
+  try { data = response.json(); } catch (e) { return null; }
+  if (!data || !data.data || typeof data.total !== "number") return null;
+
+  var available = data.total > 0;
+  try {
+    cacheStorage.setItem(cacheKey, JSON.stringify({
+      expires: Date.now() + VI_CHAPTER_CACHE_TTL,
+      available: available
+    }));
+  } catch (e) {
+    if (typeof Log !== "undefined") Log.log("TruyenDex chapter cache write failed: " + e);
+  }
+  return available;
+}
+
 function parseMangaList(data) {
   if (!data || !data.data) return [];
   var books = [];
   for (var i = 0; i < data.data.length; i++) {
     var item = data.data[i];
     if (!item.attributes) continue;
+    var hasVietnamese = hasVietnameseChapters(item.id);
+    if (hasVietnamese === null) return null;
+    if (!hasVietnamese) continue;
     var cover = getCoverUrl(item.id, item.relationships, "256");
     var desc = getDescription(item.attributes.description);
     if (desc && desc.length > 150) desc = desc.substring(0, 150) + "…";
@@ -139,17 +155,23 @@ function getGroupName(relationships) { return getRelName(relationships, "scanlat
 var FAIL_RESP = { ok: false, status: 0 };
 
 function fetchRetry(url, options) {
-  var r = options ? fetch(url, options) : fetch(url);
+  var requestOptions = options || {
+    headers: {
+      "User-Agent": "vBook/1.0",
+      "Accept": "application/json",
+    }
+  };
+  var r = fetch(url, requestOptions);
   if (r && r.ok) return r;
-  // Proxy fail → thử gọi trực tiếp MangaDex API
+  // MangaDex direct failure → fall back to the TruyenDex proxy
   if (url.indexOf(API_URL) === 0) {
     var directUrl = API_FALLBACK + url.substring(API_URL.length);
-    var r2 = options ? fetch(directUrl, options) : fetch(directUrl);
+    var r2 = fetch(directUrl, requestOptions);
     if (r2 && r2.ok) return r2;
   }
-  // Retry lần cuối (server error)
+  // Retry once after a server error
   if (!r || r.status >= 500) {
-    return (options ? fetch(url, options) : fetch(url)) || FAIL_RESP;
+    return fetch(url, requestOptions) || FAIL_RESP;
   }
   return r || FAIL_RESP;
 }

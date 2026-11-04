@@ -1,15 +1,18 @@
 load("config.js");
 
 function execute(url) {
-  // Fetch first page — pagination loop below handles manga >500 chapters
-  var baseUrl = url.replace(/[&?]offset=\d+$/, "");
+  var mangaId = extractUUID(url);
+  if (!UUID_RE.test(mangaId)) return Response.error("URL truyện không hợp lệ");
+
+  var baseUrl = API_URL + "/manga/" + mangaId + "/feed?translatedLanguage[]=vi&order[volume]=asc&order[chapter]=asc&includes[]=scanlation_group&" + FEED_CONTENT_RATING + "&limit=500&offset=0";
   var response = fetchRetry(baseUrl);
   if (!response.ok) return Response.error("Không thể tải mục lục");
 
   var data;
   try { data = response.json(); } catch (e) { return Response.error("Dữ liệu không hợp lệ"); }
   var chapters = [];
-  if (!data || !data.data || data.data.length === 0) return Response.success(chapters);
+  if (!data || !data.data) return Response.error("Dữ liệu mục lục không hợp lệ");
+  if (data.data.length === 0) return Response.error("Truyện này hiện chưa có chương tiếng Việt trên MangaDex");
 
   // Fetch additional pages if manga has >500 chapters
   var allData = data.data;

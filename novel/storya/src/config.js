@@ -1,40 +1,72 @@
-var HOST = "https://storya.click";
-var API = HOST + "/api/v1";
-var SLUG_RE = /\/truyen\/([^\/\?]+)/;
+var HOST = "https://www.storya.click";
+var SITE_PREFIX = "/vi";
+var STORY_PATH_RE = /^\/vi\/stories\/([^\/?#]+)$/;
 
 function extractSlug(url) {
-    var m = SLUG_RE.exec(url);
-    return m ? m[1] : url.replace(/^\/+/, "").replace(/\/+$/, "");
+    var match = /\/(?:vi\/)?stories\/([^\/?#]+)/.exec(url);
+    if (match) return match[1];
+    return url.replace(/^\/+/, "").replace(/\/+$/, "");
 }
 
-function apiJson(path) {
-    var url = API + path;
-    var res = fetch(url);
-    if (!res || !res.ok) {
-        res = fetch(url, {
-            headers: { "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36", "Accept": "application/json" }
-        });
+function fetchPage(path) {
+    var url = path;
+    if (url.indexOf("http") !== 0) {
+        url = HOST + (url.charAt(0) === "/" ? url : "/" + url);
     }
-    if (!res || !res.ok) return null;
-    try { return res.json(); } catch (e) { return null; }
+    var response = fetch(url, {
+        headers: {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36",
+            "Accept": "text/html,application/xhtml+xml"
+        }
+    });
+    if (!response || !response.ok) return null;
+    return response.html();
 }
 
-function resolveCover(url) {
+function resolveUrl(url) {
     if (!url) return "";
-    return url.charAt(0) === 47 ? HOST + url : url;
+    if (url.indexOf("http") === 0) return url;
+    return HOST + (url.charAt(0) === "/" ? url : "/" + url);
 }
 
-function parseStories(arr) {
-    var r = [];
-    for (var i = 0; i < arr.length; i++) {
-        var s = arr[i];
-        r.push({
-            name: s.title || "",
-            link: "/truyen/" + s.slug,
+function parseStories(doc) {
+    if (!doc) return [];
+    var links = doc.select('a[href*="/vi/stories/"]');
+    var stories = [];
+    var seen = {};
+    for (var i = 0; i < links.size(); i++) {
+        var link = links.get(i);
+        var href = link.attr("href");
+        var match = STORY_PATH_RE.exec(href);
+        if (!match || seen[match[1]]) continue;
+        seen[match[1]] = true;
+
+        var name = link.select("h2").text() || link.select("h3").text();
+        if (!name) name = link.select("img").attr("alt") || link.text();
+        var image = link.select("img");
+        var cover = image.attr("src");
+        var srcset = image.attr("srcset");
+        if (srcset) {
+            var firstSource = srcset.split(",")[0].trim().split(/\s+/)[0];
+            if (firstSource) cover = firstSource;
+        }
+        var description = link.select("p").text();
+        stories.push({
+            name: name,
+            link: href,
             host: HOST,
-            cover: resolveCover(s.coverUrl),
-            description: s.author ? s.author.name : ""
+            cover: resolveUrl(cover),
+            description: description
         });
     }
-    return r;
+    return stories;
+}
+
+function getNextPage(doc) {
+    if (!doc) return null;
+    var next = doc.select('a[rel="next"]');
+    if (next.isEmpty()) return null;
+    var href = next.get(0).attr("href");
+    var match = /[?&]page=(\d+)/.exec(href);
+    return match ? match[1] : null;
 }

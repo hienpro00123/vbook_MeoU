@@ -24,14 +24,12 @@ function execute(url) {
     if (!pages || pages.length === 0) { pages = data.chapter.data; quality = "data"; }
     if (!pages || pages.length === 0) return Response.error("Chương không có ảnh");
 
-    var baseUrl = data.baseUrl || IMAGE_CDN;
+    var baseUrl = IMAGE_CDN;
     var prefix = baseUrl + "/" + quality + "/" + hash + "/";
     var images = [];
     for (var i = 0; i < pages.length; i++) {
         var pageUrl = prefix + pages[i];
-        // SÆ° phá»¥ mangadex nÃ³ Ä‘Ã£ Ä‘á»•i domain load image háº§u háº¿t qua uploads -> proxy lÃ  xong
-        // Proxy áº£nh qua f-ck.me theo thá»§ thuáº­t proxy truyendex.cc hoÆ¡c trÆ°á»›c Ä‘Ã³ proxyImage module config.js
-        images.push({ link: proxyImage(pageUrl) });
+        images.push(pageUrl);
     }
     return Response.success(images);
   }

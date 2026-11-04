@@ -1,9 +1,8 @@
 load("config.js");
 
 function execute(key, page) {
-    var p = page ? parseInt(page) : 1;
-    var json = apiJson("/stories/search?q=" + encodeURIComponent(key) + "&page=" + p + "&limit=20");
-    if (!json || !json.data) return Response.success([], null);
-    var next = (json.meta && p < json.meta.totalPages) ? (p + 1) + "" : null;
-    return Response.success(parseStories(json.data), next);
+    key = key || "";
+    var doc = fetchPage(SITE_PREFIX + "/search?q=" + encodeURIComponent(key));
+    if (!doc) return Response.error("Không thể tìm kiếm trên Storya");
+    return Response.success(parseStories(doc), getNextPage(doc));
 }

@@ -69,12 +69,12 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 
 Kho tiện ích được tổ chức theo chuẩn cấu trúc mới **VBook 3.0**, hỗ trợ đầy đủ các **AI Agent Skills**:
 
-- `.agents/skills/vbook-extensions`: Master spec & runtime constraints (Rhino ES6).
-- `.agents/skills/vbook-analyzer`: Phân tích website và bóc tách CSS selector tự động.
-- `.agents/skills/vbook-debugger`: Hướng dẫn debug và khắc phục lỗi script.
-- `.agents/skills/vbook-publish`: Quy trình build, đóng gói ZIP và cập nhật catalog.
+- `../.agents/skills/vbook-extensions`: Master spec & runtime constraints (Rhino ES6).
+- `../.agents/skills/vbook-analyzer`: Phân tích website và bóc tách CSS selector tự động.
+- `../.agents/skills/vbook-debugger`: Hướng dẫn debug và khắc phục lỗi script.
+- `../.agents/skills/vbook-publish`: Quy trình build, đóng gói ZIP và cập nhật catalog.
 
-### Lệnh CLI:
+### Lệnh CLI (chạy từ thư mục gốc workspace):
 ```bash
 # Cài đặt thư viện phát triển
 npm install
@@ -83,13 +83,13 @@ npm install
 npm run vbook:connect
 
 # Test trực tiếp một script trên app vBook thật
-node tools/cli/index.js test chinese_novel/novelcookstw home.js --server http://127.0.0.1:8080
+node tools/cli/index.js test extensions/chinese_novel/novelcookstw home.js --server http://127.0.0.1:8080
 
 # Kiểm tra tính tương thích Rhino ES6 Safe Mode
-node tools/cli/index.js validate --plugin novel/dualeo
+node tools/cli/index.js validate --plugin extensions/novel/dualeo
 
 # Đóng gói ZIP
-node tools/cli/index.js build --plugin novel/dualeo
+node tools/cli/index.js build --plugin extensions/novel/dualeo
 
 # Rebuild catalog toàn bộ
 npm run build:catalog

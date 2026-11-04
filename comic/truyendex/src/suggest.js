@@ -8,7 +8,9 @@ function execute(url, page) {
     if (res.ok) {
       var data;
       try { data = res.json(); } catch (e) { return Response.success([]); }
-      return Response.success(parseMangaList(data), calcNextOffset(data));
+      var books = parseMangaList(data);
+      if (books === null) return Response.error("Không thể xác minh chương tiếng Việt, vui lòng thử lại");
+      return Response.success(books, calcNextOffset(data));
     }
     return Response.success([]);
   }
@@ -16,7 +18,9 @@ function execute(url, page) {
   if (response.ok) {
     var data;
     try { data = response.json(); } catch (e) { return Response.success([]); }
-    return Response.success(parseMangaList(data), calcNextOffset(data));
+    var books = parseMangaList(data);
+    if (books === null) return Response.error("Không thể xác minh chương tiếng Việt, vui lòng thử lại");
+    return Response.success(books, calcNextOffset(data));
   }
   return Response.success([]);
 }
