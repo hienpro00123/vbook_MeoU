@@ -5,7 +5,7 @@
     "author": "Meo",
     "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
     "source": "https://platform.deepseek.com",
-    "version": 6,
+    "version": 8,
     "type": "translate",
     "locale": "global",
     "relativePath": "translate/dich_deepseek",
@@ -13,7 +13,7 @@
     "metadata": {
       "name": "DeepSeek Translate",
       "author": "Meo",
-      "version": 6,
+      "version": 8,
       "source": "https://platform.deepseek.com",
       "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
       "locale": "global",

@@ -260,7 +260,7 @@
       "name": "DeepSeek Translate",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/translate/dich_deepseek/plugin.zip",
-      "version": 6,
+      "version": 8,
       "source": "https://platform.deepseek.com",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/translate/dich_deepseek/icon.png",
       "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
