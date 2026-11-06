@@ -1,11 +1,11 @@
 load("config.js");
 
-var TOC_CACHE_TTL = 300000;
+var TOC_CACHE_TTL = 21600000;
 
 function readCachedToc(key, slug) {
     var raw;
     try {
-        raw = cacheStorage.getItem(key);
+        raw = localStorage.getItem(key);
     } catch (e) {
         if (typeof Log !== "undefined") Log.log("Storya TOC cache read failed: " + e);
         return null;
@@ -42,7 +42,7 @@ function writeCachedToc(key, chapters, slug) {
         items.push([chapters[i].url.substring(prefix.length), chapters[i].name]);
     }
     try {
-        cacheStorage.setItem(key, JSON.stringify({
+        localStorage.setItem(key, JSON.stringify({
             expires: Date.now() + TOC_CACHE_TTL,
             chapters: items
         }));
@@ -53,7 +53,7 @@ function writeCachedToc(key, chapters, slug) {
 
 function execute(url) {
     var slug = extractSlug(url);
-    var cacheKey = "storya:toc:v1:" + slug;
+    var cacheKey = "storya:toc:v6:" + slug;
     var cached = readCachedToc(cacheKey, slug);
     if (cached) return Response.success(cached);
 
@@ -75,9 +75,18 @@ function execute(url) {
             if (!chapterSlug || chapterSlug.indexOf("/") >= 0 || /\.xml$/i.test(chapterSlug) || seen[chapterSlug]) continue;
 
             var titleParts = link.select("span");
-            var title = titleParts.size() > 0 ? titleParts.get(0).text() : link.text();
-            if (/^(Đọc từ đầu|Chương mới nhất)$/i.test(title.trim())) continue;
+            var title = "";
+            for (var partIndex = 0; partIndex < titleParts.size(); partIndex++) {
+                var part = titleParts.get(partIndex).text().trim();
+                if (!part) continue;
+                if (/^[\d.,]+(?:\s+lượt đọc)?$/i.test(part)) continue;
+                if (!title) title = part;
+            }
+            if (!title) title = link.text().trim();
+            if (/^Chương mới nhất$/i.test(title)) continue;
             if (!title) title = "Chương " + (chapters.length + 1);
+            title = title.replace(/^\d+\s*[:：.]\s*/, "");
+            title = (chapters.length + 1) + ": " + title;
             seen[chapterSlug] = true;
             chapters.push({
                 name: title,

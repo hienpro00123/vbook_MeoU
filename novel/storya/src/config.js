@@ -50,13 +50,12 @@ function parseStories(doc) {
             var firstSource = srcset.split(",")[0].trim().split(/\s+/)[0];
             if (firstSource) cover = firstSource;
         }
-        var description = link.select("p").text();
         stories.push({
             name: name,
             link: href,
             host: HOST,
             cover: resolveUrl(cover),
-            description: description
+            description: ""
         });
     }
     return stories;

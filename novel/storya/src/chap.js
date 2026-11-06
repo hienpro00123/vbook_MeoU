@@ -8,5 +8,5 @@ function execute(url) {
     if (!doc) return Response.error("Không tải được trang chương Storya");
     var content = doc.select(".reader-content");
     if (content.isEmpty()) return Response.error("Không tìm thấy nội dung chương");
-    return Response.success(content.get(0).html());
+    return Response.success(content.get(0).html(), doc.select("main h1").text());
 }

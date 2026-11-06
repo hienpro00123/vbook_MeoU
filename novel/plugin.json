@@ -93,7 +93,7 @@
     "author": "Meo",
     "description": "Storya - Đọc truyện chữ online miễn phí",
     "source": "https://storya.click",
-    "version": 7,
+    "version": 12,
     "type": "novel",
     "locale": "vi_VN",
     "relativePath": "novel/storya",
@@ -101,7 +101,7 @@
     "metadata": {
       "name": "Storya",
       "author": "Meo",
-      "version": 7,
+      "version": 12,
       "source": "https://storya.click",
       "regexp": "(www\\.)?storya\\.click\\/(vi\\/)?stories\\/[^\\/]+\\/?$",
       "description": "Storya - Đọc truyện chữ online miễn phí",
