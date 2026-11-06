@@ -114,25 +114,9 @@ function parseList(doc) {
     return result;
 }
 
-function getLatestChapter(href) {
-    try {
-        var url = resolveUrl(href);
-        var res = fetch(url, {
-            headers: { "User-Agent": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36" }
-        });
-        if (res && res.ok) {
-            var doc = res.html();
-            var meta = selFirst(doc, "meta[property=og:novel:lastest_chapter_name]");
-            if (meta) return meta.attr("content") || "";
-        }
-    } catch(e) {}
-    return "";
-}
-
 function parseItems(items) {
     var result = [];
     var seen = {};
-    var canFetch = -1;
     for (var i = 0; i < items.size(); i++) {
         var item = items.get(i);
         var link = selFirst(item, "dt a[href], a[href*='/book/']");
@@ -149,20 +133,9 @@ function parseItems(items) {
             if (cover.indexOf("nocover") !== -1) cover = "";
         }
         var desc = "";
-        if (canFetch !== 0) {
-            var ch = getLatestChapter(href);
-            if (ch) {
-                desc = ch;
-                canFetch = 1;
-            } else if (canFetch === -1) {
-                canFetch = 0;
-            }
-        }
-        if (!desc) {
-            var moreSpans = item.select("dd.more span");
-            if (moreSpans.size() >= 2) {
-                desc = moreSpans.get(1).text();
-            }
+        var moreSpans = item.select("dd.more span");
+        if (moreSpans.size() >= 2) {
+            desc = moreSpans.get(1).text();
         }
         result.push({
             name: name,

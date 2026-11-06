@@ -5,7 +5,7 @@
     "author": "Meo",
     "description": "笔趣阁 - Truyện chữ Tiếng Trung",
     "source": "https://www.biquge.tw",
-    "version": 12,
+    "version": 13,
     "type": "novel",
     "locale": "zh_CN",
     "relativePath": "chinese_novel/biquge",
@@ -13,7 +13,7 @@
     "metadata": {
       "name": "Biquge",
       "author": "Meo",
-      "version": 12,
+      "version": 13,
       "source": "https://www.biquge.tw",
       "regexp": "(www\\.)?biquge\\.tw/book/\\d+(\\.html)?/?$",
       "description": "笔趣阁 - Truyện chữ Tiếng Trung",
