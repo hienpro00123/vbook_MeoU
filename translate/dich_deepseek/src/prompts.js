@@ -1,7 +1,89 @@
 var TRANSLATION_PROMPT_TABLE = "translation_prompts";
 var TRANSLATION_PROMPT_SCOPE = "";
 var TRANSLATION_PROMPT_VERSION_KEY = "dich_deepseek_translation_prompt_version";
-var TRANSLATION_PROMPT_VERSION = "4";
+var TRANSLATION_PROMPT_VERSION = "5";
+var TRANSLATION_CONFIG_GENERATION_KEY = "dich_deepseek_config_generation";
+var TRANSLATION_LANGUAGES_PREFIX = "dich_deepseek_memory_languages_";
+
+function translationConfigGeneration() {
+    var value = 0;
+    try {
+        value = parseInt(localStorage.getItem(TRANSLATION_CONFIG_GENERATION_KEY), 10);
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể đọc thế hệ cấu hình: " + e);
+    }
+    return isNaN(value) || value < 0 ? 0 : value;
+}
+
+function translationConfigKey(key) {
+    var generation = translationConfigGeneration();
+    var configName = key === "system_prompt" ? "system_prompt_v6" : key;
+    return generation > 0 ? "g" + generation + "_" + configName : configName;
+}
+
+function translationLegacyConfigKey(key) {
+    var generation = translationConfigGeneration();
+    return generation > 0 ? "g" + generation + "_" + key : key;
+}
+
+function translationSystemPromptDefault() {
+    var currentKey = translationConfigKey("system_prompt");
+    try {
+        var current = localConfig.getItem(currentKey);
+        if (current !== null && current !== undefined && String(current) !== "") {
+            if (String(current) === translationPreviousSystemPromptV6Default()) {
+                return translationDefaultSystemPrompt();
+            }
+            return String(current);
+        }
+
+        var previousSystemPrompt = localConfig.getItem(translationLegacyConfigKey("system_prompt_v3"));
+        if (previousSystemPrompt !== null && previousSystemPrompt !== undefined &&
+            String(previousSystemPrompt) !== "" &&
+            String(previousSystemPrompt) !== translationPreviousSystemPromptDefault()) {
+            return String(previousSystemPrompt);
+        }
+
+        var previousSystemPromptV5 = localConfig.getItem(translationLegacyConfigKey("system_prompt_v5"));
+        if (previousSystemPromptV5 !== null && previousSystemPromptV5 !== undefined &&
+            String(previousSystemPromptV5) !== "" &&
+            String(previousSystemPromptV5) !== translationPreviousSystemPromptV5Default()) {
+            return String(previousSystemPromptV5);
+        }
+
+        var previousSystemPromptV4 = localConfig.getItem(translationLegacyConfigKey("system_prompt_v4"));
+        if (previousSystemPromptV4 !== null && previousSystemPromptV4 !== undefined &&
+            String(previousSystemPromptV4) !== "" &&
+            String(previousSystemPromptV4) !== translationPreviousSystemPromptV4Default()) {
+            return String(previousSystemPromptV4);
+        }
+
+        var previousVersion = localConfig.getItem(translationLegacyConfigKey("system_prompt_v2"));
+        if (previousVersion !== null && previousVersion !== undefined && String(previousVersion) !== "") {
+            var previousDefault = "You are an expert literary translator. Translate the full text from {source_language} into {target_language}, " +
+                "preserving its meaning, tone, names, and formatting without adding explanations or facts.\n\n" +
+                "{style_prompt}\n\n{source_prompt}\n\n{custom_instruction}\n\n{memory_prompt}";
+            if (String(previousVersion) !== previousDefault) return String(previousVersion);
+        }
+
+        var legacy = localConfig.getItem(translationLegacyConfigKey("system_prompt"));
+        if (legacy !== null && legacy !== undefined && String(legacy) !== "") {
+            var normalized = String(legacy).replace(/\s+/g, " ").trim();
+            if (normalized !== "{style_prompt} {source_prompt} {custom_instruction} {memory_prompt}") {
+                return String(legacy);
+            }
+        }
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể chuyển prompt hệ thống cũ: " + e);
+    }
+    return translationDefaultSystemPrompt();
+}
+
+function translationNextConfigGeneration() {
+    var generation = translationConfigGeneration() + 1;
+    localStorage.setItem(TRANSLATION_CONFIG_GENERATION_KEY, String(generation));
+    return generation;
+}
 
 function translationNormalizeStyle(style) {
     var selected = String(style || "").trim();
@@ -21,6 +103,230 @@ function translationBookPromptConfigKey(bookId) {
     return "custom_instruction_book_" + suffix;
 }
 
+function translationGenreStyleId(bookId) {
+    var value = String(bookId || "");
+    if (!value) return "";
+    var suffix = "";
+    for (var i = 0; i < value.length; i++) {
+        var hex = value.charCodeAt(i).toString(16);
+        while (hex.length < 4) hex = "0" + hex;
+        suffix += hex;
+    }
+    return "auto-genre-" + suffix;
+}
+
+function translationGenreStyleMetadataKey(styleId) {
+    return "dich_deepseek_genre_style_" + String(styleId || "");
+}
+
+function translationRememberLanguages(bookId, from, to) {
+    if (!bookId || !to) return;
+    try {
+        localStorage.setItem(
+            TRANSLATION_LANGUAGES_PREFIX + bookId,
+            JSON.stringify({ from: from || "auto", to: to })
+        );
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể ghi nhớ cặp ngôn ngữ: " + e);
+    }
+}
+
+function translationRecalledLanguages(bookId) {
+    try {
+        var stored = JSON.parse(localStorage.getItem(TRANSLATION_LANGUAGES_PREFIX + bookId) || "{}");
+        if (stored && stored.to) return { from: String(stored.from || "auto"), to: String(stored.to) };
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể đọc cặp ngôn ngữ đã ghi nhớ: " + e);
+    }
+    return { from: "auto", to: "vi" };
+}
+
+function translationIsChineseSource(text, from) {
+    var language = String(from || "auto").toLowerCase();
+    if (language === "zh" || language.indexOf("zh-") === 0) return true;
+    if (language !== "auto") return false;
+    return /[\u3400-\u9fff\uf900-\ufaff]/.test(String(text || ""));
+}
+
+function translationDetectLanguage(text) {
+    var value = String(text || "");
+    var scripts = [
+        { id: "ja", pattern: /[\u3040-\u30ff\u31f0-\u31ff]/g },
+        { id: "zh-CN", pattern: /[\u3400-\u9fff\uf900-\ufaff]/g },
+        { id: "ko", pattern: /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g },
+        { id: "ru", pattern: /[\u0400-\u04ff]/g },
+        { id: "ar", pattern: /[\u0600-\u06ff\u0750-\u077f]/g },
+        { id: "he", pattern: /[\u0590-\u05ff]/g },
+        { id: "el", pattern: /[\u0370-\u03ff]/g },
+        { id: "th", pattern: /[\u0e00-\u0e7f]/g },
+        { id: "hi", pattern: /[\u0900-\u097f]/g },
+        { id: "bn", pattern: /[\u0980-\u09ff]/g },
+        { id: "hy", pattern: /[\u0530-\u058f]/g },
+        { id: "ka", pattern: /[\u10a0-\u10ff]/g },
+        { id: "gu", pattern: /[\u0a80-\u0aff]/g },
+        { id: "pa", pattern: /[\u0a00-\u0a7f]/g },
+        { id: "ta", pattern: /[\u0b80-\u0bff]/g },
+        { id: "te", pattern: /[\u0c00-\u0c7f]/g },
+        { id: "kn", pattern: /[\u0c80-\u0cff]/g },
+        { id: "ml", pattern: /[\u0d00-\u0d7f]/g }
+    ];
+    var bestLanguage = "";
+    var bestCount = 0;
+    for (var index = 0; index < scripts.length; index++) {
+        var matches = value.match(scripts[index].pattern);
+        var count = matches ? matches.length : 0;
+        if (count > bestCount) {
+            bestLanguage = scripts[index].id;
+            bestCount = count;
+        }
+    }
+    if (bestLanguage === "zh-CN" && /[\u3040-\u30ff\u31f0-\u31ff]/.test(value)) return "ja";
+    if (!bestLanguage && /[A-Za-z\u00c0-\u024f\u1e00-\u1eff]/.test(value)) {
+        var letters = value.match(/[A-Za-z\u00c0-\u024f\u1e00-\u1eff]/g) || [];
+        var vietnameseMarks = value.match(/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹĂÂĐÊÔƠƯ]/g);
+        if (letters.length >= 8 && vietnameseMarks && vietnameseMarks.length >= letters.length * 0.03) return "vi";
+    }
+    return bestLanguage;
+}
+
+function translationLanguageName(code) {
+    var names = {
+        "auto": "automatically detected language",
+        "zh": "Chinese",
+        "zh-CN": "Simplified Chinese",
+        "zh-TW": "Traditional Chinese",
+        "en": "English",
+        "vi": "Vietnamese",
+        "ja": "Japanese",
+        "ko": "Korean",
+        "hi": "Hindi",
+        "ar": "Arabic",
+        "ru": "Russian",
+        "de": "German",
+        "fr": "French",
+        "es": "Spanish",
+        "pt": "Portuguese",
+        "it": "Italian",
+        "tr": "Turkish",
+        "id": "Indonesian",
+        "th": "Thai",
+        "af": "Afrikaans",
+        "sq": "Albanian",
+        "hy": "Armenian",
+        "az": "Azerbaijani",
+        "eu": "Basque",
+        "be": "Belarusian",
+        "bn": "Bengali",
+        "bs": "Bosnian",
+        "hr": "Croatian",
+        "cs": "Czech",
+        "da": "Danish",
+        "nl": "Dutch",
+        "et": "Estonian",
+        "fil": "Filipino",
+        "fi": "Finnish",
+        "gl": "Galician",
+        "ka": "Georgian",
+        "el": "Greek",
+        "gu": "Gujarati",
+        "he": "Hebrew",
+        "hu": "Hungarian",
+        "is": "Icelandic",
+        "ga": "Irish",
+        "kn": "Kannada",
+        "kk": "Kazakh",
+        "lv": "Latvian",
+        "lt": "Lithuanian",
+        "mk": "Macedonian",
+        "ms": "Malay",
+        "ml": "Malayalam",
+        "mr": "Marathi",
+        "mn": "Mongolian",
+        "ne": "Nepali",
+        "no": "Norwegian",
+        "fa": "Persian",
+        "pl": "Polish",
+        "pa": "Punjabi",
+        "ro": "Romanian",
+        "sr": "Serbian",
+        "sk": "Slovak",
+        "sl": "Slovenian",
+        "sw": "Swahili",
+        "sv": "Swedish",
+        "ta": "Tamil",
+        "te": "Telugu",
+        "uk": "Ukrainian",
+        "ur": "Urdu",
+        "uz": "Uzbek",
+        "cy": "Welsh"
+    };
+    var value = String(code || "");
+    if (names[value]) return names[value] + " (" + value + ")";
+    var base = value.split("-")[0];
+    return names[base] ? names[base] + " (" + value + ")" : value;
+}
+
+function translationTermInText(text, term) {
+    var value = String(text || "");
+    var needle = String(term || "");
+    if (!needle) return false;
+    if (/[\u0e00-\u0e7f\u3040-\u30ff\u31f0-\u31ff\u3400-\u9fff\uf900-\ufaff\uac00-\ud7af]/.test(needle)) {
+        return value.indexOf(needle) >= 0;
+    }
+    var position = value.indexOf(needle);
+    while (position >= 0) {
+        var before = value.charAt(position - 1);
+        var after = value.charAt(position + needle.length);
+        if (translationIsTermBoundary(before) && translationIsTermBoundary(after)) return true;
+        position = value.indexOf(needle, position + 1);
+    }
+    return false;
+}
+
+function translationIsTermBoundary(value) {
+    return !value || !/[0-9A-Za-z\u00c0-\u024f\u1e00-\u1eff\u0370-\u03ff\u0400-\u04ff\u0590-\u05ff\u0600-\u06ff]/.test(value);
+}
+
+function translationIsMemoryTerm(term, target, text, chineseSource) {
+    var source = String(term || "").trim();
+    var translated = String(target || "").trim();
+    if (!source || !translated || source === translated) return false;
+    if (chineseSource) {
+        return /[\u3400-\u9fff\uf900-\ufaff]/.test(source) && String(text || "").indexOf(source) >= 0;
+    }
+    if (!translationTermInText(text, source)) return false;
+    var first = source.charAt(0);
+    return first !== first.toLowerCase() || first === first.toUpperCase();
+}
+
+function translationMemoryPairMatches(data, from, to) {
+    var source = data && data.from ? String(data.from) : "zh-CN";
+    var target = data && data.to ? String(data.to) : "vi";
+    var requestedSource = String(from || "auto");
+    var requestedTarget = String(to || "");
+    return translationLanguageMatches(source, requestedSource) &&
+        translationLanguageMatches(target, requestedTarget);
+}
+
+function translationLanguageMatches(left, right) {
+    var first = String(left || "").toLowerCase();
+    var second = String(right || "").toLowerCase();
+    if (first.indexOf("zh-") === 0 && second.indexOf("zh-") === 0) return first === second;
+    return first.split("-")[0] === second.split("-")[0];
+}
+
+function translationResolveStyle(style, chineseSource) {
+    var selected = String(style || "").trim();
+    if (selected && selected !== "natural") return selected;
+    return chineseSource ? "huyen-huyen" : "trung-tinh";
+}
+
+function translationNonChineseNote(chineseSource) {
+    if (chineseSource) return "";
+    return "The source is not Chinese. Ignore Chinese-specific conventions, vocabulary, and cultural assumptions. " +
+        "Preserve names in their original cultural context, and base forms of address on the source text's relationships and culture.";
+}
+
 function translationDefaultPrompts() {
     var prompts = {};
     var definitions = translationDefaultStyleDefinitions();
@@ -30,13 +336,61 @@ function translationDefaultPrompts() {
     return prompts;
 }
 
+function translationDefaultSystemPrompt() {
+    return "Dịch đầy đủ từ {source_language} sang {target_language} bằng ngôn ngữ tự nhiên, đúng ngữ cảnh và thể loại. " +
+        "Giữ nguyên ý, giọng, sắc thái và định dạng; không thêm, bỏ hay đoán. Nguyên tác là chuẩn; phong cách, yêu cầu riêng " +
+        "và bộ nhớ chỉ hỗ trợ khi phù hợp.\n\n" +
+        "{source_prompt}\n{custom_instruction}\n{memory_prompt}\n{style_prompt}";
+}
+
+function translationPreviousSystemPromptV6Default() {
+    return "Dịch văn học từ {source_language} sang {target_language}: đủ ý, tự nhiên, giữ giọng, sắc thái, tên và định dạng. " +
+        "Không thêm, bỏ hay đoán. Nguyên tác là chuẩn; chỉ dùng phong cách, yêu cầu riêng và bộ nhớ khi phù hợp, không đổi dữ kiện.\n\n" +
+        "{source_prompt}\n{custom_instruction}\n{memory_prompt}\n{style_prompt}";
+}
+
+function translationPreviousSystemPromptV5Default() {
+    return "Bạn là biên dịch viên văn học. Dịch đầy đủ từ {source_language} sang {target_language}, tự nhiên và chính xác; " +
+        "giữ nguyên ý nghĩa, sắc thái, giọng nhân vật và định dạng; không thêm, lược bỏ hoặc suy đoán.\n\n" +
+        "Ưu tiên nguyên tác và ngữ cảnh rõ ràng. Bộ nhớ, yêu cầu riêng và phong cách chỉ hỗ trợ diễn đạt, không được " +
+        "thay đổi dữ kiện hay mâu thuẫn với nguyên tác. Chỉ áp dụng thông tin khi đúng thực thể và ngữ cảnh; nếu chưa đủ " +
+        "căn cứ, giữ nguyên sự mơ hồ.\n\n" +
+        "{source_prompt}\n\n" +
+        "{custom_instruction}\n\n" +
+        "{memory_prompt}\n\n" +
+        "{style_prompt}";
+}
+
+function translationPreviousSystemPromptDefault() {
+    return "Bạn là biên dịch viên văn học. Hãy dịch toàn bộ nội dung từ ngôn ngữ nguồn sang ngôn ngữ đích được yêu cầu, " +
+        "trung thành với nguyên tác và diễn đạt tự nhiên, rõ ràng.\n\n" +
+        "Giữ nguyên đầy đủ ý nghĩa, tình tiết, sắc thái, trình tự, điểm nhìn và định dạng. Không tự suy đoán hoặc " +
+        "thêm, lược bỏ, giải thích, tóm tắt hay viết lại nội dung. Bảo toàn phủ định, thời gian, mức độ chắc chắn, " +
+        "nguyên nhân-kết quả, con số, đơn vị, ký hiệu, URL, mã và nội dung được yêu cầu giữ nguyên.\n\n" +
+        "Giữ tên riêng, thuật ngữ, giới tính, quan hệ và cách xưng hô nhất quán khi có căn cứ trong văn bản hoặc " +
+        "bộ nhớ dịch. Chỉ áp dụng thông tin bộ nhớ khi đúng nhân vật và đúng ngữ cảnh; không biến suy đoán thành sự thật. " +
+        "Giữ riêng giọng kể và giọng nói của từng nhân vật; không cường điệu cảm xúc, hiện đại hóa hoặc cổ phong hóa " +
+        "khi nguyên tác không thể hiện.\n\n" +
+        "Trước khi trả kết quả, tự kiểm tra xem đã dịch đủ chưa, có thêm hoặc bỏ thông tin không, tên gọi và xưng hô " +
+        "có nhất quán không, và câu chữ có tự nhiên trong ngôn ngữ đích không. Chỉ trả về đúng định dạng đầu ra được yêu cầu; " +
+        "không thêm lời dẫn, nhãn, dấu ngoặc kép hay hàng rào Markdown.";
+}
+
+function translationPreviousSystemPromptV4Default() {
+    return translationPreviousSystemPromptDefault() + "\n\n" +
+        "{style_prompt}\n\n" +
+        "{source_prompt}\n\n" +
+        "{custom_instruction}\n\n" +
+        "{memory_prompt}";
+}
+
 function translationDefaultStyleDefinitions() {
     return [
         {
             id: "trung-tinh",
             name: "Trung tính",
             description: "Văn phong tự nhiên, phù hợp nhiều thể loại; không áp đặt sắc thái riêng",
-            rule: "Trung tính: Dùng tiếng Việt tự nhiên, rõ nghĩa và trung thành với nguyên tác; giữ sắc thái, mức độ trang trọng, nhịp kể và giọng riêng thể hiện trong đoạn. Không mặc định bối cảnh cổ trang, hiện đại, tiên hiệp hay bất kỳ thể loại nào khi văn bản chưa xác nhận. Giữ nhất quán tên gọi và thuật ngữ đã được xác nhận; không tự đoán giới tính, tuổi tác, quan hệ, động cơ hoặc thêm tình tiết. Ưu tiên diễn đạt sáng rõ, không cường điệu, không Hán Việt hóa lời kể thông thường và không làm phẳng sắc thái của nguyên tác."
+            rule: "Trung tính: Dùng tiếng Việt tự nhiên, rõ nghĩa; giữ sắc thái, mức trang trọng, nhịp kể và giọng nhân vật có trong nguyên tác. Không áp đặt thể loại; giữ nhất quán tên gọi, thuật ngữ đã xác nhận. Không đoán giới tính, tuổi, quan hệ, động cơ hoặc thêm tình tiết; không cường điệu, Hán Việt hóa lời kể thông thường hay làm phẳng sắc thái."
         },
         {
             id: "huyen-huyen",
@@ -212,8 +566,24 @@ function translationDefaultPrompt(style) {
     return "";
 }
 
+function translationPreviousDefaultPrompt(style) {
+    var selected = translationNormalizeStyle(style);
+    var definitions = translationDefaultStyleDefinitions();
+    for (var i = 0; i < definitions.length; i++) {
+        if (definitions[i].id !== selected) continue;
+        var rule = definitions[i].rule;
+        if (selected === "trung-tinh") {
+            rule = "Trung tính: Dùng tiếng Việt tự nhiên, rõ nghĩa và trung thành với nguyên tác; giữ sắc thái, mức độ trang trọng, nhịp kể và giọng riêng thể hiện trong đoạn. Không mặc định bối cảnh cổ trang, hiện đại, tiên hiệp hay bất kỳ thể loại nào khi văn bản chưa xác nhận. Giữ nhất quán tên gọi và thuật ngữ đã được xác nhận; không tự đoán giới tính, tuổi tác, quan hệ, động cơ hoặc thêm tình tiết. Ưu tiên diễn đạt sáng rõ, không cường điệu, không Hán Việt hóa lời kể thông thường và không làm phẳng sắc thái của nguyên tác.";
+        }
+        return "PHONG CÁCH VÀ THỂ LOẠI RIÊNG:\n" +
+            rule.trim() + "\n\n" +
+            "Dùng các quy tắc trên để chọn giọng kể, nhịp câu, từ vựng và mức độ trang trọng; không để phong cách làm thay đổi sự kiện, sắc thái hoặc thông tin của nguyên tác. Chỉ áp dụng quy tắc phù hợp với đoạn truyện, không ép mọi đặc điểm thể loại vào từng câu.";
+    }
+    return "";
+}
+
 function translationBuildPrompt(styleRule) {
-    return "PHONG CÁCH VÀ THỂ LOẠI RIÊNG:\n" +
+    return "PHONG CÁCH:\n" +
         styleRule.trim() + "\n\n" +
-        "Dùng các quy tắc trên để chọn giọng kể, nhịp câu, từ vựng và mức độ trang trọng; không để phong cách làm thay đổi sự kiện, sắc thái hoặc thông tin của nguyên tác. Chỉ áp dụng quy tắc phù hợp với đoạn truyện, không ép mọi đặc điểm thể loại vào từng câu.";
+        "Chỉ áp dụng điểm phù hợp; không ép thể loại hoặc đổi dữ kiện nguyên tác.";
 }

@@ -22,12 +22,49 @@ function execute() {
             mode: "input",
             format: "number"
         },
+        genre_analysis_model: {
+            title: "Model phân tích thể loại",
+            subtitle: "Chỉ dùng khi phân tích thể loại và tạo prompt phong cách",
+            default: "deepseek-flash",
+            values: ["deepseek-flash", "deepseek-v4-pro"],
+            mode: "select",
+            format: "single"
+        },
+        genre_analysis_reasoning_effort: {
+            title: "Mức suy nghĩ khi tạo prompt phong cách",
+            subtitle: "none tắt suy nghĩ; low/high/max tăng dần độ suy luận, thời gian và lượng token",
+            default: "none",
+            values: ["none", "low", "high", "max"],
+            mode: "select",
+            format: "single"
+        },
+        translation_reasoning_effort: {
+            title: "Mức suy nghĩ khi dịch",
+            subtitle: "Áp dụng cho dịch chính và các lần sửa/thử lại; none tắt suy nghĩ để tiết kiệm token",
+            default: "none",
+            values: ["none", "low", "high", "max"],
+            mode: "select",
+            format: "single"
+        },
 
         retry_untranslated_chinese: {
             title: "Tự sửa phần tiếng Trung còn sót",
             subtitle: "Gom các cụm tiếng Trung còn sót trong một lượt sửa; nếu lỗi hoặc kết quả thiếu, giữ nguyên bản dịch ban đầu",
             default: "true",
             mode: "toggle"
+        },
+        retry_untranslated_result: {
+            title: "Thử lại nếu kết quả chưa được dịch",
+            subtitle: "Gửi lại một lần không kèm bộ nhớ dịch khi phản hồi gần như chép nguyên văn; báo lỗi nếu vẫn chưa dịch",
+            default: "true",
+            mode: "toggle"
+        },
+        system_prompt: {
+            title: "Prompt hệ thống dịch thuật",
+            subtitle: "Prompt gọn, tránh lặp quy tắc; 4 phần phong cách, ngữ cảnh, yêu cầu riêng và bộ nhớ được tự chèn khi dịch",
+            default: translationSystemPromptDefault(),
+            mode: "input",
+            format: "text"
         },
         translate_table_of_content: {
             title: "Dùng DeepSeek dịch mục lục",
@@ -60,19 +97,25 @@ function execute() {
         },
         use_translation_memory: {
             title: "Sử dụng bộ nhớ dịch",
-            subtitle: "Áp dụng tên riêng, địa danh, thuật ngữ và quan hệ đã lưu cho truyện hiện tại",
+            subtitle: "Áp dụng bộ nhớ theo cặp ngôn ngữ đã ghi nhớ cho truyện hiện tại",
             default: "true",
             mode: "toggle"
         },
         auto_translation_memory: {
             title: "Tự động học bộ nhớ dịch",
-            subtitle: "Tự lưu thực thể mới trong cùng lượt gọi DeepSeek khi dịch chương; chỉ hoạt động khi Sử dụng bộ nhớ dịch đang bật",
+            subtitle: "Tự lưu tên riêng và thuật ngữ trong cùng lượt gọi DeepSeek khi dịch chương; chỉ hoạt động khi Sử dụng bộ nhớ dịch đang bật",
             default: "true",
+            mode: "toggle"
+        },
+        auto_analyze_translation_memory: {
+            title: "Tự động phân tích tên và quan hệ",
+            subtitle: "Sau khi DeepSeek dịch chương, tự phân tích chương đó một lần để bổ sung tên, biệt danh và cập nhật quan hệ; cần thêm thời gian và một lượt gọi API",
+            default: "false",
             mode: "toggle"
         },
         memory_analysis_chapters: {
             title: "Số chương phân tích",
-            subtitle: "Action sẽ đọc từ chương đang đọc và các chương kế sau, tối đa theo số lượng này",
+            subtitle: "Số chương mới cần xử lý mỗi lần chạy action thủ công; action tiếp tục từ tiến độ đã lưu",
             default: "5",
             mode: "input",
             format: "number"
@@ -106,7 +149,15 @@ function execute() {
         };
     }
 
-    return Response.success(config);
+    var versionedConfig = {};
+    for (var key in config) {
+        if (!config.hasOwnProperty(key) || key === "translation_prompts" || key === "translation_memory") continue;
+        versionedConfig[translationConfigKey(key)] = config[key];
+    }
+    versionedConfig.translation_prompts = config.translation_prompts;
+    if (config.translation_memory) versionedConfig.translation_memory = config.translation_memory;
+
+    return Response.success(versionedConfig);
 }
 
 function initializeTranslationPrompts() {
@@ -117,7 +168,9 @@ function initializeTranslationPrompts() {
     for (var style in defaults) {
         if (!defaults.hasOwnProperty(style)) continue;
         var storedPrompt = localDatabase.get(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE, style);
-        if (storedPrompt !== null && storedPrompt !== undefined) continue;
+        if (storedPrompt !== null && storedPrompt !== undefined) {
+            if (String(storedPrompt) !== translationPreviousDefaultPrompt(style)) continue;
+        }
         rows.push({ key: style, value: defaults[style] });
     }
     if (rows.length > 0) localDatabase.upsertAll(TRANSLATION_PROMPT_SCOPE, TRANSLATION_PROMPT_TABLE, rows);

@@ -23,6 +23,19 @@ function execute(text, from, to, source, model, style) {
         return Response.error("Chưa chọn ngôn ngữ đích");
     }
 
+    if (from === "auto") from = detectAutoSourceLanguage(text) || from;
+    if (source === "chapterContent") {
+        try {
+            var bookInfo = localBook.getInfo();
+            if (bookInfo && bookInfo.id) {
+                translationRememberLanguages(String(bookInfo.id), from, to);
+            }
+        } catch (languageMemoryError) {
+            Log.log("[dich_deepseek] Không thể lấy truyện để ghi nhớ ngôn ngữ: " + languageMemoryError);
+        }
+    }
+    style = translationResolveStyle(style, isChineseSource(text, from));
+
     if (!shouldUseDeepSeek(source)) {
         return translateWithFallback(text, from, to, source);
     }
@@ -34,12 +47,15 @@ function execute(text, from, to, source, model, style) {
 
     var temperature = readNumber("temperature", 0.2, 0, 2);
     var maxOutputTokens = Math.round(readNumber("max_output_tokens", 16384, 256, 65536));
+    var reasoningEffort = readReasoningEffort("translation_reasoning_effort");
     var customInstruction = readBookCustomInstruction();
     var endpoint = DEEPSEEK_API_BASE;
     var autoMemoryEnabled = readBoolean("auto_translation_memory", true);
     var memoryContext = loadTranslationMemory(text, from, to, source, autoMemoryEnabled);
     var learnMemory = memoryContext.enabled && autoMemoryEnabled;
+    var activeMemoryPrompt = memoryContext.prompt;
     var systemInstruction = buildInstruction(
+        text,
         from,
         to,
         source,
@@ -55,9 +71,9 @@ function execute(text, from, to, source, model, style) {
             { role: "system", content: systemInstruction },
             { role: "user", content: text }
         ],
-        temperature: temperature,
         max_tokens: maxOutputTokens
     };
+    applyReasoningSettings(request, reasoningEffort, temperature);
     if (learnMemory) request.response_format = { type: "json_object" };
     var requestBody = JSON.stringify(request);
 
@@ -88,8 +104,11 @@ function execute(text, from, to, source, model, style) {
         var data;
         try {
             data = JSON.parse(responseText);
-        } catch (e2) {
-            return Response.error("DeepSeek trả về dữ liệu không hợp lệ");
+        } catch (parseError) {
+            return Response.error(
+                "DeepSeek trả về JSON không hợp lệ (" + String(parseError) + "): " +
+                translationErrorDetail(responseText)
+            );
         }
 
         var reason = blockedReason(data);
@@ -112,20 +131,65 @@ function execute(text, from, to, source, model, style) {
             return Response.error("DeepSeek không trả về bản dịch hợp lệ");
         }
 
+        if (isLikelyUntranslated(finalText, text, from, to)) {
+            var retryInstruction = buildInstruction(
+                text,
+                from,
+                to,
+                source,
+                style,
+                customInstruction,
+                "",
+                false
+            ) + "\n\nRETRY REQUIREMENT: The previous result repeated the source instead of translating it. " +
+                "Translate the complete input into " + languageName(to) +
+                ". Do not copy any source-language sentences into the result.";
+            var retryResult = retryUntranslatedResult(
+                apiKeys[keyIndex],
+                model,
+                retryInstruction,
+                text,
+                temperature,
+                maxOutputTokens,
+                reasoningEffort
+            );
+            if (retryResult.error) return Response.error(retryResult.error);
+            finalText = retryResult.text;
+            parsedResult.memory = [];
+            learnMemory = false;
+            activeMemoryPrompt = "";
+            if (isLikelyUntranslated(finalText, text, from, to)) {
+                return Response.error("DeepSeek vẫn trả về nội dung chưa được dịch. Hãy thử lại hoặc đổi model.");
+            }
+        }
+
         if (shouldRepairChinese(finalText, text, from, to)) {
-            finalText = repairRemainingChinese(
+            var repairResult = repairRemainingChinese(
                 endpoint,
                 apiKeys,
                 keyIndex,
                 finalText,
-                memoryContext.prompt,
+                activeMemoryPrompt,
                 maxOutputTokens,
-                model
+                model,
+                reasoningEffort
             );
+            if (repairResult.error) return Response.error(repairResult.error);
+            finalText = repairResult.text;
+            if (countChinese(finalText) > 0) {
+                return Response.error(
+                    "DeepSeek chưa dịch hết nội dung: bản dịch còn " + countChinese(finalText) +
+                    " ký tự tiếng Trung. Hãy thử lại hoặc đổi model."
+                );
+            }
         }
 
         if (learnMemory) {
             persistTranslationMemory(memoryContext, text, finalText, parsedResult.memory);
+        }
+
+        if (source === "chapterContent" && readBoolean("auto_analyze_translation_memory", false)) {
+            runAutomaticMemoryAnalysis(text, from, to);
         }
 
         return Response.success(finalText);
@@ -134,11 +198,251 @@ function execute(text, from, to, source, model, style) {
     return Response.error(lastError || "Không có DeepSeek API key khả dụng");
 }
 
+function runAutomaticMemoryAnalysis(text, from, to) {
+    var info;
+    try {
+        info = localBook.getInfo();
+    } catch (e) {
+        Log.log("[dich_deepseek] Không thể tự phân tích bộ nhớ: không lấy được truyện hiện tại: " + e);
+        return;
+    }
+    if (!info || !info.id) return;
+
+    var chapterPosition = parseInt(info.lastReadChapterIndex, 10);
+    if (isNaN(chapterPosition) || chapterPosition < 0) chapterPosition = 0;
+    var input = {
+        mode: "automatic",
+        chapterPosition: chapterPosition,
+        chapterTitle: "Chương " + (chapterPosition + 1),
+        chapterText: String(text || ""),
+        from: from || "auto",
+        to: to || "vi"
+    };
+    try {
+        var result = Script.execute("analyze-memory.js", "execute", JSON.stringify(input));
+        if (result && Number(result.code) !== 0) {
+            Log.log("[dich_deepseek] Tự phân tích bộ nhớ thất bại: " + String(result.data || result.message || result));
+        }
+    } catch (analysisError) {
+        Log.log("[dich_deepseek] Không thể tự phân tích bộ nhớ: " + String(analysisError));
+    }
+}
+
 function shouldUseDeepSeek(source) {
     if (source === "tableOfContent") return readBoolean("translate_table_of_content", false);
     if (source === "detail") return readBoolean("translate_detail", false);
     if (source === "discovery") return readBoolean("translate_discovery", false);
     return true;
+}
+
+function detectAutoSourceLanguage(text) {
+    var script = dominantScript(text);
+    if (script === "latin") return looksVietnameseText(text) ? "vi" : "";
+    var languages = {
+        han: "zh-CN",
+        kana: "ja",
+        hangul: "ko",
+        cyrillic: "ru",
+        arabic: "ar",
+        hebrew: "he",
+        greek: "el",
+        thai: "th",
+        devanagari: "hi",
+        bengali: "bn",
+        armenian: "hy",
+        georgian: "ka",
+        gujarati: "gu",
+        gurmukhi: "pa",
+        tamil: "ta",
+        telugu: "te",
+        kannada: "kn",
+        malayalam: "ml"
+    };
+    return languages[script] || translationDetectLanguage(text) || "";
+}
+
+var TRANSLATION_SCRIPTS = {
+    kana: /[\u3040-\u30ff\u31f0-\u31ff]/g,
+    hangul: /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g,
+    han: /[\u3400-\u9fff\uf900-\ufaff]/g,
+    cyrillic: /[\u0400-\u04ff]/g,
+    arabic: /[\u0600-\u06ff\u0750-\u077f]/g,
+    hebrew: /[\u0590-\u05ff]/g,
+    greek: /[\u0370-\u03ff]/g,
+    thai: /[\u0e00-\u0e7f]/g,
+    devanagari: /[\u0900-\u097f]/g,
+    bengali: /[\u0980-\u09ff]/g,
+    armenian: /[\u0530-\u058f]/g,
+    georgian: /[\u10a0-\u10ff]/g,
+    gujarati: /[\u0a80-\u0aff]/g,
+    gurmukhi: /[\u0a00-\u0a7f]/g,
+    tamil: /[\u0b80-\u0bff]/g,
+    telugu: /[\u0c00-\u0c7f]/g,
+    kannada: /[\u0c80-\u0cff]/g,
+    malayalam: /[\u0d00-\u0d7f]/g,
+    latin: /[A-Za-z\u00c0-\u024f\u1e00-\u1eff]/g
+};
+
+var TRANSLATION_LANGUAGE_SCRIPTS = {
+    zh: "han", "zh-CN": "han", "zh-TW": "han", ja: "kana", ko: "hangul",
+    ru: "cyrillic", uk: "cyrillic", be: "cyrillic", mk: "cyrillic", sr: "cyrillic",
+    kk: "cyrillic", mn: "cyrillic", ar: "arabic", fa: "arabic", ur: "arabic",
+    he: "hebrew", el: "greek", th: "thai", hi: "devanagari", mr: "devanagari",
+    ne: "devanagari", bn: "bengali", hy: "armenian", ka: "georgian", gu: "gujarati",
+    pa: "gurmukhi", ta: "tamil", te: "telugu", kn: "kannada", ml: "malayalam"
+};
+
+function dominantScript(text) {
+    var kanaCount = countScript(text, "kana");
+    var hanCount = countScript(text, "han");
+    if (kanaCount > 0 && kanaCount * 10 >= hanCount) return "kana";
+
+    var bestScript = "";
+    var bestCount = 0;
+    for (var script in TRANSLATION_SCRIPTS) {
+        if (!TRANSLATION_SCRIPTS.hasOwnProperty(script) || script === "kana") continue;
+        var count = countScript(text, script);
+        if (count > bestCount) {
+            bestScript = script;
+            bestCount = count;
+        }
+    }
+    return bestScript;
+}
+
+function countScript(text, script) {
+    var pattern = TRANSLATION_SCRIPTS[script];
+    if (!pattern) return 0;
+    var matches = String(text || "").match(pattern);
+    return matches ? matches.length : 0;
+}
+
+function isLikelyUntranslated(translated, original, from, to) {
+    if (!readBoolean("retry_untranslated_result", true)) return false;
+    if (!sourceDiffersFromTarget(original, from, to)) return false;
+
+    var input = String(original || "").replace(/\s+/g, " ").trim();
+    var output = String(translated || "").replace(/\s+/g, " ").trim();
+    if (input.length >= 8 && input === output) return true;
+
+    var sourceScript = dominantScript(input);
+    var targetScript = languageScript(to);
+    if (sourceScript && sourceScript !== "latin" && sourceScript !== targetScript) {
+        var sourceCount = countScript(input, sourceScript);
+        if (sourceCount < 10) return false;
+        if (sourceScript === "han" && targetScript === "kana") {
+            return countScript(output, "kana") < Math.max(5, sourceCount * 0.05);
+        }
+        var threshold = sourceScript === "han" ? 0.2 : 0.5;
+        var remaining = countScript(output, sourceScript);
+        return remaining >= 10 && remaining >= sourceCount * threshold;
+    }
+
+    if (sourceScript === "latin" && targetScript === "latin") {
+        var sourceWords = comparableWords(input);
+        if (sourceWords.length < 12) return false;
+        var outputWords = {};
+        var translatedWords = comparableWords(output);
+        for (var i = 0; i < translatedWords.length; i++) outputWords[translatedWords[i]] = true;
+        var shared = 0;
+        for (var j = 0; j < sourceWords.length; j++) {
+            if (outputWords[sourceWords[j]]) shared++;
+        }
+        return shared >= sourceWords.length * 0.75;
+    }
+    return false;
+}
+
+function sourceDiffersFromTarget(text, from, to) {
+    var source = String(from || "auto");
+    if (source === "auto") source = detectAutoSourceLanguage(text);
+
+    var target = String(to || "").toLowerCase();
+    var targetBase = target.split("-")[0];
+    if (!source) {
+        var sourceScript = dominantScript(text);
+        var sourceLanguageScript = sourceScript || "";
+        var targetScript = languageScript(target);
+        if (sourceLanguageScript && sourceLanguageScript !== "latin" && targetScript !== sourceLanguageScript) {
+            return true;
+        }
+        var vietnameseInput = looksVietnameseText(text);
+        if (targetBase === "vi") return !vietnameseInput;
+        return sourceLanguageScript === "latin" && targetScript !== "latin" || vietnameseInput;
+    }
+
+    var sourceCode = source.toLowerCase();
+    if (translationLanguageMatches(sourceCode, target)) return false;
+    if (sourceCode.indexOf("zh-") === 0 && target.indexOf("zh-") === 0) return true;
+    var sourceBase = sourceCode.split("-")[0];
+    return sourceBase !== targetBase;
+}
+
+function languageScript(code) {
+    var value = String(code || "").toLowerCase();
+    return TRANSLATION_LANGUAGE_SCRIPTS[value] || TRANSLATION_LANGUAGE_SCRIPTS[value.split("-")[0]] || "latin";
+}
+
+function comparableWords(text) {
+    var matches = String(text || "").toLowerCase().match(/[a-z\u00c0-\u024f\u1e00-\u1eff\u0400-\u04ff]{3,}/g);
+    return matches || [];
+}
+
+function looksVietnameseText(text) {
+    var value = String(text || "");
+    var letters = value.match(/[A-Za-z\u00c0-\u024f\u1e00-\u1eff]/g);
+    if (!letters || letters.length < 8) return false;
+    var marks = value.match(/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹĂÂĐÊÔƠƯ]/g);
+    return !!marks && marks.length >= letters.length * 0.03;
+}
+
+function retryUntranslatedResult(apiKey, model, instruction, text, temperature, maxTokens, reasoningEffort) {
+    var request = {
+        model: model,
+        messages: [
+            { role: "system", content: instruction },
+            { role: "user", content: text }
+        ],
+        max_tokens: maxTokens
+    };
+    applyReasoningSettings(request, reasoningEffort, temperature);
+    var response;
+    try {
+        response = fetch(DEEPSEEK_API_BASE, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + apiKey
+            },
+            body: JSON.stringify(request),
+            timeout: 120000
+        });
+    } catch (e) {
+        return { text: "", error: "Không thể thử lại với DeepSeek: " + String(e) };
+    }
+
+    if (!response.ok) return { text: "", error: readApiError(response) };
+
+    var data;
+    try {
+        data = JSON.parse(response.text());
+    } catch (e2) {
+        return { text: "", error: "DeepSeek trả về dữ liệu không hợp lệ khi thử lại" };
+    }
+
+    var reason = blockedReason(data);
+    if (reason === "length") {
+        return { text: "", error: "DeepSeek đã cắt bản dịch khi thử lại do chạm giới hạn token đầu ra." };
+    }
+    if (reason) return { text: "", error: "DeepSeek không thể hoàn tất lần thử lại: " + reason };
+
+    var translated = extractText(data);
+    if (!translated) return { text: "", error: "DeepSeek không trả về bản dịch khi thử lại" };
+    var result = parseTranslationResult(stripCodeFence(translated), false).translation;
+    if (!result || !String(result).trim()) {
+        return { text: "", error: "DeepSeek không trả về bản dịch hợp lệ khi thử lại" };
+    }
+    return { text: result, error: "" };
 }
 
 function translateWithFallback(text, from, to, source) {
@@ -190,8 +494,7 @@ function loadTranslationMemory(text, from, to, source, trackExisting) {
     };
 
     if (!readBoolean("use_translation_memory", true)) return context;
-
-    if (source !== "chapterContent" || to !== "vi" || !isChineseSource(text, from)) return context;
+    if (source !== "chapterContent" || !sourceDiffersFromTarget(text, from, to)) return context;
 
     var info;
     try {
@@ -204,6 +507,10 @@ function loadTranslationMemory(text, from, to, source, trackExisting) {
 
     context.enabled = true;
     context.bookId = String(info.id);
+    context.from = from || "auto";
+    context.to = to;
+    context.chinese = isChineseSource(text, from);
+    translationRememberLanguages(context.bookId, context.from, context.to);
 
     try {
         var rows = localDatabase.list(context.bookId, TRANSLATION_MEMORY_TABLE, 0, MAX_MEMORY_ROWS);
@@ -222,32 +529,37 @@ function loadTranslationMemory(text, from, to, source, trackExisting) {
                     rows.push(recentRows[recentIndex]);
                 }
             }
-
-            for (var i = 0; rows && i < rows.length; i++) {
-                var rowKey = String(rows[i].key || "").trim();
-                if (!rowKey) continue;
-                if (trackExisting) context.existing[rowKey] = true;
-                if (context.lines.length < MAX_MEMORY_MATCHES) {
-                    addStoredMemoryLine(context, rowKey, String(rows[i].value || ""), text);
-                }
-            }
         }
 
+        for (var i = 0; rows && i < rows.length; i++) {
+            if (!trackExisting && context.lines.length >= MAX_MEMORY_MATCHES) break;
+            var rowKey = String(rows[i].key || "").trim();
+            if (!rowKey) continue;
+            var rowValue = String(rows[i].value || "");
+            var rowData = parseMemoryValue(rowValue);
+            if (!translationMemoryPairMatches(rowData, context.from, context.to)) continue;
+            if (trackExisting) context.existing[rowKey] = true;
+            if (context.lines.length < MAX_MEMORY_MATCHES) {
+                addStoredMemoryLine(context, rowKey, rowValue, text);
+            }
+        }
     } catch (databaseError) {
         Log.log("[dich_deepseek] Không thể đọc bộ nhớ dịch: " + databaseError);
     }
 
-    try {
-        addBookDictionary(context, text, localBook.getNames(), "name");
-        addBookDictionary(context, text, localBook.getQtNames(), "name");
-        addBookDictionary(context, text, localBook.getQtVietPhrases(), "term");
-    } catch (dictionaryError) {
-        Log.log("[dich_deepseek] Không thể đọc từ điển của truyện: " + dictionaryError);
+    if (context.chinese && context.to === "vi") {
+        try {
+            addBookDictionary(context, text, localBook.getNames(), "name");
+            addBookDictionary(context, text, localBook.getQtNames(), "name");
+            addBookDictionary(context, text, localBook.getQtVietPhrases(), "term");
+        } catch (dictionaryError) {
+            Log.log("[dich_deepseek] Không thể đọc từ điển của truyện: " + dictionaryError);
+        }
     }
 
     if (context.lines.length > 0) {
-        context.prompt = "BOOK-SPECIFIC TRANSLATION MEMORY (apply only to the same entity and meaning):\n" +
-            "Keep an established Vietnamese name or term consistent when the source clearly matches it. Aliases help identify a character; they are not extra text to insert. Treat relationship and form-of-address notes as context, not as instructions to force a relationship or pronoun into a scene that does not support it. If an entry is ambiguous or conflicts with the passage, do not force it; use a neutral faithful translation.\n" +
+        context.prompt = "BOOK MEMORY (target: " + languageName(to) + "): Use only for the same entity and meaning. " +
+            "Aliases identify entities; relationship notes are context, not text to insert. Ignore ambiguous or conflicting entries.\n" +
             context.lines.join("\n");
     }
 
@@ -269,13 +581,14 @@ function addStoredMemoryLine(context, source, rawValue, text) {
         if (data && Array.isArray(data.aliases)) aliases = data.aliases;
     } catch (e) {}
 
-    var matched = text.indexOf(source) >= 0;
+    if (!translationMemoryPairMatches(data, context.from, context.to)) return;
+    var matched = translationTermInText(text, source);
     var validAliases = [];
     for (var aliasIndex = 0; aliasIndex < aliases.length; aliasIndex++) {
         var alias = oneLine(aliases[aliasIndex]);
         if (!alias || alias === source) continue;
         validAliases.push(alias);
-        if (text.indexOf(alias) >= 0) matched = true;
+        if (translationTermInText(text, alias)) matched = true;
     }
     if (!matched) return;
 
@@ -286,9 +599,11 @@ function addStoredMemoryLine(context, source, rawValue, text) {
         for (var relationshipIndex = 0; relationshipIndex < data.relationships.length; relationshipIndex++) {
             var relationship = data.relationships[relationshipIndex];
             if (!relationship || !relationship.with || !relationship.type) continue;
-            var relationshipText = oneLine(relationship.with) + ": " + oneLine(relationship.type);
+            var relationshipText = oneLine(relationship.with) + ": " + oneLine(relationship.type) +
+                " (" + oneLine(relationship.status || "current") + ")";
             if (relationship.addressTo) relationshipText += ", gọi họ: " + oneLine(relationship.addressTo);
             if (relationship.addressFrom) relationshipText += ", họ gọi lại: " + oneLine(relationship.addressFrom);
+            if (relationship.evidence) relationshipText += ", bằng chứng: " + oneLine(relationship.evidence);
             details.push("quan hệ " + relationshipText);
         }
     }
@@ -305,7 +620,7 @@ function addBookDictionary(context, text, dictionary, kind) {
     for (var source in dictionary) {
         if (!dictionary.hasOwnProperty(source)) continue;
         source = String(source || "").trim();
-        if (!source || text.indexOf(source) < 0) continue;
+        if (!source || !translationTermInText(text, source)) continue;
         addMemoryLine(context, source, String(dictionary[source] || ""), kind, "");
         if (context.lines.length >= MAX_MEMORY_MATCHES) return;
     }
@@ -412,10 +727,9 @@ function persistTranslationMemory(context, input, translatedText, items) {
 
         var source = String(item.source || "").trim();
         var target = String(item.target || "").trim();
-        if (!source || !target || context.existing[source]) continue;
+        if (!translationIsMemoryTerm(source, target, input, context.chinese) ||
+            context.existing[source] || !translationTermInText(translatedText, target)) continue;
         if (source.length > 80 || target.length > 160) continue;
-        if (!containsChinese(source) || input.indexOf(source) < 0) continue;
-        if (translatedText.indexOf(target) < 0) continue;
 
         var kind = normalizeMemoryKind(item.kind);
         var note = oneLine(String(item.note || ""));
@@ -423,7 +737,13 @@ function persistTranslationMemory(context, input, translatedText, items) {
 
         records.push({
             key: source,
-            value: JSON.stringify({ target: target, kind: kind, note: note })
+            value: JSON.stringify({
+                target: target,
+                kind: kind,
+                note: note,
+                from: context.from,
+                to: context.to
+            })
         });
         context.existing[source] = true;
     }
@@ -453,7 +773,7 @@ function shouldRepairChinese(translated, original, from, to) {
     return true;
 }
 
-function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryPrompt, maxOutputTokens, model) {
+function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryPrompt, maxOutputTokens, model, reasoningEffort) {
     var previous = String(draft || "");
     var items = [];
     var pattern = /[\u3400-\u9fff\uf900-\ufaff]+/g;
@@ -467,34 +787,54 @@ function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryP
             position: match.index,
             context: chineseFragmentContext(previous, fragment, match.index)
         });
-        if (items.length > MAX_CHINESE_REPAIR_FRAGMENTS) return previous;
+        if (items.length > MAX_CHINESE_REPAIR_FRAGMENTS) {
+            return {
+                text: previous,
+                error: "Bản dịch còn quá nhiều cụm tiếng Trung (" + items.length +
+                    "); không thể tự sửa hết trong một lượt."
+            };
+        }
     }
 
-    if (items.length === 0) return previous;
+    if (items.length === 0) return { text: previous, error: "" };
 
-    var replacements = translateChineseFragmentsOnce(
+    var repairResult = translateChineseFragmentsOnce(
         endpoint,
         apiKeys,
         startKeyIndex,
         items,
         memoryPrompt,
         maxOutputTokens,
-        model
+        model,
+        reasoningEffort
     );
-    if (!replacements) return previous;
+    if (repairResult.error) return { text: previous, error: repairResult.error };
+    var replacements = repairResult.replacements;
 
     var repaired = "";
     var cursor = 0;
     for (var itemIndex = 0; itemIndex < items.length; itemIndex++) {
         var item = items[itemIndex];
         var replacement = replacements[item.id];
-        if (!replacement || countChinese(replacement) > 0) return previous;
+        if (!replacement || countChinese(replacement) > 0) {
+            return {
+                text: previous,
+                error: "DeepSeek không dịch được cụm tiếng Trung còn sót. Hãy thử lại hoặc đổi model."
+            };
+        }
         repaired += previous.substring(cursor, item.position) + replacement;
         cursor = item.position + item.fragment.length;
     }
     repaired += previous.substring(cursor);
 
-    return countChinese(repaired) === 0 ? repaired : previous;
+    if (countChinese(repaired) > 0) {
+        return {
+            text: previous,
+            error: "DeepSeek vẫn để sót " + countChinese(repaired) +
+                " ký tự tiếng Trung sau khi tự sửa. Hãy thử lại hoặc đổi model."
+        };
+    }
+    return { text: repaired, error: "" };
 }
 
 function chineseFragmentContext(text, fragment, position) {
@@ -506,7 +846,7 @@ function chineseFragmentContext(text, fragment, position) {
     return value.substring(start, end);
 }
 
-function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, memoryPrompt, maxOutputTokens, model) {
+function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, memoryPrompt, maxOutputTokens, model, reasoningEffort) {
     var instruction = "Translate every supplied Chinese fragment into natural Vietnamese for insertion into an existing literary translation. " +
         "Use each item's context only to resolve meaning, names, and address terms. Do not translate or return the context. " +
         "Return only one valid JSON object without Markdown using this exact shape: " +
@@ -520,11 +860,12 @@ function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, 
             { role: "system", content: instruction },
             { role: "user", content: JSON.stringify({ items: items }) }
         ],
-        temperature: 0,
         max_tokens: Math.min(maxOutputTokens || 4096, 4096),
         response_format: { type: "json_object" }
     };
+    applyReasoningSettings(request, reasoningEffort, 0);
     var body = JSON.stringify(request);
+    var lastRepairError = "";
 
     for (var keyAttempt = 0; keyAttempt < apiKeys.length; keyAttempt++) {
         var keyIndex = (startKeyIndex + keyAttempt) % apiKeys.length;
@@ -540,45 +881,68 @@ function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, 
                 timeout: 30000
             });
         } catch (e) {
-            return null;
+            return { replacements: null, error: "Không thể kết nối DeepSeek để sửa phần còn sót: " + String(e) };
         }
 
         if (!response.ok) {
-            if (response.status === 401 || response.status === 403 || response.status === 429) continue;
-            return null;
+            var apiError = readApiError(response);
+            if (response.status === 401 || response.status === 403 || response.status === 429) {
+                lastRepairError = apiError;
+                continue;
+            }
+            return { replacements: null, error: apiError };
         }
 
         try {
             var data = JSON.parse(response.text());
-            if (blockedReason(data)) return null;
+            var reason = blockedReason(data);
+            if (reason) {
+                return {
+                    replacements: null,
+                    error: "DeepSeek không thể hoàn tất sửa phần còn sót: " + reason
+                };
+            }
             var output = stripCodeFence(extractText(data)).trim();
-            if (!output) return null;
+            if (!output) {
+                return { replacements: null, error: "DeepSeek không trả kết quả khi sửa phần còn sót." };
+            }
 
             var parsed = JSON.parse(output);
-            if (!parsed || !Array.isArray(parsed.items)) return null;
-            if (parsed.items.length !== items.length) return null;
+            if (!parsed || !Array.isArray(parsed.items)) {
+                return { replacements: null, error: "DeepSeek trả JSON sửa phần còn sót không hợp lệ." };
+            }
+            if (parsed.items.length !== items.length) {
+                return { replacements: null, error: "DeepSeek trả thiếu cụm đã sửa; không thể xác nhận bản dịch đầy đủ." };
+            }
 
             var replacements = {};
             for (var index = 0; index < parsed.items.length; index++) {
                 var translatedItem = parsed.items[index];
-                if (!translatedItem || translatedItem.id === undefined) return null;
+                if (!translatedItem || translatedItem.id === undefined) {
+                    return { replacements: null, error: "DeepSeek trả thiếu mã cụm khi sửa bản dịch." };
+                }
                 var id = String(translatedItem.id);
                 var expectedItemIndex = parseInt(id, 10);
                 if (isNaN(expectedItemIndex) || expectedItemIndex < 0 ||
                     expectedItemIndex >= items.length || String(items[expectedItemIndex].id) !== id ||
                     replacements.hasOwnProperty(id)) {
-                    return null;
+                    return { replacements: null, error: "DeepSeek trả mã cụm sửa không hợp lệ." };
                 }
                 var translation = String(translatedItem.translation || "").trim();
-                if (!translation) return null;
+                if (!translation) {
+                    return { replacements: null, error: "DeepSeek không dịch được một hoặc nhiều cụm còn sót." };
+                }
                 replacements[id] = translation;
             }
-            return replacements;
+            return { replacements: replacements, error: "" };
         } catch (e2) {
-            return null;
+            return { replacements: null, error: "Không đọc được kết quả sửa phần còn sót: " + String(e2) };
         }
     }
-    return null;
+    return {
+        replacements: null,
+        error: lastRepairError || "Không có API key DeepSeek khả dụng để sửa phần còn sót."
+    };
 }
 
 function containsChinese(value) {
@@ -595,14 +959,24 @@ function oneLine(value) {
 }
 
 function isChineseSource(text, from) {
-    var language = String(from || "auto").toLowerCase();
-    if (language === "zh" || language.indexOf("zh-") === 0) return true;
-    if (language !== "auto") return false;
-    return /[\u3400-\u9fff\uf900-\ufaff]/.test(text);
+    return translationIsChineseSource(text, from);
+}
+
+function parseMemoryValue(value) {
+    try {
+        var data = JSON.parse(String(value || ""));
+        return data && typeof data === "object" ? data : null;
+    } catch (e) {
+        return null;
+    }
 }
 
 function readConfig(key, fallback) {
-    var value = localConfig.getItem(key);
+    var value = localConfig.getItem(translationConfigKey(key));
+    if (key === "system_prompt" && value !== null && value !== undefined &&
+        String(value) === translationPreviousSystemPromptV6Default()) {
+        return translationDefaultSystemPrompt();
+    }
     return value === null || value === undefined || value === "" ? fallback : String(value);
 }
 
@@ -649,8 +1023,52 @@ function readApiError(response) {
     } catch (e) {
         errorData = null;
     }
-    var message = errorData && errorData.error && errorData.error.message ? String(errorData.error.message) : "";
-    return "DeepSeek HTTP " + response.status + (message ? ": " + message : "");
+    var errorObject = errorData && errorData.error ? errorData.error : errorData;
+    var details = [];
+    if (errorObject && typeof errorObject === "object") {
+        if (errorObject.message) details.push(String(errorObject.message));
+        if (errorObject.type) details.push("type=" + String(errorObject.type));
+        if (errorObject.code !== undefined && errorObject.code !== null) {
+            details.push("code=" + String(errorObject.code));
+        }
+        if (errorObject.param) details.push("param=" + String(errorObject.param));
+        if (errorObject.detail) details.push(String(errorObject.detail));
+        if (details.length === 0) details.push(JSON.stringify(errorObject));
+    } else if (errorObject !== null && errorObject !== undefined) {
+        details.push(String(errorObject));
+    } else if (errorText) {
+        details.push(errorText);
+    }
+
+    var status = Number(response.status);
+    var explanation = "";
+    if (status === 400) {
+        explanation = "Định dạng yêu cầu không hợp lệ.";
+    } else if (status === 401) {
+        explanation = "API key không hợp lệ hoặc xác thực thất bại. Hãy kiểm tra API key.";
+    } else if (status === 402) {
+        explanation = "Số dư API không đủ. Hãy kiểm tra và nạp thêm số dư tài khoản DeepSeek.";
+    } else if (status === 403) {
+        explanation = "API key không có quyền truy cập yêu cầu này.";
+    } else if (status === 422) {
+        explanation = "Tham số gửi đến DeepSeek không hợp lệ.";
+    } else if (status === 429) {
+        explanation = "Đã vượt giới hạn tốc độ hoặc số yêu cầu. Hãy chờ rồi thử lại.";
+    } else if (status === 500) {
+        explanation = "DeepSeek gặp lỗi máy chủ. Hãy thử lại sau.";
+    } else if (status === 503) {
+        explanation = "DeepSeek đang quá tải. Hãy chờ rồi thử lại.";
+    }
+    var detail = details.length > 0 ? translationErrorDetail(details.join("; ")) : "";
+    return "DeepSeek HTTP " + response.status +
+        (explanation ? ": " + explanation : "") +
+        (detail ? (explanation ? " Nội dung lỗi: " : ": ") + detail : "");
+}
+
+function translationErrorDetail(value) {
+    var detail = String(value || "").replace(/\s+/g, " ").trim();
+    if (detail.length > 1000) detail = detail.substring(0, 1000) + "... (đã rút gọn)";
+    return detail;
 }
 
 function readNumber(key, fallback, min, max) {
@@ -664,53 +1082,119 @@ function readNumber(key, fallback, min, max) {
 function normalizeModel(model) {
     var selected = String(model || "").trim();
     var models = {
-        "deepseek-chat": true,
-        "deepseek-reasoner": true
+        "deepseek-flash": true,
+        "deepseek-v4-pro": true
     };
-    return models[selected] ? selected : "deepseek-chat";
+    if (selected === "deepseek-chat") return "deepseek-flash";
+    if (selected === "deepseek-reasoner") return "deepseek-v4-pro";
+    return models[selected] ? selected : "deepseek-flash";
 }
 
-function buildInstruction(from, to, source, style, customInstruction, memoryPrompt, includeMemory) {
-    var sourceLanguage = from === "auto" ? "the automatically detected source language" : from;
-    var instruction = "You are an expert literary translator. Translate the entire user text from " +
-        sourceLanguage + " into " + to + ". Produce faithful, fluent prose; do not summarize, censor, explain, or add facts.";
+function readReasoningEffort(key) {
+    var value = String(readConfig(key, "none")).toLowerCase();
+    return value === "low" || value === "high" || value === "max" ? value : "none";
+}
 
+function applyReasoningSettings(request, reasoningEffort, temperature) {
+    var effort = reasoningEffort === "low" || reasoningEffort === "high" || reasoningEffort === "max"
+        ? reasoningEffort
+        : "none";
+    request.thinking = { type: effort === "none" ? "disabled" : "enabled" };
+    if (effort === "none") {
+        request.temperature = temperature;
+    } else {
+        request.reasoning_effort = effort;
+    }
+}
+
+function buildInstruction(text, from, to, source, style, customInstruction, memoryPrompt, includeMemory) {
+    if (from === "auto") from = detectAutoSourceLanguage(text) || from;
+    var chineseSource = isChineseSource(text, from);
     var stylePrompt = loadTranslationStylePrompt(style);
-    if (stylePrompt) instruction += "\n\n" + stylePrompt;
-
+    if (stylePrompt) {
+        stylePrompt = "TRANSLATION STYLE:\n" + stylePrompt;
+        if (to !== "vi") {
+            stylePrompt += "\nAdapt all style guidance to " + languageName(to) +
+                "; Vietnamese-specific forms and vocabulary are examples only and must not appear unless present in the source.";
+        }
+    }
+    var sourcePrompt = translationNonChineseNote(chineseSource);
     if (source === "chapterContent") {
-        instruction += "\n\nCHAPTER: Write coherent literary prose while preserving every narrative and dialogue detail.";
+        sourcePrompt += (sourcePrompt ? "\n" : "") +
+            "CHAPTER: Preserve narrative voice and continuity; keep dialogue natural to each speaker, speaker turns distinct, and narration separate from inner thoughts and speech. Retain paragraph breaks when meaningful and translate the full chapter without omissions.";
     } else if (source === "tableOfContent") {
-        instruction += "\n\nTABLE OF CONTENTS: Keep chapter numbering, order, and title meaning; make wording concise without inventing plot details.";
+        sourcePrompt += (sourcePrompt ? "\n" : "") +
+            "TABLE OF CONTENTS: Keep chapter numbering, order, and title meaning; make wording concise without inventing plot details.";
     } else if (source === "detail") {
-        instruction += "\n\nMETADATA: Preserve labels, values, and HTML structure; translate only reader-facing text.";
+        sourcePrompt += (sourcePrompt ? "\n" : "") +
+            "METADATA: Preserve labels, values, and HTML structure; translate only reader-facing text.";
     } else if (source === "discovery") {
-        instruction += "\n\nDISCOVERY: Keep titles, tags, and short descriptions concise while retaining distinguishing details.";
+        sourcePrompt += (sourcePrompt ? "\n" : "") +
+            "DISCOVERY: Keep titles, tags, and short descriptions concise while retaining distinguishing details.";
     }
-
     if (customInstruction) {
-        instruction += "\n\nBOOK-SPECIFIC PREFERENCE (apply only when consistent with the source): " + customInstruction;
+        customInstruction = "BOOK-SPECIFIC PREFERENCE (apply only when consistent with the source): " + customInstruction;
     }
+    var values = {
+        source_language: languageName(from),
+        target_language: languageName(to),
+        style_prompt: stylePrompt,
+        source_prompt: sourcePrompt,
+        custom_instruction: customInstruction || "",
+        memory_prompt: memoryPrompt || ""
+    };
+    var instruction = readConfig("system_prompt", translationDefaultSystemPrompt());
+    var additionalSections = [];
+    for (var key in values) {
+        if (!values.hasOwnProperty(key)) continue;
+        var placeholder = "{" + key + "}";
+        if (values[key] && instruction.indexOf(placeholder) === -1) additionalSections.push(values[key]);
+        instruction = instruction.split(placeholder).join(values[key]);
+    }
+    if (additionalSections.length > 0) instruction += "\n\n" + additionalSections.join("\n\n");
 
-    if (memoryPrompt) instruction += "\n\n" + memoryPrompt;
-
-    instruction += "\n\nTRANSLATION RULES (these take priority over style preferences):\n" +
-        "1. Coverage and fidelity: translate every sentence and detail once. Preserve who did what to whom, negation, tense, aspect, modality, condition, comparison, cause and effect, quantities, uncertainty, and point of view. Do not repair ambiguities or apparent contradictions by inventing facts.\n" +
-        "2. Context: read the supplied text as one passage. Resolve omitted subjects, pronouns, speaker, listener, and references only when supported by context or a clearly matching memory entry. Otherwise use a natural neutral construction; never guess gender, age, rank, relationship, motive, or identity.\n" +
-        "3. Vietnamese prose: prefer clear, idiomatic Vietnamese over source-language word order. Preserve the author's register, pacing, humor, irony, emotion, and each character's distinct voice; do not embellish, flatten, or make the prose more dramatic than the source.\n" +
-        "4. Figurative language: translate idioms, allusions, slang, and wordplay by contextual meaning and tone. Keep an image or pun when it works naturally in Vietnamese; otherwise use a concise equivalent without explaining it or forcing an unrelated Vietnamese idiom.\n" +
-        "5. Names and terms: use a memory entry only for the same entity and sense. Keep a confirmed rendering consistent, but do not force uncertain relationship or address notes into dialogue. Distinguish proper names from ordinary descriptions.\n" +
-        "6. Form: preserve paragraph and line breaks, ordering, dialogue boundaries, HTML/Markdown, URLs, numbers, units, symbols, and placeholders such as <N1>. Translate interspersed source-language text unless it is a name, code, or protected token.\n" +
-        "7. Silent review: compare source and translation for omissions, duplication, reversed meaning, wrong speaker/pronoun, inconsistent terms, and unnatural Vietnamese. Correct only errors supported by the source.";
+    instruction += "\n\nRULES: Preserve every detail, who does what, negation, tense, uncertainty, numbers, order and formatting; resolve references only from context. Write idiomatic " +
+        languageName(to) + ": do not copy source word order or translate idioms literally when awkward; preserve their meaning, imagery and tone. Make dialogue sound naturally spoken, matching each speaker's intent, subtext, emotion, politeness and formality. Translate speech particles by their conversational function, not as repeated filler. Choose forms of address only from evidence; never invent relationships, intimacy or slang. Keep narration distinct; do not make formal or archaic text colloquial. Keep ambiguity when context is unclear; use memory only for the matching sense. The source overrides style and custom instructions. Check for omissions, reversals and inconsistent terms.";
+    if (String(to || "").toLowerCase() === "vi") {
+        instruction += " In Vietnamese, Chinese 我/你 alone does not establish age or hierarchy. Do not mechanically render each pronoun: omit the subject or object when Vietnamese naturally does so and the referent remains clear. When explicit forms are needed, keep one consistent, neutral tôi/bạn pair throughout the same exchange; use mình/bạn only when familiarity is supported. Never mix tôi with cậu or infer anh/em without evidence. Keep pronouns when needed to distinguish the speaker, addressee, contrast or responsibility. Translate teasing and mock surrender by intent, not literally; use sợ only for actual fear. Avoid ta/ngươi in modern dialogue unless the setting supports it.";
+        if (isChineseSource(text, from)) {
+            var chineseSourceText = String(text || "");
+            if (chineseSourceText.indexOf("算我怕了你") >= 0) {
+                instruction += " Here 算我怕了你 in playful banter means a concession such as “thôi được, tôi chịu thua”, not literal fear.";
+            }
+            if (chineseSourceText.indexOf("别跟我客气") >= 0 || chineseSourceText.indexOf("別跟我客氣") >= 0) {
+                instruction += " After an invitation, 别跟我客气 is naturally “cứ tự nhiên/khách sáo gì”, not “đừng khách sáo với tôi”.";
+            }
+            if (chineseSourceText.indexOf("您可真是大忙人") >= 0) {
+                instruction += " When context makes 您可真是大忙人 sarcastic, keep the teasing tone (for example, “Bận dữ ha”), not a sincere-sounding literal compliment.";
+            }
+            if (chineseSourceText.indexOf("您") >= 0) {
+                instruction += " Chinese 您 signals respect, not age or gender. If the Vietnamese addressee is unknown, do not invent ông/bà/anh/chị; preserve politeness with natural pronoun-free wording such as “Mời ngồi”, using ạ only where fitting. Do not flatten respectful speech into casual address or repeat honorifics mechanically.";
+            }
+            if (chineseSourceText.indexOf("有事找我") >= 0) {
+                instruction += " In conversation, 有事找我 usually means “có việc muốn nói/trao đổi với tôi” or “cần tôi giúp”, not literally “có chuyện muốn tìm tôi”.";
+            }
+            if (chineseSourceText.indexOf("嗯") >= 0 || chineseSourceText.indexOf("哦") >= 0 ||
+                chineseSourceText.indexOf("喔") >= 0 || chineseSourceText.indexOf("好吧") >= 0 ||
+                chineseSourceText.indexOf("算了") >= 0 || chineseSourceText.indexOf("随便") >= 0 ||
+                chineseSourceText.indexOf("隨便") >= 0) {
+                instruction += " Interpret short replies such as 嗯、哦、好吧、算了 and 随便 from the surrounding turns: preserve agreement, hesitation, resignation, surprise or indifference only when supported by context. Prefer a brief natural Vietnamese reply; do not add emotion or explanation.";
+            }
+        }
+    }
 
     if (includeMemory) {
-        instruction += "\n\nOUTPUT: Return one valid JSON object only with this shape: " +
-            '{"translation":"complete translated text","memory":[{"source":"exact Chinese source term","target":"matching Vietnamese form","kind":"character|place|organization|term","note":"short useful note"}]}. ' +
-            "The translation field must contain the complete translation with its original line breaks. Include at most 10 high-confidence recurring names or terms; each source must be an exact Chinese substring of the input and each target must appear exactly in the translation. Use an empty memory array when uncertain. Escape JSON strings correctly. Do not add text outside the JSON.";
+        instruction += "\n\nOUTPUT JSON ONLY: " +
+            '{"translation":"complete translated text","memory":[{"source":"exact source-language name or term","target":"matching target-language form","kind":"character|place|organization|term","note":"short useful note"}]}. ' +
+            "Keep the full translation and line breaks. Include at most 10 high-confidence recurring names/terms; source must occur verbatim in input and target in translation. Exclude ordinary words; use [] if unsure. Escape JSON; no text outside it.";
     } else {
-        instruction += "\n\nOUTPUT: Return only the translated text, without commentary, labels, quotation marks, or Markdown fences.";
+        instruction += "\n\nOUTPUT: Only the complete translation; no commentary, labels or Markdown.";
     }
     return instruction;
+}
+
+function languageName(code) {
+    return translationLanguageName(code);
 }
 
 function loadTranslationStylePrompt(style) {

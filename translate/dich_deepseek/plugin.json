@@ -2,7 +2,7 @@
   "metadata": {
     "name": "DeepSeek Translate",
     "author": "Meo",
-    "version": 8,
+    "version": 31,
     "source": "https://platform.deepseek.com",
     "description": "Dịch nội dung bằng DeepSeek API (dựa trên extension Gemini Translate của vBook)",
     "locale": "global",
@@ -41,12 +41,6 @@
       "title": "Yêu cầu DeepSeek API key",
       "default": "true",
       "mode": "toggle"
-    },
-    "support_url": {
-      "title": "Tạo DeepSeek API key",
-      "default": "https://platform.deepseek.com/api_keys",
-      "mode": "input",
-      "format": "text"
     }
   }
 }
