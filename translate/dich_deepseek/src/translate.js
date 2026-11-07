@@ -1132,6 +1132,10 @@ function buildInstruction(text, from, to, source, style, customInstruction, memo
         sourcePrompt += (sourcePrompt ? "\n" : "") +
             "DISCOVERY: Keep titles, tags, and short descriptions concise while retaining distinguishing details.";
     }
+    if (/<\/?[a-z][^>]*>|&(?:[a-z][a-z0-9]+|#\d+|#x[0-9a-f]+);|\{\{[^}]+\}\}|\{[A-Za-z0-9_.-]+\}|\$\{[^}]+\}|%[0-9$]*[sdif]|https?:\/\/\S+|`[^`\r\n]+`/i.test(String(text || ""))) {
+        sourcePrompt += (sourcePrompt ? "\n" : "") +
+            "MARKUP: Preserve HTML/XML tags, attributes, entities, placeholders, URLs and inline code exactly. Translate only reader-visible prose; do not remove, rename, duplicate or reorder tags. Keep nesting balanced and attach tags to their corresponding translated text.";
+    }
     if (customInstruction) {
         customInstruction = "BOOK-SPECIFIC PREFERENCE (apply only when consistent with the source): " + customInstruction;
     }
@@ -1179,6 +1183,13 @@ function buildInstruction(text, from, to, source, style, customInstruction, memo
                 chineseSourceText.indexOf("算了") >= 0 || chineseSourceText.indexOf("随便") >= 0 ||
                 chineseSourceText.indexOf("隨便") >= 0) {
                 instruction += " Interpret short replies such as 嗯、哦、好吧、算了 and 随便 from the surrounding turns: preserve agreement, hesitation, resignation, surprise or indifference only when supported by context. Prefer a brief natural Vietnamese reply; do not add emotion or explanation.";
+            }
+            var addressTerms = ["叔叔", "阿姨", "大叔", "大姐", "哥哥", "姐姐", "师傅", "師傅", "老板", "老闆"];
+            for (var addressIndex = 0; addressIndex < addressTerms.length; addressIndex++) {
+                if (chineseSourceText.indexOf(addressTerms[addressIndex]) >= 0) {
+                    instruction += " Chinese terms such as 叔叔、阿姨、哥哥、姐姐、师傅 or 老板 can be kinship terms, role titles or forms of address depending on context. Do not infer a family relationship, occupation or ownership from a form of address alone; choose natural Vietnamese wording that preserves the supported respect and social distance, and use a literal relationship only when the text establishes it.";
+                    break;
+                }
             }
         }
     }
