@@ -1,5 +1,15 @@
 function execute() {
     var actions = {
+        clear_book_chapter_cache: {
+            name: "Xóa bản dịch của truyện hiện tại",
+            description: "Xóa các đoạn dịch đã lưu của truyện đang mở; không xóa cache truyện khác hoặc bộ nhớ dịch",
+            script: "clear-book-chapter-cache.js"
+        },
+        clear_chapter_cache: {
+            name: "Xóa bản dịch của tất cả truyện",
+            description: "Xóa toàn bộ cache chương trên thiết bị; dùng sau khi sửa bộ nhớ dịch hoặc muốn dịch lại",
+            script: "clear-chapter-cache.js"
+        },
         restore_defaults: {
             name: "Khôi phục cài đặt gốc",
             description: "Đặt lại cấu hình và prompt về mặc định; không xóa bộ nhớ dịch theo truyện",

@@ -60,6 +60,12 @@ function execute() {
             default: "true",
             mode: "toggle"
         },
+        cache_translated_chapters: {
+            title: "Lưu bản dịch chương trên thiết bị",
+            subtitle: "Dùng lại đoạn đã dịch; tối đa 200 đoạn hoặc 1 triệu ký tự. Dùng action xóa cache truyện hiện tại khi muốn dịch lại",
+            default: "true",
+            mode: "toggle"
+        },
         system_prompt: {
             title: "Prompt hệ thống dịch thuật",
             subtitle: "Prompt gọn, tránh lặp quy tắc; 4 phần phong cách, ngữ cảnh, yêu cầu riêng và bộ nhớ được tự chèn khi dịch",

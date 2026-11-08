@@ -1,5 +1,6 @@
 load('baidu.js');
 load('prompts.js');
+load('chapter-cache.js');
 var DEEPSEEK_API_BASE = "https://api.deepseek.com/chat/completions";
 var TRANSLATION_MEMORY_TABLE = "translation_memory";
 var MAX_MEMORY_ROWS = 2000;
@@ -24,11 +25,13 @@ function execute(text, from, to, source, model, style) {
     }
 
     if (from === "auto") from = detectAutoSourceLanguage(text) || from;
+    var bookId = "";
     if (source === "chapterContent") {
         try {
             var bookInfo = localBook.getInfo();
             if (bookInfo && bookInfo.id) {
-                translationRememberLanguages(String(bookInfo.id), from, to);
+                bookId = String(bookInfo.id);
+                translationRememberLanguages(bookId, from, to);
             }
         } catch (languageMemoryError) {
             Log.log("[dich_deepseek] Không thể lấy truyện để ghi nhớ ngôn ngữ: " + languageMemoryError);
@@ -40,17 +43,39 @@ function execute(text, from, to, source, model, style) {
         return translateWithFallback(text, from, to, source);
     }
 
-    var apiKeys = readApiKeys();
-    if (apiKeys.length === 0) {
-        return Response.error("Vui lòng thêm DeepSeek API key trong cài đặt extension");
-    }
-
     var temperature = readNumber("temperature", 1.3, 0, 2);
     var maxOutputTokens = Math.round(readNumber("max_output_tokens", 16384, 256, 393216));
     var reasoningEffort = readReasoningEffort("translation_reasoning_effort");
     var customInstruction = readBookCustomInstruction();
     var endpoint = DEEPSEEK_API_BASE;
     var autoMemoryEnabled = readBoolean("auto_translation_memory", true);
+    var cacheKey = "";
+    if (source === "chapterContent" && readBoolean("cache_translated_chapters", true)) {
+        if (bookId) {
+            cacheKey = JSON.stringify([
+                bookId, text, from, to, model, style, temperature, maxOutputTokens, reasoningEffort,
+                readBoolean("use_translation_memory", true), autoMemoryEnabled,
+                readBoolean("retry_untranslated_chinese", true),
+                readBoolean("retry_untranslated_result", true),
+                buildInstruction(text, from, to, source, style, customInstruction, "", false)
+            ]);
+            var cachedTranslation = chapterCacheGet(cacheKey);
+            if (cachedTranslation) {
+                if (readBoolean("auto_analyze_translation_memory", false)) {
+                    runAutomaticMemoryAnalysis(text, from, to);
+                }
+                return Response.success(cachedTranslation);
+            }
+        } else {
+            Log.log("[dich_deepseek] Không lưu cache chương: không xác định được truyện hiện tại.");
+        }
+    }
+
+    var apiKeys = readApiKeys();
+    if (apiKeys.length === 0) {
+        return Response.error("Vui lòng thêm DeepSeek API key trong cài đặt extension");
+    }
+
     var memoryContext = loadTranslationMemory(text, from, to, source, autoMemoryEnabled);
     var learnMemory = memoryContext.enabled && autoMemoryEnabled;
     var activeMemoryPrompt = memoryContext.prompt;
@@ -208,9 +233,9 @@ function execute(text, from, to, source, model, style) {
             );
             if (repairResult.error) return Response.error(repairResult.error);
             finalText = repairResult.text;
-            if (countChinese(finalText) > 0) {
+            if (countRepairableChinese(finalText) > 0) {
                 return Response.error(
-                    "DeepSeek chưa dịch hết nội dung: bản dịch còn " + countChinese(finalText) +
+                    "DeepSeek chưa dịch hết nội dung: bản dịch còn " + countRepairableChinese(finalText) +
                     " ký tự tiếng Trung. Hãy thử lại hoặc đổi model."
                 );
             }
@@ -224,6 +249,7 @@ function execute(text, from, to, source, model, style) {
             runAutomaticMemoryAnalysis(text, from, to);
         }
 
+        if (cacheKey) chapterCacheSave(cacheKey, finalText);
         return Response.success(finalText);
     }
 
