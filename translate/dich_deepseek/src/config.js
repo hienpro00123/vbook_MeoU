@@ -11,13 +11,14 @@ function execute() {
         },
         temperature: {
             title: "Temperature",
-            subtitle: "0.0 - 2.0; giá trị thấp giúp bản dịch ổn định",
-            default: "0.2",
+            subtitle: "DeepSeek khuyến nghị 1.3 cho dịch; bị bỏ qua khi bật suy nghĩ",
+            default: "1.3",
             mode: "input",
             format: "number"
         },
         max_output_tokens: {
             title: "Số token đầu ra tối đa",
+            subtitle: "Tối đa 393216 theo DeepSeek; token suy nghĩ cũng tính vào giới hạn",
             default: "16384",
             mode: "input",
             format: "number"
@@ -49,7 +50,7 @@ function execute() {
 
         retry_untranslated_chinese: {
             title: "Tự sửa phần tiếng Trung còn sót",
-            subtitle: "Gom các cụm tiếng Trung còn sót trong một lượt sửa; nếu lỗi hoặc kết quả thiếu, giữ nguyên bản dịch ban đầu",
+            subtitle: "Gom chữ Hán còn sót trong văn bản thường để sửa; giữ nguyên thẻ, URL, placeholder và các khối mã",
             default: "true",
             mode: "toggle"
         },
