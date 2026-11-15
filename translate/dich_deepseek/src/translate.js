@@ -49,6 +49,7 @@ function execute(text, from, to, source, model, style) {
     var customInstruction = readBookCustomInstruction();
     var endpoint = DEEPSEEK_API_BASE;
     var autoMemoryEnabled = readBoolean("auto_translation_memory", true);
+    var resilientRequests = source === "chapterContent" && readBoolean("resilient_chapter_requests", true);
     var cacheKey = "";
     if (source === "chapterContent" && readBoolean("cache_translated_chapters", true)) {
         if (bookId) {
@@ -104,9 +105,7 @@ function execute(text, from, to, source, model, style) {
 
     var lastError = "";
     for (var keyIndex = 0; keyIndex < apiKeys.length; keyIndex++) {
-        var response;
-        try {
-            response = fetch(endpoint, {
+        var fetchResult = fetchDeepSeekWithRetry(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -114,10 +113,9 @@ function execute(text, from, to, source, model, style) {
                 },
                 body: requestBody,
                 timeout: 120000
-            });
-        } catch (requestError) {
-            return Response.error("Không thể kết nối DeepSeek: " + String(requestError));
-        }
+            }, resilientRequests);
+        if (fetchResult.error) return Response.error("Không thể kết nối DeepSeek: " + fetchResult.error);
+        var response = fetchResult.response;
 
         if (!response.ok) {
             lastError = readApiError(response);
@@ -171,7 +169,8 @@ function execute(text, from, to, source, model, style) {
                     text,
                     temperature,
                     maxOutputTokens,
-                    reasoningEffort
+                    reasoningEffort,
+                    resilientRequests
                 );
                 if (plainRetryResult.error) {
                     return Response.error(
@@ -208,7 +207,8 @@ function execute(text, from, to, source, model, style) {
                 text,
                 temperature,
                 maxOutputTokens,
-                reasoningEffort
+                reasoningEffort,
+                resilientRequests
             );
             if (retryResult.error) return Response.error(retryResult.error);
             finalText = retryResult.text;
@@ -229,7 +229,8 @@ function execute(text, from, to, source, model, style) {
                 activeMemoryPrompt,
                 maxOutputTokens,
                 model,
-                reasoningEffort
+                reasoningEffort,
+                resilientRequests
             );
             if (repairResult.error) return Response.error(repairResult.error);
             finalText = repairResult.text;
@@ -454,7 +455,47 @@ function looksVietnameseText(text) {
     return !!marks && marks.length >= letters.length * 0.03;
 }
 
-function retryUntranslatedResult(apiKey, model, instruction, text, temperature, maxTokens, reasoningEffort) {
+function fetchDeepSeekWithRetry(endpoint, options, enabled) {
+    var maxRetries = enabled ? 2 : 0;
+    for (var attempt = 0; attempt <= maxRetries; attempt++) {
+        var response = null;
+        var error = "";
+        try {
+            response = fetch(endpoint, options);
+        } catch (e) {
+            error = String(e);
+        }
+        var status = response ? Number(response.status) : 0;
+        var transientFailure = !!error || (response && !response.ok &&
+            (status === 429 || (status >= 500 && status <= 599)));
+        if (!transientFailure || attempt === maxRetries) {
+            return { response: response, error: error };
+        }
+        var delay = 1500 * (attempt + 1);
+        if (response && typeof response.header === "function") {
+            var retryAfter = String(response.header("Retry-After") || "").trim();
+            if (retryAfter) {
+                var serverDelay = -1;
+                if (/^\d+$/.test(retryAfter)) {
+                    serverDelay = Number(retryAfter) * 1000;
+                } else {
+                    var retryTime = Date.parse(retryAfter);
+                    if (!isNaN(retryTime)) serverDelay = Math.max(0, retryTime - Date.now());
+                }
+                if (serverDelay > 30000) {
+                    Log.log("[dich_deepseek] DeepSeek yêu cầu chờ hơn 30 giây; dừng thử lại và báo lỗi.");
+                    return { response: response, error: "" };
+                }
+                if (serverDelay > delay) delay = serverDelay;
+            }
+        }
+        Log.log("[dich_deepseek] Lỗi tạm thời " + (error ? "kết nối" : "HTTP " + status) +
+            "; thử lại " + (attempt + 1) + "/" + maxRetries + " sau " + delay + " ms.");
+        sleep(delay);
+    }
+}
+
+function retryUntranslatedResult(apiKey, model, instruction, text, temperature, maxTokens, reasoningEffort, resilientRequests) {
     var request = {
         model: model,
         messages: [
@@ -464,9 +505,7 @@ function retryUntranslatedResult(apiKey, model, instruction, text, temperature, 
         max_tokens: maxTokens
     };
     applyReasoningSettings(request, reasoningEffort, temperature);
-    var response;
-    try {
-        response = fetch(DEEPSEEK_API_BASE, {
+    var fetchResult = fetchDeepSeekWithRetry(DEEPSEEK_API_BASE, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -474,10 +513,9 @@ function retryUntranslatedResult(apiKey, model, instruction, text, temperature, 
             },
             body: JSON.stringify(request),
             timeout: 120000
-        });
-    } catch (e) {
-        return { text: "", error: "Không thể thử lại với DeepSeek: " + String(e) };
-    }
+        }, resilientRequests);
+    if (fetchResult.error) return { text: "", error: "Không thể thử lại với DeepSeek: " + fetchResult.error };
+    var response = fetchResult.response;
 
     if (!response.ok) return { text: "", error: readApiError(response) };
 
@@ -834,7 +872,7 @@ function shouldRepairChinese(translated, original, from, to) {
     return true;
 }
 
-function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryPrompt, maxOutputTokens, model, reasoningEffort) {
+function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryPrompt, maxOutputTokens, model, reasoningEffort, resilientRequests) {
     var previous = String(draft || "");
     var fragments = findRepairableChineseFragments(previous);
     var items = [];
@@ -866,7 +904,8 @@ function repairRemainingChinese(endpoint, apiKeys, startKeyIndex, draft, memoryP
         memoryPrompt,
         maxOutputTokens,
         model,
-        reasoningEffort
+        reasoningEffort,
+        resilientRequests
     );
     if (repairResult.error) return { text: previous, error: repairResult.error };
     var replacements = repairResult.replacements;
@@ -946,7 +985,7 @@ function chineseFragmentContext(text, fragment, position) {
     return value.substring(start, end);
 }
 
-function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, memoryPrompt, maxOutputTokens, model, reasoningEffort) {
+function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, memoryPrompt, maxOutputTokens, model, reasoningEffort, resilientRequests) {
     var instruction = "Translate every supplied Chinese fragment into natural Vietnamese for insertion into an existing literary translation. " +
         "Use each item's context only to resolve meaning, names, and address terms. Do not translate or return the context. " +
         "Return only one valid JSON object without Markdown using this exact shape: " +
@@ -969,9 +1008,7 @@ function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, 
 
     for (var keyAttempt = 0; keyAttempt < apiKeys.length; keyAttempt++) {
         var keyIndex = (startKeyIndex + keyAttempt) % apiKeys.length;
-        var response;
-        try {
-            response = fetch(endpoint, {
+        var fetchResult = fetchDeepSeekWithRetry(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -979,10 +1016,11 @@ function translateChineseFragmentsOnce(endpoint, apiKeys, startKeyIndex, items, 
                 },
                 body: body,
                 timeout: 30000
-            });
-        } catch (e) {
-            return { replacements: null, error: "Không thể kết nối DeepSeek để sửa phần còn sót: " + String(e) };
+            }, resilientRequests);
+        if (fetchResult.error) {
+            return { replacements: null, error: "Không thể kết nối DeepSeek để sửa phần còn sót: " + fetchResult.error };
         }
+        var response = fetchResult.response;
 
         if (!response.ok) {
             var apiError = readApiError(response);

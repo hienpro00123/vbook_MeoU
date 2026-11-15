@@ -47,6 +47,12 @@ function execute() {
             mode: "select",
             format: "single"
         },
+        resilient_chapter_requests: {
+            title: "Thử lại khi dịch chương bị gián đoạn",
+            subtitle: "Thử lại tối đa 2 lần khi lỗi kết nối, HTTP 429 hoặc 5xx; tôn trọng Retry-After đến 30 giây. Có thể tăng thời gian, chi phí",
+            default: "true",
+            mode: "toggle"
+        },
 
         retry_untranslated_chinese: {
             title: "Tự sửa phần tiếng Trung còn sót",
