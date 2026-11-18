@@ -34,7 +34,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 
 ---
 
-## 📚 2. Danh sách Extension (25 tiện ích)
+## 📚 2. Danh sách Extension (26 tiện ích)
 
 | Icon | Tên Extension | Phân loại | Phiên bản | Nguồn website | Ngôn ngữ |
 | :---: | :--- | :---: | :---: | :--- | :---: |
@@ -45,6 +45,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/storya/icon.png" width="36" height="36"> | **Storya** | `novel` | v5 | [storya.click](https://storya.click) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/trichtinhlau/icon.png" width="36" height="36"> | **TrichTinhLau** | `novel` | v8 | [trichtinhlau.com](https://trichtinhlau.com) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/truyenchu/icon.png" width="36" height="36"> | **TruyenChu** | `novel` | v9 | [truyenchu.net](https://truyenchu.net) | `vi_VN` |
+| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/truyenkimdung/icon.png" width="36" height="36"> | **Truyện Kim Dung** | `novel` | v2 | [truyenkimdung.net](https://truyenkimdung.net) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/valvrareteam/icon.png" width="36" height="36"> | **Valvrareteam** | `novel` | v10 | [valvrareteam.net](https://valvrareteam.net) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/wanwansekai/icon.png" width="36" height="36"> | **WanwanSekai -18+** | `novel` | v10 | [wanwansekai.com](https://wanwansekai.com) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/wattpad/icon.png" width="36" height="36"> | **Wattpad - Tiếng Việt** | `novel` | v21 | [www.wattpad.com](https://www.wattpad.com) | `vi` |

@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "Truyện Kim Dung",
+    "author": "Meo",
+    "version": 2,
+    "source": "https://truyenkimdung.net",
+    "description": "Đọc các bản dịch tiểu thuyết Kim Dung trên truyenkimdung.net",
+    "locale": "vi_VN",
+    "regexp": "truyenkimdung\\.net/truyen/[^/?#]+/?$",
+    "type": "novel",
+    "nsfw": false
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "search": "search.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  },
+  "config": {
+    "DOMAIN": {
+      "title": "Domain",
+      "default": "https://truyenkimdung.net",
+      "values": [
+        "https://truyenkimdung.net"
+      ],
+      "mode": "select",
+      "format": "single"
+    }
+  }
+}

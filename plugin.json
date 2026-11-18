@@ -82,6 +82,18 @@
       "locale": "vi_VN"
     },
     {
+      "name": "Truyện Kim Dung",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/truyenkimdung/plugin.zip",
+      "version": 2,
+      "source": "https://truyenkimdung.net",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/truyenkimdung/icon.png",
+      "description": "Đọc các bản dịch tiểu thuyết Kim Dung trên truyenkimdung.net",
+      "type": "novel",
+      "locale": "vi_VN",
+      "nsfw": false
+    },
+    {
       "name": "Valvrareteam",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/valvrareteam/plugin.zip",

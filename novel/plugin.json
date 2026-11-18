@@ -154,6 +154,29 @@
     }
   },
   {
+    "folder": "truyenkimdung",
+    "name": "Truyện Kim Dung",
+    "author": "Meo",
+    "description": "Đọc các bản dịch tiểu thuyết Kim Dung trên truyenkimdung.net",
+    "source": "https://truyenkimdung.net",
+    "version": 2,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "novel/truyenkimdung",
+    "ghPath": "novel/truyenkimdung",
+    "metadata": {
+      "name": "Truyện Kim Dung",
+      "author": "Meo",
+      "version": 2,
+      "source": "https://truyenkimdung.net",
+      "description": "Đọc các bản dịch tiểu thuyết Kim Dung trên truyenkimdung.net",
+      "locale": "vi_VN",
+      "regexp": "truyenkimdung\\.net/truyen/[^/?#]+/?$",
+      "type": "novel",
+      "nsfw": false
+    }
+  },
+  {
     "folder": "valvrareteam",
     "name": "Valvrareteam",
     "author": "Meo",
