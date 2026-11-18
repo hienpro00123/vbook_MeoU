@@ -1,6 +1,9 @@
 var BASE_URL = DOMAIN || "https://novel.cooks.tw";
 var API_BASE = BASE_URL + "/api";
-var API_TIMEOUT = 25000;
+var API_TIMEOUT = 30000;
+var API_MAX_RETRIES = 2;
+var API_RETRY_BASE_DELAY = 1500;
+var API_MAX_RETRY_AFTER = 30000;
 var API_CACHE_TTL = 30000;
 var PIC_BASE = "https://pic.cooks.tw";
 
@@ -37,14 +40,24 @@ function isCloudflareChallenge(text) {
     return sample.indexOf("cloudflare") >= 0 && sample.indexOf("ray id") >= 0;
 }
 
+function parseRetryAfterMs(response) {
+    if (!response || typeof response.header !== "function") return -1;
+    var retryAfter = String(response.header("Retry-After") || "").trim();
+    if (!retryAfter) return -1;
+    if (/^\d+$/.test(retryAfter)) return Number(retryAfter) * 1000;
+    var retryTime = Date.parse(retryAfter);
+    if (!isNaN(retryTime)) return Math.max(0, retryTime - Date.now());
+    return -1;
+}
+
 function fetchOnce(url) {
     var res = null;
     try {
         res = fetch(url, { headers: FETCH_HEADERS, timeout: API_TIMEOUT });
     } catch (e) {
-        return { error: "Không kết nối được máy chủ", status: 0, retryable: true };
+        return { error: "Không kết nối được máy chủ", status: 0, retryable: true, retryAfterMs: -1 };
     }
-    if (!res) return { error: "Không kết nối được máy chủ", status: 0, retryable: true };
+    if (!res) return { error: "Không kết nối được máy chủ", status: 0, retryable: true, retryAfterMs: -1 };
 
     if (!res.ok) {
         var status = res.status;
@@ -60,8 +73,9 @@ function fetchOnce(url) {
         return {
             error: isCloudflare ? "Cloudflare chặn truy cập (HTTP " + status + ")" : "HTTP " + status,
             status: status,
-            retryable: isCloudflare || status === 0 || status >= 500,
-            cf: isCloudflare
+            retryable: isCloudflare || status === 0 || status === 429 || status >= 500,
+            cf: isCloudflare,
+            retryAfterMs: parseRetryAfterMs(res)
         };
     }
 
@@ -152,19 +166,32 @@ function fetchApi(path, useCache) {
         if (cached) return cached;
     }
 
-    var result = fetchOnce(url);
-    if (result.json) {
-        if (useCache) cacheApiResult(cacheKey, result);
-        return result;
+    var result = null;
+    for (var attempt = 0; attempt <= API_MAX_RETRIES; attempt++) {
+        result = fetchOnce(url);
+        if (result.json) {
+            if (useCache) cacheApiResult(cacheKey, result);
+            return result;
+        }
+        if (!result.retryable || result.cf || attempt === API_MAX_RETRIES) {
+            break;
+        }
+        if (result.retryAfterMs > API_MAX_RETRY_AFTER) {
+            if (typeof Log !== "undefined") {
+                Log.log("[novelcookstw] Máy chủ yêu cầu chờ hơn 30 giây; dừng thử lại và báo lỗi.");
+            }
+            break;
+        }
+        var delay = API_RETRY_BASE_DELAY * (attempt + 1);
+        if (result.retryAfterMs > delay) delay = result.retryAfterMs;
+        if (typeof Log !== "undefined") {
+            Log.log("[novelcookstw] Lỗi tạm thời " + (result.error || "kết nối") +
+                "; thử lại " + (attempt + 1) + "/" + API_MAX_RETRIES + " sau " + delay + " ms.");
+        }
+        if (typeof sleep === "function") sleep(delay);
     }
 
-    if (result.retryable && !result.cf) result = fetchOnce(url);
-    if (result.json) {
-        if (useCache) cacheApiResult(cacheKey, result);
-        return result;
-    }
-
-    if (result.cf || result.status === 0) {
+    if (result && (result.cf || result.status === 0)) {
         var viaBrowser = fetchApiViaBrowser(url);
         if (viaBrowser) {
             result = { json: viaBrowser };

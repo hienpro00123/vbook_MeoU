@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "name": "Sto66",
+    "author": "Meo",
+    "version": 2,
+    "source": "https://www.sto66.com",
+    "description": "Sto66 - Truyện chữ tiếng Trung",
+    "locale": "zh_CN",
+    "regexp": "(www\\.)?sto66\\.com/book/[^/]+\\.html",
+    "type": "novel",
+    "nsfw": false
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "search": "search.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  }
+}

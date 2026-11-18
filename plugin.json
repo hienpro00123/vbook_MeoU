@@ -236,7 +236,7 @@
       "name": "NovelCooksTW",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/novelcookstw/plugin.zip",
-      "version": 38,
+      "version": 39,
       "source": "https://novel.cooks.tw",
       "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/novelcookstw/icon.png",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
@@ -255,6 +255,18 @@
       "type": "novel",
       "locale": "zh_CN",
       "tag": "18+"
+    },
+    {
+      "name": "Sto66",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/sto66/plugin.zip",
+      "version": 2,
+      "source": "https://www.sto66.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/sto66/icon.png",
+      "description": "Sto66 - Truyện chữ tiếng Trung",
+      "type": "novel",
+      "locale": "zh_CN",
+      "nsfw": false
     },
     {
       "name": "DeepSeek Translate",

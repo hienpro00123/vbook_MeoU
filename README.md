@@ -34,7 +34,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 
 ---
 
-## 📚 2. Danh sách Extension (24 tiện ích)
+## 📚 2. Danh sách Extension (25 tiện ích)
 
 | Icon | Tên Extension | Phân loại | Phiên bản | Nguồn website | Ngôn ngữ |
 | :---: | :--- | :---: | :---: | :--- | :---: |
@@ -59,6 +59,7 @@ https://cdn.jsdelivr.net/gh/hienpro00123/vbook_MeoU@main/plugin.json
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/bixiange/icon.png" width="36" height="36"> | **Bixiange** | `chinese_novel` | v11 | [m.bixiange.top](https://m.bixiange.top) | `zh_CN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/novelcookstw/icon.png" width="36" height="36"> | **NovelCooksTW** | `chinese_novel` | v10 | [novel.cooks.tw](https://novel.cooks.tw) | `zh_TW` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/shibashuwu/icon.png" width="36" height="36"> | **ShiBaShuWu -18+** | `chinese_novel` | v20 | [www.shibashuwu.net](https://www.shibashuwu.net) | `zh_CN` |
+| <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/chinese_novel/sto66/icon.png" width="36" height="36"> | **Sto66** | `chinese_novel` | v2 | [www.sto66.com](https://www.sto66.com) | `zh_CN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/video/bilibili/icon.png" width="36" height="36"> | **Bilibili TV** | `video` | v3 | [www.bilibili.tv](https://www.bilibili.tv) | `vi_VN` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/translate/dich_deepseek/icon.png" width="36" height="36"> | **DeepSeek Translate** | `translate` | v6 | [platform.deepseek.com](https://platform.deepseek.com) | `global` |
 | <img src="https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/tts/Meo_multi_tts/icon.png" width="36" height="36"> | **Multi TTS VN** | `tts` | v20 | [ai.zalo.solutions](https://ai.zalo.solutions/docs/api/getting-started) | `vi` |

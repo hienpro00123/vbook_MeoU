@@ -50,7 +50,7 @@
     "author": "Meo",
     "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
     "source": "https://novel.cooks.tw",
-    "version": 38,
+    "version": 39,
     "type": "novel",
     "locale": "zh_TW",
     "relativePath": "chinese_novel/novelcookstw",
@@ -58,7 +58,7 @@
     "metadata": {
       "name": "NovelCooksTW",
       "author": "Meo",
-      "version": 38,
+      "version": 39,
       "source": "https://novel.cooks.tw",
       "regexp": "novel\\.cooks\\.tw\\/(novel|reader)\\.html",
       "description": "novel.cooks.tw - Đọc truyện chữ Trung Quốc online",
@@ -88,6 +88,29 @@
       "locale": "zh_CN",
       "tag": "18+",
       "type": "novel"
+    }
+  },
+  {
+    "folder": "sto66",
+    "name": "Sto66",
+    "author": "Meo",
+    "description": "Sto66 - Truyện chữ tiếng Trung",
+    "source": "https://www.sto66.com",
+    "version": 2,
+    "type": "novel",
+    "locale": "zh_CN",
+    "relativePath": "chinese_novel/sto66",
+    "ghPath": "chinese_novel/sto66",
+    "metadata": {
+      "name": "Sto66",
+      "author": "Meo",
+      "version": 2,
+      "source": "https://www.sto66.com",
+      "description": "Sto66 - Truyện chữ tiếng Trung",
+      "locale": "zh_CN",
+      "regexp": "(www\\.)?sto66\\.com/book/[^/]+\\.html",
+      "type": "novel",
+      "nsfw": false
     }
   }
 ]
