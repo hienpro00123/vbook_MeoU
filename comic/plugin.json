@@ -52,7 +52,7 @@
     "author": "Meo",
     "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
     "source": "https://manga-bay.biz",
-    "version": 2,
+    "version": 3,
     "type": "comic",
     "locale": "vi_VN",
     "relativePath": "comic/mangabay",
@@ -60,7 +60,7 @@
     "metadata": {
       "name": "Manga-Bay",
       "author": "Meo",
-      "version": 2,
+      "version": 3,
       "source": "https://manga-bay.biz",
       "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
       "locale": "vi_VN",

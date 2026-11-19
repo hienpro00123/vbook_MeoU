@@ -89,6 +89,46 @@ function mangaBayTitleFromUrl(url) {
     });
 }
 
+function mangaBayGenreData() {
+    var doc = mangaBayDocument(BASE_URL + "/comix/");
+    var dataText = "";
+    doc.select("script").forEach(function (script) {
+        if (dataText) return;
+        var match = script.html().match(/^\s*window\.__XFILTER__\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
+        if (match) dataText = match[1];
+    });
+    if (!dataText) return { error: "Không tìm thấy danh sách thể loại Manga-Bay" };
+
+    var data;
+    try {
+        data = JSON.parse(dataText);
+    } catch (error) {
+        return { error: "Dữ liệu thể loại Manga-Bay không hợp lệ" };
+    }
+    var values = data && data.filter_items && data.filter_items.g && data.filter_items.g.values;
+    if (!Array.isArray(values) || !values.length) {
+        return { error: "Danh sách thể loại Manga-Bay không hợp lệ" };
+    }
+
+    var genres = [];
+    var seen = [];
+    for (var i = 0; i < values.length; i++) {
+        var genre = values[i];
+        if (!genre || !/^\d+$/.test(String(genre.id)) || typeof genre.value !== "string" || !genre.value.trim()) {
+            return { error: "Dữ liệu thể loại không hợp lệ tại vị trí " + (i + 1) };
+        }
+        var id = String(genre.id);
+        if (seen.indexOf(id) !== -1) continue;
+        seen.push(id);
+        genres.push({
+            title: genre.value.trim(),
+            input: normalizeUrl("/ComicList/g=" + id + "/"),
+            script: "search.js"
+        });
+    }
+    return { genres: genres };
+}
+
 function mangaBayPageUrl(path, page) {
     var url = normalizeUrl(path);
     var pageNumber = parseInt(page, 10);

@@ -2,7 +2,7 @@
   "metadata": {
     "name": "Manga-Bay",
     "author": "Meo",
-    "version": 2,
+    "version": 3,
     "source": "https://manga-bay.biz",
     "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
     "locale": "vi_VN",
@@ -14,12 +14,11 @@
   },
   "script": {
     "home": "home.js",
-    "explore": "explore.js",
     "genre": "genre.js",
     "search": "search.js",
     "detail": "detail.js",
     "toc": "toc.js",
-    "page": "page.js"
+    "chap": "chap.js"
   },
   "config": {
     "DOMAIN": {

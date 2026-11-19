@@ -28,7 +28,7 @@ function execute(url) {
     var seen = [];
     for (var i = 0; i < data.chapters.length; i++) {
         var chapter = data.chapters[i];
-        if (!chapter || !/^\d+$/.test(String(chapter.id)) || !chapter.title) {
+        if (!chapter || !/^\d+$/.test(String(chapter.id)) || typeof chapter.title !== "string" || !chapter.title) {
             return Response.error("Dữ liệu chương không hợp lệ tại vị trí " + (i + 1));
         }
         var chapterId = String(chapter.id);
@@ -41,6 +41,27 @@ function execute(url) {
             lock: false,
             pay: false
         });
+    }
+    chapters.reverse();
+    var numbered = [];
+    var positions = [];
+    for (var j = 0; j < chapters.length; j++) {
+        var number = chapters[j].name.match(/\bchap(?:ter)?\.?\s*(\d+(?:\.\d+)*)/i);
+        if (number) {
+            positions.push(j);
+            numbered.push({ chapter: chapters[j], number: number[1].split("."), index: j });
+        }
+    }
+    numbered.sort(function (a, b) {
+        var length = Math.min(a.number.length, b.number.length);
+        for (var k = 0; k < length; k++) {
+            var difference = parseInt(a.number[k], 10) - parseInt(b.number[k], 10);
+            if (difference) return difference;
+        }
+        return a.number.length - b.number.length || a.index - b.index;
+    });
+    for (var n = 0; n < positions.length; n++) {
+        chapters[positions[n]] = numbered[n].chapter;
     }
     return Response.success(chapters);
 }

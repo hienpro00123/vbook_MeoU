@@ -17,7 +17,7 @@ function execute(url) {
 
     var tags = [];
     var seenTags = [];
-    doc.select("a[href*='/ComicList/g=']").forEach(function (link) {
+    doc.select("main dl a[href*='/ComicList/g=']").forEach(function (link) {
         var name = link.text();
         var tagUrl = normalizeUrl(link.attr("href"));
         if (name && tagUrl && seenTags.indexOf(tagUrl) === -1) {
@@ -27,10 +27,6 @@ function execute(url) {
     });
 
     var summary = doc.select("dl").text().toLowerCase();
-    var genres = tags.length ? [
-        { title: "Similar genres", input: tags[0].input, script: "search.js" }
-    ] : [];
-
     return Response.success({
         name: title,
         author: "",
@@ -42,6 +38,6 @@ function execute(url) {
         format: "comic",
         ongoing: summary.indexOf("completed") === -1,
         tags: tags,
-        genres: genres
+        genres: tags
     });
 }
