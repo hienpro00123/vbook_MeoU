@@ -4,6 +4,10 @@ Trong cấu hình extension, nhập địa chỉ Content Server và, nếu serve
 tên đăng nhập cùng mật khẩu. Nên dùng tài khoản chỉ đọc. Ô mật khẩu là văn bản
 thông thường, không được bảo đảm che hoặc lưu trữ an toàn.
 
+Địa chỉ `localhost` hiển thị dưới tên extension là nhãn cố định, không tự đổi
+theo cấu hình. Trên điện thoại, localhost là chính điện thoại; nếu Calibre chạy
+trên máy khác, nhập địa chỉ mạng của máy đó trong cấu hình extension.
+
 HTTP Digest không mã hóa nội dung, thông tin sách hoặc bảo vệ mật khẩu yếu
 trước việc dò đoán. Chỉ dùng HTTP trên mạng tin cậy; ưu tiên HTTPS và mật khẩu
 mạnh.
