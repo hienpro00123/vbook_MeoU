@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "name": "Calibre",
+    "author": "Meo",
+    "version": 2,
+    "source": "http://127.0.0.1:8080",
+    "description": "Duyệt và đọc sách từ Calibre Content Server",
+    "locale": "vi_VN",
+    "regexp": "/ajax/book/\\d+/",
+    "type": "novel",
+    "language": "javascript"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "search": "search.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  },
+  "config": {
+    "SERVER_URL": {
+      "title": "Calibre Content Server",
+      "default": "http://127.0.0.1:8080",
+      "mode": "input",
+      "format": "text"
+    },
+    "CALIBRE_USER": {
+      "title": "Tên đăng nhập",
+      "default": "",
+      "mode": "input",
+      "format": "text"
+    },
+    "CALIBRE_PASSWORD": {
+      "title": "Mật khẩu (hiển thị dạng văn bản)",
+      "default": "",
+      "mode": "input",
+      "format": "text"
+    }
+  }
+}

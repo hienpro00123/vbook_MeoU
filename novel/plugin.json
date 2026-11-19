@@ -1,5 +1,28 @@
 [
   {
+    "folder": "calibre",
+    "name": "Calibre",
+    "author": "Meo",
+    "description": "Duyệt và đọc sách từ Calibre Content Server",
+    "source": "http://127.0.0.1:8080",
+    "version": 2,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "novel/calibre",
+    "ghPath": "novel/calibre",
+    "metadata": {
+      "name": "Calibre",
+      "author": "Meo",
+      "version": 2,
+      "source": "http://127.0.0.1:8080",
+      "description": "Duyệt và đọc sách từ Calibre Content Server",
+      "locale": "vi_VN",
+      "regexp": "/ajax/book/\\d+/",
+      "type": "novel",
+      "language": "javascript"
+    }
+  },
+  {
     "folder": "dualeo",
     "name": "dualeotruyenfull",
     "author": "Meo",

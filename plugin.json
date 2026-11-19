@@ -5,6 +5,17 @@
   },
   "data": [
     {
+      "name": "Calibre",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/calibre/plugin.zip",
+      "version": 2,
+      "source": "http://127.0.0.1:8080",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/calibre/icon.png",
+      "description": "Duyệt và đọc sách từ Calibre Content Server",
+      "type": "novel",
+      "locale": "vi_VN"
+    },
+    {
       "name": "dualeotruyenfull",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/dualeo/plugin.zip",
