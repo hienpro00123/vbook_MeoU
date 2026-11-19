@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "Manga-Bay",
+    "author": "Meo",
+    "version": 2,
+    "source": "https://manga-bay.biz",
+    "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
+    "locale": "vi_VN",
+    "regexp": "manga-bay\\.biz/\\d+-[^/]+\\.html/?$",
+    "type": "comic",
+    "nsfw": true,
+    "tag": "NSFW",
+    "language": "javascript"
+  },
+  "script": {
+    "home": "home.js",
+    "explore": "explore.js",
+    "genre": "genre.js",
+    "search": "search.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "page": "page.js"
+  },
+  "config": {
+    "DOMAIN": {
+      "title": "Domain",
+      "default": "https://manga-bay.biz",
+      "mode": "input",
+      "format": "text"
+    }
+  }
+}

@@ -47,6 +47,31 @@
     }
   },
   {
+    "folder": "mangabay",
+    "name": "Manga-Bay",
+    "author": "Meo",
+    "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
+    "source": "https://manga-bay.biz",
+    "version": 2,
+    "type": "comic",
+    "locale": "vi_VN",
+    "relativePath": "comic/mangabay",
+    "ghPath": "comic/mangabay",
+    "metadata": {
+      "name": "Manga-Bay",
+      "author": "Meo",
+      "version": 2,
+      "source": "https://manga-bay.biz",
+      "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
+      "locale": "vi_VN",
+      "regexp": "manga-bay\\.biz/\\d+-[^/]+\\.html/?$",
+      "type": "comic",
+      "nsfw": true,
+      "tag": "NSFW",
+      "language": "javascript"
+    }
+  },
+  {
     "folder": "nettruyen",
     "name": "municipiodaboavista.com",
     "author": "Meo",

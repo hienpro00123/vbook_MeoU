@@ -154,6 +154,19 @@
       "nsfw": true
     },
     {
+      "name": "Manga-Bay",
+      "author": "Meo",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/mangabay/plugin.zip",
+      "version": 2,
+      "source": "https://manga-bay.biz",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/mangabay/icon.png",
+      "description": "Đọc manga, manhwa và manhua từ Manga-Bay",
+      "type": "comic",
+      "locale": "vi_VN",
+      "tag": "NSFW",
+      "nsfw": true
+    },
+    {
       "name": "municipiodaboavista.com",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/comic/nettruyen/plugin.zip",
