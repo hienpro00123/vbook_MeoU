@@ -19,9 +19,10 @@ function mangaBayDocument(url) {
     var browser = Engine.newBrowser();
     try {
         browser.launch(url, 5000);
-        // Encode the DOM so WebView's JavaScript result survives HTML parsing.
+        // Windows wraps the encoded DOM in a JSON string; Android returns it directly.
         var result = browser.callJs("encodeURIComponent(document.documentElement.outerHTML)", 5000);
-        var html = decodeURIComponent(JSON.parse(result.select("body").text()));
+        var encoded = result.select("body").text();
+        var html = decodeURIComponent(encoded.charAt(0) === '"' ? JSON.parse(encoded) : encoded);
         var doc = Html.parse(html);
         if (doc.select("main").isEmpty()) {
             throw new Error("Không tải được nội dung Manga-Bay");
