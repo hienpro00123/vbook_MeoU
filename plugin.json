@@ -60,6 +60,17 @@
       "locale": "vi_VN"
     },
     {
+      "name": "Mùa Hè Có Ve",
+      "author": "kychi",
+      "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/muahecove/plugin.zip",
+      "version": 7,
+      "source": "https://muahecove.com",
+      "icon": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/muahecove/icon.png",
+      "description": "Truyện ngôn tình, hiện đại, cổ đại - muahecove.com",
+      "type": "novel",
+      "locale": "vi_VN"
+    },
+    {
       "name": "Storya",
       "author": "Meo",
       "path": "https://raw.githubusercontent.com/hienpro00123/vbook_MeoU/main/novel/storya/plugin.zip",

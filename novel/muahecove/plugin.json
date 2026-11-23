@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "name": "Mùa Hè Có Ve",
+    "author": "kychi",
+    "version": 7,
+    "description": "Truyện ngôn tình, hiện đại, cổ đại - muahecove.com",
+    "type": "novel",
+    "locale": "vi_VN",
+    "source": "https://muahecove.com",
+    "regexp": "muahecove\\.com"
+  },
+  "script": {
+    "home": "home.js",
+    "homecontent": "homecontent.js",
+    "genre": "genre.js",
+    "genrecontent": "genrecontent.js",
+    "search": "search.js",
+    "detail": "detail.js",
+    "toc": "toc.js",
+    "chap": "chap.js"
+  },
+  "config": {
+    "DOMAIN": {
+      "title": "Domain",
+      "default": "https://muahecove.com",
+      "values": ["https://muahecove.com"],
+      "mode": "select",
+      "format": "single"
+    }
+  }
+}

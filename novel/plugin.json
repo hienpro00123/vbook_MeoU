@@ -111,6 +111,28 @@
     }
   },
   {
+    "folder": "muahecove",
+    "name": "Mùa Hè Có Ve",
+    "author": "kychi",
+    "description": "Truyện ngôn tình, hiện đại, cổ đại - muahecove.com",
+    "source": "https://muahecove.com",
+    "version": 7,
+    "type": "novel",
+    "locale": "vi_VN",
+    "relativePath": "novel/muahecove",
+    "ghPath": "novel/muahecove",
+    "metadata": {
+      "name": "Mùa Hè Có Ve",
+      "author": "kychi",
+      "version": 7,
+      "description": "Truyện ngôn tình, hiện đại, cổ đại - muahecove.com",
+      "type": "novel",
+      "locale": "vi_VN",
+      "source": "https://muahecove.com",
+      "regexp": "muahecove\\.com"
+    }
+  },
+  {
     "folder": "storya",
     "name": "Storya",
     "author": "Meo",
